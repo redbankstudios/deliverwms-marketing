@@ -1,0 +1,30 @@
+{
+  "name": "deliverwms-marketing",
+  "type": "module",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Deliver WMS — public marketing site. Built with Astro + Tailwind, deployed on Vercel.",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "astro": "^5.0.0",
+    "@astrojs/react": "^4.0.0",
+    "@astrojs/sitemap": "^3.2.0",
+    "@astrojs/tailwind": "^5.1.0",
+    "@tailwindcss/typography": "^0.5.15",
+    "@types/react": "^18.3.0",
+    "@types/react-dom": "^18.3.0",
+    "clsx": "^2.1.1",
+    "lucide-react": "^0.460.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "tailwind-merge": "^2.5.5",
+    "tailwindcss": "^3.4.15",
+    "typescript": "^5.6.3"
+  }
+}

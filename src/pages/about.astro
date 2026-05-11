@@ -1,0 +1,172 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+
+const title = 'About Deliver WMS — Built for Modern Warehouses & 3PLs';
+const description =
+  'Learn about Deliver WMS — the team building modern warehouse management and last-mile delivery software for 3PLs and eCommerce.';
+
+const whyCards = [
+  {
+    title: 'Ledger-Backed Inventory',
+    body: 'Not just CRUD — every movement is an immutable event. Balances are derived from the ledger, giving you an audit trail that survives any dispute.',
+  },
+  {
+    title: 'Multi-Tenant Architecture',
+    body: "Tenant isolation isn't bolted on. Every table, every query, every RLS policy is tenant-aware from the ground up — so your clients' data never crosses.",
+  },
+  {
+    title: 'Warehouse to Doorstep',
+    body: 'No separate WMS, TMS, and delivery app. One platform covers receiving, storage, fulfillment, dispatch, and last-mile — with shared data across every step.',
+  },
+  {
+    title: '10 Roles, Not One-Size-Fits-All',
+    body: 'From platform owners to floor workers to B2B clients — each role sees exactly what they need. Role-based access reduces errors and training time.',
+  },
+  {
+    title: 'Automated Carrier Shipping',
+    body: 'Orders outside your delivery zones are automatically routed to carriers. Labels are generated via rate shopping during picking and ready to print at packing — no manual carrier management.',
+  },
+  {
+    title: 'Scan-Driven Receiving',
+    body: 'Barcode scanning with automatic exception handling for unknown items, quantity mismatches, and damage. Unknown barcodes are learned and resolved for future scans.',
+  },
+];
+
+const audiences = [
+  { title: '3PL Operators', body: 'Run multi-client warehouses with tenant-isolated inventory, billing, and client portals that keep everyone aligned.' },
+  { title: 'eCommerce Brands', body: 'Manage DTC fulfillment from receiving to delivery with Shopify integration, real-time inventory, and order tracking.' },
+  { title: 'Distributors & Wholesalers', body: 'Handle high-volume B2B distribution with storage optimization, route planning, and detailed operational analytics.' },
+  { title: 'Last-Mile Delivery Companies', body: 'Optimize routes, manage driver fleets, capture proof of delivery, and handle delivery exceptions — all in real time.' },
+];
+
+const steps = [
+  { n: '01', title: 'Receive & Store', body: 'Inbound shipments are received with barcode scanning, validated against purchase orders, and directed to optimal storage locations.' },
+  { n: '02', title: 'Manage Inventory', body: 'Track every unit by SKU, location, and client. Ledger-based balances keep on-hand, reserved, and available quantities accurate.' },
+  { n: '03', title: 'Fulfill Orders', body: 'Orders are allocated, pick tasks are generated and assigned, items are packed, carrier labels are auto-generated, and shipments are created with tracking numbers.' },
+  { n: '04', title: 'Dispatch & Deliver', body: 'Orders ship via your fleet or carrier — automatically routed by delivery zone. Plan routes, assign drivers, and track delivery progress in real time with proof of delivery.' },
+  { n: '05', title: 'Report & Bill', body: 'Operational dashboards show throughput, SLA performance, and cost drivers. Billing views give clients full transparency.' },
+];
+---
+
+<BaseLayout title={title} description={description}>
+  <!-- Hero -->
+  <section class="relative isolate overflow-hidden border-b border-slate-200 bg-white py-24 sm:py-28 dark:border-slate-800 dark:bg-slate-950">
+    <div class="dot-grid-bg absolute inset-0 -z-10 opacity-50 [mask-image:radial-gradient(ellipse_at_center,white_30%,transparent_70%)]"></div>
+    <div class="brand-glow -right-32 top-24 h-96 w-96"></div>
+
+    <div class="container-narrow text-center">
+      <p class="eyebrow mx-auto justify-center">About</p>
+      <h1 class="display mt-6 text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl">
+        Logistics software built by <span class="text-brand-600 dark:text-brand-400">operators</span>, for operators
+      </h1>
+      <p class="mx-auto mt-6 max-w-2xl text-lg text-slate-600 dark:text-slate-400">
+        Deliver WMS was created to replace the patchwork of spreadsheets, legacy WMS tools, and disconnected delivery apps that slow logistics teams down.
+      </p>
+    </div>
+  </section>
+
+  <!-- Mission -->
+  <section class="bg-slate-50 py-16 dark:bg-slate-900/50">
+    <div class="container-narrow">
+      <div class="card relative overflow-hidden p-8 sm:p-12">
+        <div class="brand-glow -right-16 -top-16 h-48 w-48"></div>
+        <p class="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-brand-700 dark:text-brand-400">
+          Our Mission
+        </p>
+        <p class="font-display mt-4 text-xl tracking-tight text-slate-800 sm:text-2xl lg:text-3xl dark:text-slate-100">
+          Give every logistics operation — from a single warehouse to a multi-site network — the tools to execute with speed, accuracy, and full visibility.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Why Deliver WMS -->
+  <section class="border-t border-slate-200 bg-white py-20 sm:py-24 dark:border-slate-800 dark:bg-slate-950">
+    <div class="container-page">
+      <div class="mx-auto max-w-2xl text-center">
+        <p class="eyebrow mx-auto justify-center">Why Deliver WMS</p>
+        <h2 class="section-title mt-6">Architecture decisions you'll feel</h2>
+        <p class="section-sub">
+          Six choices that separate Deliver WMS from generic warehouse tools.
+        </p>
+      </div>
+      <div class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {whyCards.map((card, i) => (
+          <article class="card card-hover p-6">
+            <p class="font-mono text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
+              {String(i + 1).padStart(2, '0')}
+            </p>
+            <h3 class="font-display mt-2 text-lg font-bold">{card.title}</h3>
+            <p class="mt-3 text-sm text-slate-600 dark:text-slate-400">{card.body}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Who we serve -->
+  <section class="bg-slate-50 py-20 sm:py-24 dark:bg-slate-900/50">
+    <div class="container-page">
+      <div class="mx-auto max-w-2xl text-center">
+        <p class="eyebrow mx-auto justify-center">Who we serve</p>
+        <h2 class="section-title mt-6">Built for every kind of operation</h2>
+      </div>
+      <div class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        {audiences.map((aud) => (
+          <article class="card card-hover p-6">
+            <h3 class="font-display text-lg font-bold">{aud.title}</h3>
+            <p class="mt-3 text-sm text-slate-600 dark:text-slate-400">{aud.body}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- How it works -->
+  <section class="border-t border-slate-200 bg-white py-20 sm:py-24 dark:border-slate-800 dark:bg-slate-950">
+    <div class="container-page">
+      <div class="mx-auto max-w-2xl text-center">
+        <p class="eyebrow mx-auto justify-center">How it works</p>
+        <h2 class="section-title mt-6">From dock to doorstep, in one flow</h2>
+      </div>
+      <ol class="mx-auto mt-12 max-w-3xl space-y-4">
+        {steps.map((step) => (
+          <li class="card p-6 sm:p-8">
+            <div class="flex flex-col gap-5 sm:flex-row">
+              <div class="shrink-0">
+                <p class="font-display text-4xl font-bold text-brand-600 dark:text-brand-400">{step.n}</p>
+              </div>
+              <div>
+                <h3 class="font-display text-xl font-bold">{step.title}</h3>
+                <p class="mt-2 text-sm text-slate-600 dark:text-slate-400">{step.body}</p>
+              </div>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="relative isolate overflow-hidden bg-slate-950 py-20 text-white sm:py-24">
+    <div class="dot-grid-bg absolute inset-0 -z-10 opacity-20"></div>
+    <div class="brand-glow -right-32 bottom-0 h-96 w-96"></div>
+    <div class="container-narrow text-center">
+      <p class="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-brand-400">
+        Let's talk
+      </p>
+      <h2 class="font-display mt-3 text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">
+        Let's talk about your operation
+      </h2>
+      <p class="mx-auto mt-4 max-w-2xl text-lg text-slate-300">
+        Whether you're launching a new warehouse or scaling an existing network, we'd love to help.
+      </p>
+      <div class="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+        <a href="/contact" class="btn-primary">Contact Us</a>
+        <a href="/features" class="btn-secondary border-white/20 bg-white/5 text-white hover:bg-white/10">
+          Explore Features
+        </a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

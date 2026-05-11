@@ -1,0 +1,77 @@
+---
+// CSS/SVG animated hero visual — pure CSS, no JS. Respects prefers-reduced-motion.
+---
+
+<div class="comet-stage" aria-hidden="true">
+  <div class="comet-orbit o1"><div class="comet-dot"></div></div>
+  <div class="comet-orbit o2"><div class="comet-dot amber"></div></div>
+  <div class="comet-orbit o3"><div class="comet-dot cyan"></div></div>
+  <div class="comet-orbit o4"><div class="comet-dot"></div></div>
+  <div class="comet-orbit o5"><div class="comet-dot amber"></div></div>
+  <div class="comet-core"></div>
+</div>
+
+<style>
+  .comet-stage {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1;
+    perspective: 1500px;
+    overflow: hidden;
+  }
+  .comet-orbit {
+    position: absolute;
+    inset: 0;
+    border-radius: 9999px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    transform-style: preserve-3d;
+    animation: comet-spin 18s linear infinite;
+  }
+  :global(html:not(.dark)) .comet-orbit {
+    border-color: rgba(15, 23, 42, 0.1);
+  }
+  .comet-orbit.o2 { inset: 8%; animation-duration: 22s; animation-direction: reverse; }
+  .comet-orbit.o3 { inset: 16%; animation-duration: 28s; }
+  .comet-orbit.o4 { inset: 24%; animation-duration: 34s; animation-direction: reverse; }
+  .comet-orbit.o5 { inset: 32%; animation-duration: 40s; }
+  .comet-dot {
+    position: absolute;
+    top: -6px;
+    left: 50%;
+    width: 12px;
+    height: 12px;
+    margin-left: -6px;
+    border-radius: 9999px;
+    background: linear-gradient(135deg, #34d399, #10b981);
+    box-shadow: 0 0 24px 4px rgba(16, 185, 129, 0.55);
+  }
+  .comet-dot.amber {
+    background: linear-gradient(135deg, #fbbf24, #f59e0b);
+    box-shadow: 0 0 24px 4px rgba(245, 158, 11, 0.5);
+  }
+  .comet-dot.cyan {
+    background: linear-gradient(135deg, #67e8f9, #06b6d4);
+    box-shadow: 0 0 24px 4px rgba(6, 182, 212, 0.5);
+  }
+  .comet-core {
+    position: absolute;
+    inset: 38%;
+    border-radius: 9999px;
+    background: radial-gradient(circle at 30% 30%, rgba(16, 185, 129, 0.65), rgba(15, 23, 42, 0) 70%);
+    filter: blur(8px);
+    animation: comet-pulse 6s ease-in-out infinite;
+  }
+  @keyframes comet-spin {
+    to { transform: rotateZ(360deg); }
+  }
+  @keyframes comet-pulse {
+    0%, 100% { transform: scale(1); opacity: 0.85; }
+    50% { transform: scale(1.08); opacity: 1; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .comet-orbit,
+    .comet-core {
+      animation: none !important;
+    }
+  }
+</style>

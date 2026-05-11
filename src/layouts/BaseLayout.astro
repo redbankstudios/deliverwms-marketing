@@ -1,0 +1,122 @@
+---
+import '@/styles/global.css';
+import Navbar from '@/components/Navbar.astro';
+import Footer from '@/components/Footer.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  canonical?: string;
+  ogImage?: string;
+  ogType?: 'website' | 'article';
+  noindex?: boolean;
+}
+
+const {
+  title,
+  description,
+  canonical,
+  ogImage = 'https://storage.googleapis.com/gpt-engineer-file-uploads/XAlhLrF9JwY5hDUhUMp0t0fE7Dp2/social-images/social-1776118465404-Image_1_(1).webp',
+  ogType = 'website',
+  noindex = false,
+} = Astro.props;
+
+const siteUrl = 'https://deliverwms.com';
+const pageUrl = canonical ?? new URL(Astro.url.pathname, siteUrl).toString();
+
+// Site-wide Organization JSON-LD — boosts entity recognition for Google + AI engines.
+const organizationSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: 'Deliver WMS',
+  url: siteUrl,
+  logo: `${siteUrl}/logo.png`,
+  description:
+    'The all-in-one warehouse management and last-mile delivery platform for 3PLs, eCommerce brands, distributors, and delivery companies.',
+  sameAs: [
+    // Add real social profile URLs here once they exist.
+  ],
+};
+
+// WebSite schema with site-search action — strengthens brand entity in Google Knowledge Graph
+// and lets Google show a sitelinks searchbox on brand SERP results.
+const websiteSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: 'Deliver WMS',
+  url: siteUrl,
+  publisher: {
+    '@type': 'Organization',
+    name: 'Deliver WMS',
+  },
+};
+---
+
+<!doctype html>
+<html lang="en" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Theme init (prevents FOUC on dark mode) -->
+    <script is:inline>
+      (function () {
+        try {
+          const stored = localStorage.getItem('theme');
+          const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          const theme = stored ?? (systemDark ? 'dark' : 'light');
+          if (theme === 'dark') document.documentElement.classList.add('dark');
+        } catch (_) {}
+      })();
+    </script>
+
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={pageUrl} />
+    {noindex && <meta name="robots" content="noindex,nofollow" />}
+
+    <!-- Open Graph / Twitter -->
+    <meta property="og:type" content={ogType} />
+    <meta property="og:url" content={pageUrl} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImage} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <!-- Fonts: Bricolage Grotesque (display) + Plus Jakarta Sans (body) + JetBrains Mono (eyebrow/code) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700;12..96,800&family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+    />
+
+    <!-- Site-wide Organization schema -->
+    <script type="application/ld+json" set:html={JSON.stringify(organizationSchema)} />
+
+    <!-- Site-wide WebSite schema -->
+    <script type="application/ld+json" set:html={JSON.stringify(websiteSchema)} />
+
+    <!-- Slot for per-page JSON-LD (FAQPage, SoftwareApplication, BreadcrumbList, Article, etc.) -->
+    <slot name="head" />
+  </head>
+  <body class="flex min-h-screen flex-col">
+    <a
+      href="#main"
+      class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-md focus:bg-brand-600 focus:px-4 focus:py-2 focus:text-white"
+    >
+      Skip to content
+    </a>
+    <Navbar />
+    <main id="main" class="flex-1">
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>

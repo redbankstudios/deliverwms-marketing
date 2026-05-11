@@ -1,0 +1,119 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { MODULES, CATEGORIES } from '@/data/modules';
+
+const title = 'Deliver WMS Documentation — Guides, API & Integrations';
+const description =
+  'Deliver WMS documentation: 30 modules covering warehouse operations, order fulfillment, last-mile dispatch, mobile apps, multi-tenant client portals, reports, and billing.';
+
+// Group modules by category, preserving CATEGORIES order
+const grouped = CATEGORIES.map((cat) => ({
+  label: cat,
+  modules: MODULES.filter((m) => m.category === cat),
+})).filter((g) => g.modules.length > 0);
+
+const totalModules = MODULES.length;
+
+// ItemList JSON-LD — signals to Google that /docs is a structured catalog.
+// Combined with TechArticle on each detail page, this strengthens the docs hub
+// as a citable knowledge source for AI engines.
+const itemListSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  name: 'Deliver WMS Platform Documentation',
+  description: 'Complete module documentation for the Deliver WMS warehouse management platform.',
+  numberOfItems: totalModules,
+  itemListElement: MODULES.map((mod, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    url: `https://deliverwms.com/docs/${mod.slug}`,
+    name: mod.name,
+    description: mod.tagline,
+  })),
+};
+
+// BreadcrumbList for the docs index
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://deliverwms.com/' },
+    { '@type': 'ListItem', position: 2, name: 'Documentation', item: 'https://deliverwms.com/docs' },
+  ],
+};
+---
+
+<BaseLayout title={title} description={description}>
+  <script slot="head" type="application/ld+json" set:html={JSON.stringify(itemListSchema)} />
+  <script slot="head" type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
+
+  <!-- Hero -->
+  <section class="relative isolate overflow-hidden border-b border-slate-200 bg-white py-24 sm:py-28 dark:border-slate-800 dark:bg-slate-950">
+    <div class="dot-grid-bg absolute inset-0 -z-10 opacity-50 [mask-image:radial-gradient(ellipse_at_center,white_30%,transparent_70%)]"></div>
+    <div class="brand-glow -right-32 top-12 h-96 w-96"></div>
+
+    <div class="container-narrow text-center">
+      <p class="eyebrow mx-auto justify-center">Documentation</p>
+      <h1 class="display mt-6 text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl">
+        Platform Documentation
+      </h1>
+      <p class="mx-auto mt-6 max-w-2xl text-lg text-slate-600 dark:text-slate-400">
+        Explore every module of Deliver WMS — what it does, who it's designed for, and how it fits the rest of the platform. {totalModules} modules across {grouped.length} categories.
+      </p>
+    </div>
+  </section>
+
+  <!-- Module groups -->
+  <section class="bg-slate-50 py-16 sm:py-20 dark:bg-slate-900/50">
+    <div class="container-page space-y-14">
+      {grouped.map((group, i) => (
+        <div>
+          <div class="flex items-baseline gap-4 border-b border-slate-200 pb-4 dark:border-slate-800">
+            <p class="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">
+              {String(i + 1).padStart(2, '0')}
+            </p>
+            <h2 class="font-display text-2xl font-bold tracking-tight">{group.label}</h2>
+            <span class="ml-auto font-mono text-xs text-slate-400">
+              {group.modules.length} {group.modules.length === 1 ? 'module' : 'modules'}
+            </span>
+          </div>
+          <div class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {group.modules.map((mod) => (
+              <a
+                href={`/docs/${mod.slug}`}
+                class="card card-hover group block p-5"
+              >
+                <h3 class="font-display text-base font-bold transition-colors group-hover:text-brand-700 dark:group-hover:text-brand-400">
+                  {mod.name}
+                </h3>
+                <p class="mt-2 text-sm text-slate-600 dark:text-slate-400">{mod.tagline}</p>
+                <div class="mt-4 flex flex-wrap gap-1.5">
+                  {mod.audiences.map((aud) => (
+                    <span class="rounded-full bg-slate-100 px-2 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-[0.16em] text-slate-600 dark:bg-slate-800 dark:text-slate-400">
+                      {aud}
+                    </span>
+                  ))}
+                </div>
+              </a>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="relative isolate overflow-hidden border-t border-slate-200 bg-white py-20 text-center dark:border-slate-800 dark:bg-slate-950">
+    <div class="brand-glow -left-32 top-0 h-72 w-72"></div>
+    <div class="container-narrow">
+      <p class="eyebrow mx-auto justify-center">Demo</p>
+      <h2 class="section-title mt-6">Need a guided walkthrough?</h2>
+      <p class="section-sub mx-auto max-w-xl">
+        Talk to our team — we'll show you how each module fits your operation in a 30-minute demo.
+      </p>
+      <div class="mt-8">
+        <a href="/contact" class="btn-primary">Talk to Sales</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

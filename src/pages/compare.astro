@@ -1,0 +1,195 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+
+const title = 'Deliver WMS vs Other WMS Platforms — Feature Comparison';
+const description =
+  'Compare Deliver WMS against other warehouse management systems. See features, pricing, integrations, and ideal fit side by side.';
+
+const appUrl = import.meta.env.PUBLIC_APP_URL || 'https://app.deliverwms.com';
+
+const competitors = [
+  { name: 'Extensiv', short: 'Extensiv' },
+  { name: 'Logiwa', short: 'Logiwa' },
+  { name: 'ShipHero', short: 'ShipHero' },
+  { name: 'CartonCloud', short: 'CartonCloud' },
+  { name: 'Fishbowl', short: 'Fishbowl' },
+];
+
+const dimensions = [
+  {
+    label: 'Tenant model',
+    deliver: 'Multi-tenant from day one. Every table, query, and policy is tenant-aware. Built specifically for warehouses serving multiple clients.',
+    competitorsCopy: [
+      'Multi-tenant native. Strong choice for established 3PLs.',
+      'Multi-tenant native. Heavier feature footprint than Deliver WMS today.',
+      'Historically focused on single-brand merchants. Adding 3PL features.',
+      'Multi-tenant native, with regional strength in APAC.',
+      'Single-brand QuickBooks-aligned. Not designed for 3PL multi-tenancy.',
+    ],
+  },
+  {
+    label: 'Billing & financial truth',
+    deliver: 'Built on a transparent ledger. Every billable event captured at the moment it occurs — invoices reflect what actually happened, with full audit trail.',
+    competitorsCopy: [
+      'Configurable billing rules; reconciliation typical of legacy WMS.',
+      'Billing module available; depends on third-party export for finance ops.',
+      'Per-action fees with monthly billing summary.',
+      'Built-in invoicing; some manual reconciliation typical.',
+      'Tightly tied to QuickBooks; billing flows through accounting.',
+    ],
+  },
+  {
+    label: 'Automation',
+    deliver: 'No-code rules engine. Operators wire automations without engineering support — event stream feeds rules; rules trigger actions.',
+    competitorsCopy: [
+      'Workflow configuration available; complex rules typically need professional services.',
+      'Workflow rules engine; broader feature set.',
+      'Automation rules available, mostly merchant-facing.',
+      'Automation features included; varies by plan.',
+      'Limited automation; workflow rules are basic.',
+    ],
+  },
+  {
+    label: 'Migration & onboarding',
+    deliver: 'CSV import with smart field mapping. Most mid-size 3PLs operational on Deliver WMS within a week.',
+    competitorsCopy: [
+      'White-glove implementation included; thorough but slower.',
+      'Implementation services available; multi-week typical.',
+      'Self-serve onboarding for merchants; 3PL setup is consultative.',
+      'Implementation typically supported by their team.',
+      'Self-installed; depends heavily on QuickBooks setup.',
+    ],
+  },
+  {
+    label: 'Marketplace integrations',
+    deliver: 'On the roadmap. Order-import API and webhook events available today for custom connections.',
+    competitorsCopy: [
+      'Established integrations with major marketplaces.',
+      'Native Shopify, Amazon integrations available.',
+      'Strongest in this dimension — built integrations-first for DTC merchants.',
+      'Marketplace integrations available; varies by region.',
+      'Marketplace integrations weaker than competitors; QuickBooks-first.',
+    ],
+  },
+];
+
+const whyParagraphs = [
+  {
+    title: 'Tenant model',
+    body: 'We started with multi-tenancy because retrofitting it into a single-brand WMS is structurally hard. Tables, queries, and policies are all tenant-aware from day one — that\'s why a 3PL serving 20 clients sees clean data isolation, not a bolted-on filter.',
+  },
+  {
+    title: 'Billing & financial truth',
+    body: 'Most legacy WMS bolt billing onto operational data later. We chose to capture the billable event at the moment of action because that\'s the only way the invoice can be defended in front of a customer, line by line, without reconstructing it from logs at month end.',
+  },
+  {
+    title: 'Automation',
+    body: 'Operators know their workflows better than any implementation consultant. We built a plain-English rules engine on top of the event stream so the people running the warehouse can wire automations themselves — without filing a ticket or waiting on a services engagement.',
+  },
+  {
+    title: 'Migration & onboarding',
+    body: 'Long implementations are how WMS deals die. We built CSV import with smart field mapping so an operator can bring their existing data into Deliver WMS without an SOW or a six-week consulting engagement — the trade-off is that white-glove migration is your call to opt into, not the default.',
+  },
+  {
+    title: 'Marketplace integrations',
+    body: 'We\'re honest about this one: native marketplace connectors are on the roadmap, not shipped. The order-import API and typed webhook events are usable today for custom integrations, and we\'d rather tell you that than pretend a connector exists. ShipHero is genuinely strong here if marketplace breadth is your top priority.',
+  },
+];
+---
+
+<BaseLayout title={title} description={description}>
+  <!-- Hero -->
+  <section class="relative isolate overflow-hidden border-b border-slate-200 bg-white py-24 sm:py-28 dark:border-slate-800 dark:bg-slate-950">
+    <div class="dot-grid-bg absolute inset-0 -z-10 opacity-50 [mask-image:radial-gradient(ellipse_at_center,white_30%,transparent_70%)]"></div>
+    <div class="brand-glow -right-32 top-12 h-96 w-96"></div>
+
+    <div class="container-narrow text-center">
+      <p class="eyebrow mx-auto justify-center">Compare</p>
+      <h1 class="display mt-6 text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl">
+        Deliver WMS <span class="text-brand-600 dark:text-brand-400">vs.</span> the rest
+      </h1>
+      <p class="mx-auto mt-6 max-w-2xl text-lg text-slate-600 dark:text-slate-400">
+        An honest look at how Deliver WMS compares to Extensiv, Logiwa, ShipHero, CartonCloud, and Fishbowl — across the five architectural dimensions that actually shape a 3PL's day.
+      </p>
+      <div class="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+        <a href={`${appUrl}/signup`} class="btn-primary">Start Free Trial</a>
+        <a href="/contact" class="btn-secondary">Talk to Sales</a>
+      </div>
+    </div>
+
+    <div class="container-narrow mt-10">
+      <div class="rounded-2xl border border-amber-200 bg-amber-50/80 p-5 text-sm text-amber-900 dark:border-amber-900/50 dark:bg-amber-950/40 dark:text-amber-200">
+        Every platform on this page has happy customers. Different choices for different operations. We're describing how each product approaches the problem — not arguing anyone is bad. Pick the one whose architecture matches the way you want to run.
+      </div>
+    </div>
+  </section>
+
+  <!-- Dimensions -->
+  <section class="bg-slate-50 py-16 sm:py-20 dark:bg-slate-900/50">
+    <div class="container-page space-y-12">
+      {dimensions.map((dim, i) => (
+        <article class="card p-6 sm:p-8">
+          <p class="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-brand-700 dark:text-brand-400">
+            {String(i + 1).padStart(2, '0')} / {String(dimensions.length).padStart(2, '0')} · Dimension
+          </p>
+          <h2 class="font-display mt-3 text-2xl font-bold tracking-tight sm:text-3xl">{dim.label}</h2>
+
+          <!-- Deliver WMS callout -->
+          <div class="mt-6 rounded-xl border-2 border-brand-500/30 bg-brand-50 p-5 dark:border-brand-500/40 dark:bg-brand-950/30">
+            <p class="text-xs font-semibold uppercase tracking-wider text-brand-700 dark:text-brand-400">Deliver WMS</p>
+            <p class="mt-2 text-slate-800 dark:text-slate-200">{dim.deliver}</p>
+          </div>
+
+          <!-- Competitor grid -->
+          <div class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {competitors.map((c, j) => (
+              <div class="rounded-xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-800 dark:bg-slate-950/50">
+                <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">{c.name}</p>
+                <p class="mt-2 text-sm text-slate-700 dark:text-slate-300">{dim.competitorsCopy[j]}</p>
+              </div>
+            ))}
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <!-- Why we built it this way -->
+  <section class="border-t border-slate-200 bg-white py-20 sm:py-24 dark:border-slate-800 dark:bg-slate-950">
+    <div class="container-narrow">
+      <p class="eyebrow">Why this way</p>
+      <h2 class="section-title mt-6">Five architectural choices, five reasons</h2>
+      <p class="section-sub">None of them are an accident.</p>
+      <div class="mt-12 space-y-10">
+        {whyParagraphs.map((p, i) => (
+          <div class="border-l-2 border-brand-500/60 pl-6">
+            <p class="font-mono text-[11px] font-semibold uppercase tracking-[0.18em] text-brand-700 dark:text-brand-400">
+              {String(i + 1).padStart(2, '0')}
+            </p>
+            <h3 class="font-display mt-2 text-xl font-bold">{p.title}</h3>
+            <p class="mt-3 text-slate-700 dark:text-slate-300">{p.body}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="relative isolate overflow-hidden bg-gradient-to-br from-brand-700 to-brand-900 py-20 text-white sm:py-24">
+    <div class="dot-grid-bg absolute inset-0 -z-10 opacity-20"></div>
+    <div class="container-narrow text-center">
+      <h2 class="font-display text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">See it running in your warehouse.</h2>
+      <p class="mx-auto mt-4 max-w-2xl text-lg text-brand-100">
+        A 30-minute demo walks through the full platform — WMS, dispatch, client portal, and all.
+      </p>
+      <div class="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+        <a href={`${appUrl}/signup`} class="btn-primary bg-white text-brand-700 hover:bg-brand-50">
+          Start Free Trial
+        </a>
+        <a href="/contact" class="btn-secondary border-white/30 bg-transparent text-white hover:bg-white/10">
+          Talk to Sales
+        </a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

@@ -1,0 +1,205 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Breadcrumb from '@/components/Breadcrumb.astro';
+import { MODULES, getModule, getRelatedModules, type ModuleDoc } from '@/data/modules';
+
+export function getStaticPaths() {
+  return MODULES.map((mod) => ({
+    params: { slug: mod.slug },
+    props: { mod },
+  }));
+}
+
+interface Props {
+  mod: ModuleDoc;
+}
+
+const { mod } = Astro.props;
+const related = getRelatedModules(mod.related);
+
+const title = `${mod.name} — Deliver WMS Documentation`;
+// Build a richer description that beats just-the-tagline for snippets and AI summaries.
+const description = mod.whyMatters
+  ? `${mod.tagline} ${mod.whyMatters}`.slice(0, 158)
+  : `${mod.tagline} A Deliver WMS module in the ${mod.category} category. Built for ${mod.audiences.join(', ')} operations.`;
+
+const pageUrl = `https://deliverwms.com/docs/${mod.slug}`;
+
+// BreadcrumbList JSON-LD — enables breadcrumb-style URLs in SERPs.
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://deliverwms.com/' },
+    { '@type': 'ListItem', position: 2, name: 'Documentation', item: 'https://deliverwms.com/docs' },
+    { '@type': 'ListItem', position: 3, name: mod.name, item: pageUrl },
+  ],
+};
+
+// TechArticle JSON-LD — semantic markup that gives AI engines a strong signal about
+// what this page is (technical product documentation, not marketing fluff).
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'TechArticle',
+  headline: mod.name,
+  description: mod.tagline,
+  url: pageUrl,
+  about: {
+    '@type': 'SoftwareApplication',
+    name: 'Deliver WMS',
+    applicationCategory: 'BusinessApplication',
+    applicationSubCategory: mod.category,
+  },
+  publisher: {
+    '@type': 'Organization',
+    name: 'Deliver WMS',
+    url: 'https://deliverwms.com',
+    logo: { '@type': 'ImageObject', url: 'https://deliverwms.com/logo.png' },
+  },
+  proficiencyLevel: 'Beginner',
+  audience: {
+    '@type': 'BusinessAudience',
+    audienceType: mod.audiences.join(', '),
+  },
+};
+---
+
+<BaseLayout title={title} description={description}>
+  <script slot="head" type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
+  <script slot="head" type="application/ld+json" set:html={JSON.stringify(articleSchema)} />
+
+  <!-- Hero -->
+  <section class="relative isolate overflow-hidden border-b border-slate-200 bg-white py-16 sm:py-20 dark:border-slate-800 dark:bg-slate-950">
+    <div class="dot-grid-bg absolute inset-0 -z-10 opacity-40 [mask-image:radial-gradient(ellipse_at_top,white_30%,transparent_70%)]"></div>
+
+    <div class="container-narrow">
+      <!-- Breadcrumb -->
+      <Breadcrumb crumbs={[
+        { name: 'Home', href: '/' },
+        { name: 'Documentation', href: '/docs' },
+        { name: mod.name },
+      ]} />
+
+      <!-- Category + audiences -->
+      <div class="mt-6 flex flex-wrap items-center gap-2">
+        <span class="eyebrow-pill">{mod.category}</span>
+        {mod.audiences.map((aud) => (
+          <span class="inline-flex items-center rounded-full bg-slate-100 px-2.5 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-[0.16em] text-slate-600 dark:bg-slate-800 dark:text-slate-400">
+            {aud}
+          </span>
+        ))}
+      </div>
+
+      <!-- Title + tagline -->
+      <h1 class="display mt-6 text-4xl font-bold tracking-tight sm:text-5xl">
+        {mod.name}
+      </h1>
+      <p class="mt-4 text-lg text-slate-600 dark:text-slate-400">{mod.tagline}</p>
+    </div>
+  </section>
+
+  <!-- Body -->
+  <section class="bg-slate-50 py-16 sm:py-20 dark:bg-slate-900/50">
+    <div class="container-narrow space-y-12">
+      {mod.whyMatters && (
+        <div class="card p-6 sm:p-8">
+          <p class="eyebrow">Why this matters</p>
+          <p class="mt-4 text-lg text-slate-700 dark:text-slate-300">{mod.whyMatters}</p>
+        </div>
+      )}
+
+      {mod.roles && mod.roles.length > 0 && (
+        <div>
+          <p class="eyebrow">Who this is designed for</p>
+          <h2 class="font-display mt-3 text-2xl font-bold tracking-tight">Roles</h2>
+          <div class="mt-6 grid gap-4 sm:grid-cols-2">
+            {mod.roles.map((role) => (
+              <div class="card p-5">
+                <h3 class="font-display font-bold">{role.name}</h3>
+                <p class="mt-2 text-sm text-slate-600 dark:text-slate-400">{role.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {mod.overview && mod.overview.length > 0 && (
+        <div>
+          <p class="eyebrow">Overview</p>
+          <h2 class="font-display mt-3 text-2xl font-bold tracking-tight">How {mod.name} works</h2>
+          <div class="mt-6 space-y-4">
+            {mod.overview.map((para) => (
+              <p class="text-slate-700 dark:text-slate-300">{para}</p>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {!mod.overview && (
+        <div class="rounded-xl border border-amber-200 bg-amber-50/60 p-5 text-sm text-amber-900 dark:border-amber-900/50 dark:bg-amber-950/40 dark:text-amber-200">
+          Detailed overview coming soon. The capabilities below summarize what this module does today.
+        </div>
+      )}
+
+      {mod.capabilities && mod.capabilities.length > 0 && (
+        <div>
+          <p class="eyebrow">Key capabilities</p>
+          <h2 class="font-display mt-3 text-2xl font-bold tracking-tight">What you can do</h2>
+          <ul class="mt-6 grid gap-3 sm:grid-cols-2">
+            {mod.capabilities.map((cap) => (
+              <li class="flex items-start gap-3 rounded-lg border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="mt-0.5 h-5 w-5 shrink-0 text-brand-500">
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>
+                <span class="text-sm text-slate-700 dark:text-slate-300">{cap}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {related.length > 0 && (
+        <div>
+          <p class="eyebrow">Related</p>
+          <h2 class="font-display mt-3 text-2xl font-bold tracking-tight">Related modules</h2>
+          <div class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {related.map((rel) => (
+              <a
+                href={`/docs/${rel.slug}`}
+                class="card card-hover group p-5"
+              >
+                <h3 class="font-display font-bold transition-colors group-hover:text-brand-700 dark:group-hover:text-brand-400">
+                  {rel.name}
+                </h3>
+                <p class="mt-2 text-sm text-slate-600 dark:text-slate-400">{rel.tagline}</p>
+                <p class="mt-3 inline-flex items-center gap-1 font-mono text-[11px] font-semibold uppercase tracking-[0.18em] text-brand-700 dark:text-brand-400">
+                  Learn more
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-3 w-3">
+                    <line x1="5" y1="12" x2="19" y2="12" />
+                    <polyline points="12 5 19 12 12 19" />
+                  </svg>
+                </p>
+              </a>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="relative isolate overflow-hidden border-t border-slate-200 bg-white py-16 text-center dark:border-slate-800 dark:bg-slate-950">
+    <div class="brand-glow -left-32 top-0 h-72 w-72"></div>
+    <div class="container-narrow">
+      <p class="eyebrow mx-auto justify-center">See it live</p>
+      <h2 class="section-title mt-6">Want to see {mod.name} in action?</h2>
+      <p class="section-sub mx-auto max-w-xl">
+        A 30-minute demo walks through {mod.name} and the rest of the platform — tailored to your operation.
+      </p>
+      <div class="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+        <a href="/contact" class="btn-primary">Talk to Sales</a>
+        <a href="/features" class="btn-secondary">Explore Features</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

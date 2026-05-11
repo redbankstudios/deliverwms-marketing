@@ -1,0 +1,403 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import SavingsCalculator from '@/components/SavingsCalculator';
+
+const title = 'Deliver WMS Pricing — Plans for 3PLs, eCommerce & Distributors';
+const description =
+  "Transparent Deliver WMS pricing for 3PLs, eCommerce brands, and distributors. Compare plans and see what's included at each tier.";
+
+const appUrl = import.meta.env.PUBLIC_APP_URL || 'https://app.deliverwms.com';
+
+const plans = [
+  {
+    name: 'Free PAYG',
+    blurb: 'Zero platform fee. Metered per stop, label, and storage unit.',
+    price: '$0',
+    priceSuffix: '',
+    inclusion: 'Pay only for what you use',
+    features: [
+      'Full WMS + dispatch + portal access',
+      '$0.12 per delivery stop',
+      '$0.12 per shipping label',
+      '$0.18 per pallet position / month',
+      'Email support',
+    ],
+    cta: 'Start free',
+    href: `${appUrl}/signup`,
+    highlight: false,
+    dark: false,
+  },
+  {
+    name: 'Starter',
+    blurb: 'For early-stage 3PLs running one warehouse + delivery flow.',
+    price: '$299',
+    priceSuffix: '/mo',
+    inclusion: '1,000 orders / month included',
+    features: [
+      'Multi-tenant workspace + RBAC',
+      'Receiving, putaway, pick/pack, ship',
+      'Last-mile dispatch + driver app',
+      'B2B client portal (up to 3 clients)',
+      'Standard reports',
+      '$0.08 per order over 1,000',
+    ],
+    cta: 'Start trial',
+    href: `${appUrl}/signup`,
+    highlight: false,
+    dark: false,
+  },
+  {
+    name: 'Growth',
+    blurb: 'For scaling 3PLs with multiple clients and heavier volume.',
+    price: '$799',
+    priceSuffix: '/mo',
+    inclusion: '5,000 orders / month included',
+    features: [
+      'Everything in Starter',
+      'Unlimited B2B clients + portal',
+      'Advanced routing + Mapbox tracking',
+      'Returns + disposition workflows',
+      'Smart Automations (no-code rules)',
+      'Priority support',
+      '$0.06 per order over 5,000',
+    ],
+    cta: 'Start trial',
+    href: `${appUrl}/signup`,
+    highlight: true,
+    dark: false,
+  },
+  {
+    name: 'Scale',
+    blurb: 'For multi-site operations needing high-volume execution.',
+    price: 'From $1,799',
+    priceSuffix: '/mo',
+    inclusion: '15,000 orders / month included',
+    features: [
+      'Everything in Growth',
+      'Multi-warehouse allocation',
+      'Cross-tenant insights for platform owners',
+      'Dedicated implementation',
+      'Quarterly architecture reviews',
+      'SLA-backed support',
+      '$0.04 per order over 15,000',
+    ],
+    cta: 'Talk to sales',
+    href: '/contact',
+    highlight: false,
+    dark: true,
+  },
+];
+
+const usageRates = [
+  { label: 'Delivery stops', rate: '$0.12', unit: 'per stop' },
+  { label: 'Shipping labels', rate: '$0.12', unit: 'per label' },
+  { label: 'Storage', rate: '$0.18', unit: 'per pallet position / month' },
+];
+
+// Comparison table — empty string means "—" (not included), 'check' renders a checkmark.
+const compareRows: { label: string; values: (string | 'check')[] }[] = [
+  { label: 'Receiving / Putaway / Pick / Pack / Ship', values: ['check', 'check', 'check', 'check'] },
+  { label: 'Last-mile dispatch + driver app', values: ['check', 'check', 'check', 'check'] },
+  { label: 'Multi-tenant + RBAC', values: ['check', 'check', 'check', 'check'] },
+  { label: 'B2B client portal', values: ['Up to 1', 'Up to 3', 'Unlimited', 'Unlimited'] },
+  { label: 'Smart Automations (no-code rules)', values: ['', '', 'check', 'check'] },
+  { label: 'Returns + disposition workflows', values: ['Basic', 'Basic', 'check', 'check'] },
+  { label: 'Multi-warehouse allocation', values: ['', '', '', 'check'] },
+  { label: 'Marketplace integrations (roadmap)', values: ['Roadmap', 'Roadmap', 'Roadmap', 'Roadmap'] },
+  { label: 'Priority / SLA support', values: ['', '', 'Priority', 'SLA-backed'] },
+];
+
+const faqs = [
+  {
+    q: 'How are orders counted?',
+    a: 'An order is one outbound order processed through fulfillment. Plan allowances reset monthly. Overage rates per plan are listed on each card.',
+  },
+  {
+    q: 'Can I switch plans later?',
+    a: 'Yes. Upgrades take effect immediately and are pro-rated. Downgrades take effect at the end of the current billing cycle.',
+  },
+  {
+    q: 'Do you charge per user?',
+    a: 'No. All plans include unlimited workforce seats. Pricing is by platform tier and usage, not per user.',
+  },
+  {
+    q: 'What about Shopify and other integrations?',
+    a: 'Native marketplace integrations (Shopify, Amazon, Woo, TikTok) are on our roadmap. The order-import API and webhook events are available today for custom connections.',
+  },
+  {
+    q: 'Is data isolated per tenant?',
+    a: 'Yes. Multi-tenant isolation is enforced at the database level via row-level security from day one.',
+  },
+];
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map((f) => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a },
+  })),
+};
+---
+
+<BaseLayout title={title} description={description}>
+  <script slot="head" type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+
+  <!-- Hero -->
+  <section class="relative isolate overflow-hidden border-b border-slate-200 bg-white py-24 sm:py-28 dark:border-slate-800 dark:bg-slate-950">
+    <div class="dot-grid-bg absolute inset-0 -z-10 opacity-50 [mask-image:radial-gradient(ellipse_at_center,white_30%,transparent_70%)]"></div>
+    <div class="brand-glow -right-32 top-12 h-96 w-96"></div>
+
+    <div class="container-narrow text-center">
+      <p class="eyebrow-pill mx-auto">Transparent Pricing</p>
+      <h1 class="display mt-6 text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl">
+        Pricing that pays for itself
+      </h1>
+      <p class="mx-auto mt-6 max-w-2xl text-lg text-slate-600 dark:text-slate-400">
+        Start free, scale predictably. Plug your numbers into the calculator below — most mid-size 3PLs save far more in operational time than they spend on the platform.
+      </p>
+      <ul class="mx-auto mt-10 flex max-w-3xl flex-wrap items-center justify-center gap-x-6 gap-y-3 text-sm text-slate-600 dark:text-slate-400">
+        <li class="flex items-center gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4 text-brand-500">
+            <polyline points="20 6 9 17 4 12" />
+          </svg>
+          No setup fees
+        </li>
+        <li class="flex items-center gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4 text-brand-500">
+            <polyline points="20 6 9 17 4 12" />
+          </svg>
+          Multi-warehouse ready
+        </li>
+        <li class="flex items-center gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4 text-brand-500">
+            <polyline points="20 6 9 17 4 12" />
+          </svg>
+          All features on every plan
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- Savings calculator -->
+  <section class="bg-slate-50 py-20 sm:py-24 dark:bg-slate-900/50">
+    <div class="container-page">
+      <div class="mx-auto max-w-2xl text-center">
+        <p class="eyebrow mx-auto justify-center">Savings Calculator</p>
+        <h2 class="section-title mt-6">Estimate your operational time savings</h2>
+        <p class="section-sub">
+          Plug in your numbers. The calculator estimates monthly savings across receiving, B2B portal support, billing reconciliation, returns, and cycle counts.
+        </p>
+      </div>
+      <div class="mx-auto mt-12 max-w-5xl rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8 dark:border-slate-800 dark:bg-slate-900">
+        <SavingsCalculator client:load />
+      </div>
+    </div>
+  </section>
+
+  <!-- Plans -->
+  <section class="border-t border-slate-200 bg-white py-20 sm:py-24 dark:border-slate-800 dark:bg-slate-950">
+    <div class="container-page">
+      <div class="mx-auto max-w-2xl text-center">
+        <p class="eyebrow mx-auto justify-center">Plans</p>
+        <h2 class="section-title mt-6">Start where you are</h2>
+        <p class="section-sub">
+          Start on the free PAYG tier or pick a plan with included volume. Switch anytime.
+        </p>
+      </div>
+      <div class="mt-12 grid gap-6 lg:grid-cols-4">
+        {plans.map((plan) => (
+          <article
+            class:list={[
+              'relative flex flex-col rounded-2xl border p-6 transition-shadow',
+              plan.highlight
+                ? 'border-2 border-brand-500 bg-white shadow-xl dark:border-brand-500 dark:bg-slate-900'
+                : plan.dark
+                  ? 'border-slate-900 bg-slate-950 text-white dark:border-slate-700'
+                  : 'border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900',
+            ]}
+          >
+            {plan.highlight && (
+              <span class="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-brand-600 px-3 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-white shadow-sm">
+                Most Popular
+              </span>
+            )}
+            <h3 class="font-display text-xl font-bold">{plan.name}</h3>
+            <p class:list={['mt-2 min-h-[3rem] text-sm', plan.dark ? 'text-slate-300' : 'text-slate-600 dark:text-slate-400']}>
+              {plan.blurb}
+            </p>
+            <div class="mt-6 flex items-baseline">
+              <span class="font-display text-4xl font-bold tracking-tight">{plan.price}</span>
+              {plan.priceSuffix && (
+                <span class:list={['ml-1 text-sm', plan.dark ? 'text-slate-400' : 'text-slate-500 dark:text-slate-400']}>
+                  {plan.priceSuffix}
+                </span>
+              )}
+            </div>
+            <p class:list={[
+              'mt-3 inline-block w-fit rounded-md px-2 py-1 text-xs font-medium',
+              plan.dark
+                ? 'bg-white/10 text-slate-200'
+                : 'bg-brand-50 text-brand-800 ring-1 ring-inset ring-brand-200 dark:bg-brand-950/40 dark:text-brand-300 dark:ring-brand-900/60',
+            ]}>
+              {plan.inclusion}
+            </p>
+            <ul class="mt-6 flex-1 space-y-3">
+              {plan.features.map((feat) => (
+                <li class:list={['flex items-start gap-2.5 text-sm', plan.dark ? 'text-slate-200' : 'text-slate-700 dark:text-slate-300']}>
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class:list={['mt-0.5 h-4 w-4 shrink-0', plan.dark ? 'text-brand-400' : 'text-brand-500']}>
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                  <span>{feat}</span>
+                </li>
+              ))}
+            </ul>
+            <a
+              href={plan.href}
+              class:list={[
+                'mt-8 block rounded-lg px-5 py-2.5 text-center text-sm font-semibold transition-colors',
+                plan.highlight
+                  ? 'bg-brand-600 text-white hover:bg-brand-700 dark:bg-brand-500 dark:hover:bg-brand-400'
+                  : plan.dark
+                    ? 'bg-white text-slate-900 hover:bg-slate-100'
+                    : 'border border-slate-300 bg-white text-slate-900 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:hover:bg-slate-800',
+              ]}
+            >
+              {plan.cta}
+            </a>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Usage rates (all plans) -->
+  <section class="bg-slate-50 py-20 sm:py-24 dark:bg-slate-900/50">
+    <div class="container-page">
+      <div class="mx-auto max-w-2xl text-center">
+        <p class="eyebrow mx-auto justify-center">Usage rates (all plans)</p>
+        <h2 class="section-title mt-6">Metered transparently</h2>
+        <p class="section-sub">
+          The same per-event rates apply across every plan. Visible in Billing &amp; Usage at all times.
+        </p>
+      </div>
+      <div class="mx-auto mt-12 grid max-w-4xl gap-4 sm:grid-cols-3">
+        {usageRates.map((rate) => (
+          <div class="card p-6 text-center">
+            <p class="font-mono text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+              {rate.label}
+            </p>
+            <p class="font-display mt-3 text-3xl font-bold tracking-tight">{rate.rate}</p>
+            <p class="mt-1 text-sm text-slate-600 dark:text-slate-400">{rate.unit}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- What's included by plan (comparison table) -->
+  <section class="border-t border-slate-200 bg-white py-20 sm:py-24 dark:border-slate-800 dark:bg-slate-950">
+    <div class="container-page">
+      <div class="mx-auto max-w-2xl text-center">
+        <p class="eyebrow mx-auto justify-center">Comparison</p>
+        <h2 class="section-title mt-6">What's included by plan</h2>
+      </div>
+      <div class="mt-12 overflow-x-auto">
+        <table class="w-full min-w-[640px] border-separate border-spacing-0">
+          <thead>
+            <tr>
+              <th class="rounded-tl-xl border-b border-slate-200 bg-slate-50 px-4 py-3 text-left text-sm font-semibold dark:border-slate-800 dark:bg-slate-900/70">
+                Capability
+              </th>
+              {plans.map((plan, i) => (
+                <th
+                  class:list={[
+                    'border-b border-slate-200 bg-slate-50 px-4 py-3 text-center text-sm font-semibold dark:border-slate-800 dark:bg-slate-900/70',
+                    i === plans.length - 1 && 'rounded-tr-xl',
+                    plan.highlight && 'text-brand-700 dark:text-brand-400',
+                  ]}
+                >
+                  {plan.name}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {compareRows.map((row, rowIdx) => (
+              <tr class={rowIdx % 2 === 1 ? 'bg-slate-50/50 dark:bg-slate-900/30' : ''}>
+                <td class="border-b border-slate-200 px-4 py-4 text-sm text-slate-800 dark:border-slate-800 dark:text-slate-200">
+                  {row.label}
+                </td>
+                {row.values.map((val, i) => (
+                  <td
+                    class:list={[
+                      'border-b border-slate-200 px-4 py-4 text-center text-sm dark:border-slate-800',
+                      plans[i].highlight && 'bg-brand-50/40 dark:bg-brand-950/20',
+                    ]}
+                  >
+                    {val === 'check' ? (
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="mx-auto h-4 w-4 text-brand-500">
+                        <polyline points="20 6 9 17 4 12" />
+                      </svg>
+                    ) : val === '' ? (
+                      <span class="text-slate-400 dark:text-slate-600">—</span>
+                    ) : (
+                      <span class="text-slate-700 dark:text-slate-300">{val}</span>
+                    )}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="bg-slate-50 py-20 sm:py-24 dark:bg-slate-900/50">
+    <div class="container-narrow">
+      <div class="text-center">
+        <p class="eyebrow mx-auto justify-center">FAQ</p>
+        <h2 class="section-title mt-6">Frequently asked questions</h2>
+      </div>
+      <dl class="mt-10 space-y-4">
+        {faqs.map((faq) => (
+          <details class="group card p-6 [&_summary::-webkit-details-marker]:hidden">
+            <summary class="flex cursor-pointer items-center justify-between text-lg font-semibold">
+              <span>{faq.q}</span>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5 shrink-0 text-slate-400 transition-transform group-open:rotate-180">
+                <polyline points="6 9 12 15 18 9" />
+              </svg>
+            </summary>
+            <p class="mt-4 text-slate-700 dark:text-slate-300">{faq.a}</p>
+          </details>
+        ))}
+      </dl>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="relative isolate overflow-hidden bg-slate-950 py-20 text-white sm:py-24">
+    <div class="dot-grid-bg absolute inset-0 -z-10 opacity-20"></div>
+    <div class="brand-glow -left-32 top-0 h-96 w-96"></div>
+    <div class="container-narrow text-center">
+      <p class="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-brand-400">
+        Start where you are
+      </p>
+      <h2 class="font-display mt-3 text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">
+        Sign up free, or talk to us.
+      </h2>
+      <p class="mx-auto mt-4 max-w-2xl text-lg text-slate-300">
+        Free PAYG covers small operations end to end. Pick a plan when you're ready to scale.
+      </p>
+      <div class="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+        <a href={`${appUrl}/signup`} class="btn-primary">Start Free</a>
+        <a href="/contact" class="btn-secondary border-white/20 bg-white/5 text-white hover:bg-white/10">
+          Talk to Sales
+        </a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

@@ -1,0 +1,426 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+
+const title = 'Deliver WMS Features — Inventory, Picking, Routing & Tracking';
+const description =
+  'Explore Deliver WMS features: inventory control, multi-warehouse picking, last-mile route optimization, real-time tracking, and 3PL billing.';
+
+const appUrl = import.meta.env.PUBLIC_APP_URL || 'https://app.deliverwms.com';
+
+// Full 7-process content extracted from the live site.
+// Each process links to the relevant /docs/[slug] for the deeper module reference.
+const processes = [
+  {
+    name: 'Receiving',
+    docSlug: 'inbound',
+    problem: 'Manual entry per shipment wastes ~18 minutes that should take 7.',
+    solution: 'Scan-driven receiving writes directly to the inventory ledger as items are processed.',
+    save: '~24 hours / month at typical volumes (~80 inbound shipments)',
+    without: [
+      'Spreadsheet entry for every line on every shipment',
+      'Discrepancies surface days later via email',
+      'Unknown SKUs block the whole shipment',
+      'No audit trail of what was scanned when',
+    ],
+    with: [
+      'Scan once — item lands in the ledger and on the floor map',
+      'Exceptions flagged at the moment they happen',
+      'Unknown barcodes captured and learned for next time',
+      'Per-scan audit trail for every receiving session',
+    ],
+    capabilities: [
+      'Barcode resolution with manual SKU fallback',
+      'Exception flagging at scan time (overage, shortage, damage)',
+      'ASN tolerance handling for upstream variance',
+      'Multi-pallet shipments with per-pallet sessions',
+      'Audit trail per scan, queryable by user and time',
+    ],
+  },
+  {
+    name: 'Inventory cycle counts',
+    docSlug: 'variance-review',
+    problem: 'Spreadsheet-based reconciliation runs once a month and surfaces problems weeks late.',
+    solution: 'Real-time ledger updates with cycle count requests, variance approval workflow, and append-only history.',
+    save: '~12 hours / month at 600 monthly orders',
+    without: [
+      'Monthly reconciliation that surfaces shrink long after the fact',
+      'Counts captured on paper, retyped into a spreadsheet',
+      'Adjustments edited silently with no record of who or why',
+      'No way to recount a single bin without redoing the cycle',
+    ],
+    with: [
+      'Per-bin cycle counts assigned to staff on the mobile app',
+      'Manager approval gate before any ledger adjustment posts',
+      'Append-only history — every change is traceable',
+      'Variance review queue surfaces problems the same day',
+    ],
+    capabilities: [
+      'Cycle count requests assigned to specific staff and bins',
+      'Variance approval gate with reject/recount/approve options',
+      'Append-only ledger — no silent quantity edits',
+      'Per-bin recount without restarting the full cycle',
+      'Full audit history per adjustment with reason codes',
+    ],
+  },
+  {
+    name: 'Order allocation',
+    docSlug: 'auto-allocate',
+    problem: 'Manual pick assignment slows down peak hours and creates avoidable mis-picks.',
+    solution: 'Auto-allocation engine sorts by warehouse distance, splits across locations only when necessary, with pick lists ready before staff arrives.',
+    save: '~15 hours / month at typical volumes',
+    without: [
+      'Manager manually assigns each order to a warehouse',
+      'Pickers walk further than they need to',
+      "Stockouts only discovered when a picker can't find the SKU",
+      'Re-allocation requires undoing reservations by hand',
+    ],
+    with: [
+      'Distance-ranked auto-allocation runs the moment an order arrives',
+      'Multi-warehouse split only when no single site can fill',
+      "Stockouts emit an event the moment they're detected",
+      'One-click re-allocation when supply or priority shifts',
+    ],
+    capabilities: [
+      'Distance-ranked allocation using Haversine geo math',
+      'Multi-warehouse split-shipment fallback',
+      'Primary-warehouse-wins-ties to reduce fragmentation',
+      'Stockout event logging routed to ops + buyer',
+      'Re-allocation support without rebuilding reservations',
+    ],
+  },
+  {
+    name: 'Billing reconciliation',
+    docSlug: 'billing',
+    problem: 'Month-end reconciliation eats a full day of finance time and still produces invoices customers question.',
+    solution: 'Auto-invoiced events captured at moment of action; reconciliation is a one-hour review, not a 12-hour project.',
+    save: '~11 hours / month, mostly finance/owner time',
+    without: [
+      'Finance pulls operational data from 3+ sources at month end',
+      'Invoices reconstructed from memory + partial logs',
+      'Customers dispute line items with no audit trail to point to',
+      'Storage and label fees miss the cutoff and slip a month',
+    ],
+    with: [
+      'Every billable event captured the moment it occurs',
+      'Invoices generated from the operational ledger directly',
+      'Disputes resolved by pointing to the originating event',
+      'Storage fees accrued nightly, never lost to timing',
+    ],
+    capabilities: [
+      '14 billable event types covering ops, storage, dispatch, returns',
+      'Idempotency-protected event capture',
+      'Tiered pricing per event with per-client overrides',
+      'Monthly invoice generation cron',
+      'Exportable PDF invoices with full event-level breakdown',
+    ],
+  },
+  {
+    name: 'B2B client portal',
+    docSlug: 'b2b-dashboard',
+    problem: 'Email/phone client inquiries pile up every day and pull operations managers off the floor.',
+    solution: 'Self-serve client portal: clients check inventory, request outbound shipments, track shipments themselves.',
+    save: '~16 hours / month at ~5 active clients',
+    without: [
+      'Account managers field 4+ inquiries per client per week',
+      'Inventory checks blocked behind ops manager bandwidth',
+      'Clients call to ask where their shipment is',
+      'Returns submitted via email with no audit trail',
+    ],
+    with: [
+      'Clients self-serve inventory, orders, tracking, and returns',
+      'Ops managers stay on the floor instead of in inboxes',
+      'Tracking and ETAs visible without any manual touch',
+      'Returns flow into the same ledger as inbound',
+    ],
+    capabilities: [
+      'Per-client inventory view scoped by RLS',
+      'Outbound order request submission',
+      'Live shipment tracking with ETAs',
+      'Returns submission with disposition request',
+      'Fully isolated by row-level security',
+    ],
+  },
+  {
+    name: 'Dispatch routing',
+    docSlug: 'dispatcher',
+    problem: 'Manual driver assignment + paper run sheets cost both time and on-time performance.',
+    solution: 'Auto-routed dispatch with live map, route construction, dispatch queue, mobile driver app for execution.',
+    save: '~8 hours / month at typical volumes (~50 stops/day)',
+    without: [
+      'Dispatcher manually sequences stops in a spreadsheet',
+      'Drivers print run sheets that are out-of-date by 9am',
+      'Exceptions phoned in and lost mid-shift',
+      'No live ETA broadcast to customers',
+    ],
+    with: [
+      'Routes constructed visually with drag-and-drop sequencing',
+      'Driver mobile app updates the route in real time',
+      'Exceptions captured with photo + GPS at the stop',
+      'ETAs broadcast automatically as routes progress',
+    ],
+    capabilities: [
+      'Live map with active routes and driver positions',
+      'Drag-and-drop stop sequencing',
+      'Mobile driver app with photo + signature POD',
+      'ETA broadcasts to end-customer tracking page',
+      'Exception capture per stop with full audit trail',
+    ],
+  },
+  {
+    name: 'Returns processing',
+    docSlug: 'returns',
+    problem: "Manual paperwork makes returns a black hole — items arrive but inventory and billing don't reflect them for days.",
+    solution: 'Returns workflow updates the ledger and billing in the same step as disposition; status visible to client immediately.',
+    save: '~7 hours / month at ~50 returns/month',
+    without: [
+      'Return arrives, sits on a desk, waits for an inspector',
+      "Inventory ledger doesn't reflect the return for days",
+      'Client has to email to ask if their return was received',
+      'Disposition (restock vs scrap) tracked offline',
+    ],
+    with: [
+      'Returns logged at the dock with condition + photos',
+      'Disposition updates the ledger and billing in the same action',
+      'Client sees status the moment the return is processed',
+      'Restock / damage / write-off flows are auditable per item',
+    ],
+    capabilities: [
+      'Per-return disposition: restock, damage, write-off',
+      'Automatic ledger updates by disposition outcome',
+      'Photo capture of received items',
+      'Client-visible status with timestamps',
+      'Billable disposition events for client invoicing',
+    ],
+  },
+];
+
+const trustChips = [
+  'Row-level security',
+  'Multi-tenant isolation',
+  'Role-based access',
+  'Audit trail on every action',
+];
+---
+
+<BaseLayout title={title} description={description}>
+  <!-- Hero -->
+  <section class="relative isolate overflow-hidden border-b border-slate-200 bg-white py-24 sm:py-28 dark:border-slate-800 dark:bg-slate-950">
+    <!-- Decorative dot grid background -->
+    <div class="dot-grid-bg absolute inset-0 -z-10 opacity-50 [mask-image:radial-gradient(ellipse_at_center,white_30%,transparent_70%)]"></div>
+    <!-- Brand glow -->
+    <div class="brand-glow -right-32 top-24 h-96 w-96"></div>
+
+    <div class="container-narrow text-center">
+      <p class="eyebrow mx-auto justify-center">Features</p>
+      <h1 class="display mt-6 text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl">
+        Where mid-size 3PLs <br class="hidden sm:block" />actually save time
+      </h1>
+      <p class="mx-auto mt-6 max-w-2xl text-lg text-slate-600 dark:text-slate-400">
+        Seven operational processes that eat hours of your week. See exactly what Deliver WMS does about each, and what it saves you.
+      </p>
+      <div class="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+        <a href={`${appUrl}/signup`} class="btn-primary">Start Free Trial</a>
+        <a href="/pricing" class="btn-secondary">See pricing</a>
+      </div>
+      <ul class="mx-auto mt-10 flex max-w-3xl flex-wrap items-center justify-center gap-x-6 gap-y-3 text-sm text-slate-600 dark:text-slate-400">
+        {trustChips.map((chip) => (
+          <li class="flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4 text-brand-500">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+            </svg>
+            {chip}
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- Combined savings callout -->
+  <section class="relative isolate overflow-hidden bg-gradient-to-br from-brand-700 via-brand-800 to-brand-900 py-14 text-white">
+    <div class="dot-grid-bg absolute inset-0 -z-10 opacity-20"></div>
+    <div class="container-narrow text-center">
+      <p class="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-brand-200">
+        Combined, that's
+      </p>
+      <p class="font-display mt-3 text-5xl font-bold tracking-tight sm:text-6xl">$800–$1,800 / mo</p>
+      <p class="mt-3 text-sm text-brand-100">
+        in estimated operational time savings at typical mid-size 3PL volumes.
+      </p>
+    </div>
+  </section>
+
+  <!-- 7 process sections -->
+  <section id="processes" class="bg-slate-50 py-16 sm:py-20 dark:bg-slate-900/50">
+    <div class="container-page space-y-10">
+      {processes.map((p, i) => (
+        <article
+          id={`process-${i + 1}`}
+          class="card relative overflow-hidden p-6 sm:p-10"
+          style={`animation-delay: ${i * 60}ms`}
+        >
+          <!-- Process header -->
+          <div class="flex flex-col gap-3 sm:flex-row sm:items-baseline sm:justify-between">
+            <div>
+              <p class="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-brand-700 dark:text-brand-400">
+                {String(i + 1).padStart(2, '0')} / {String(processes.length).padStart(2, '0')}
+              </p>
+              <h2 class="font-display mt-2 text-3xl font-bold tracking-tight sm:text-4xl">{p.name}</h2>
+            </div>
+          </div>
+
+          <p class="mt-4 max-w-3xl italic text-slate-600 dark:text-slate-400">{p.problem}</p>
+          <p class="mt-2 max-w-3xl text-slate-800 dark:text-slate-200">{p.solution}</p>
+
+          <!-- Savings pill -->
+          <div class="mt-6 inline-flex items-center gap-2 rounded-full bg-brand-50 px-4 py-2 ring-1 ring-inset ring-brand-200 dark:bg-brand-950/40 dark:ring-brand-900/60">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4 text-brand-600 dark:text-brand-400">
+              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+            </svg>
+            <span class="text-sm font-medium text-brand-900 dark:text-brand-200">
+              <span class="font-semibold">What you save:</span> {p.save}
+            </span>
+          </div>
+
+          <!-- WITHOUT / WITH grid -->
+          <div class="mt-8 grid gap-5 lg:grid-cols-2">
+            <div class="rounded-xl border border-red-100 bg-red-50/60 p-5 dark:border-red-950/50 dark:bg-red-950/20">
+              <p class="font-mono text-[11px] font-semibold uppercase tracking-[0.18em] text-red-700 dark:text-red-400">
+                Without Deliver WMS
+              </p>
+              <ul class="mt-4 space-y-2.5">
+                {p.without.map((item) => (
+                  <li class="flex items-start gap-2.5 text-sm text-slate-700 dark:text-slate-300">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="mt-0.5 h-4 w-4 shrink-0 text-red-500">
+                      <line x1="18" y1="6" x2="6" y2="18" />
+                      <line x1="6" y1="6" x2="18" y2="18" />
+                    </svg>
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div class="rounded-xl border border-brand-200 bg-brand-50/60 p-5 dark:border-brand-900/50 dark:bg-brand-950/20">
+              <p class="font-mono text-[11px] font-semibold uppercase tracking-[0.18em] text-brand-700 dark:text-brand-400">
+                With Deliver WMS
+              </p>
+              <ul class="mt-4 space-y-2.5">
+                {p.with.map((item) => (
+                  <li class="flex items-start gap-2.5 text-sm text-slate-700 dark:text-slate-300">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="mt-0.5 h-4 w-4 shrink-0 text-brand-500">
+                      <polyline points="20 6 9 17 4 12" />
+                    </svg>
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+
+          <!-- Capabilities sidebar -->
+          <div class="mt-6 rounded-xl border border-slate-200 bg-slate-50/70 p-5 dark:border-slate-800 dark:bg-slate-950/40">
+            <p class="font-mono text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+              Capabilities
+            </p>
+            <ul class="mt-4 grid gap-2.5 sm:grid-cols-2 lg:grid-cols-3">
+              {p.capabilities.map((cap) => (
+                <li class="flex items-start gap-2 text-sm text-slate-700 dark:text-slate-300">
+                  <span class="mt-1.5 inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-brand-500"></span>
+                  <span>{cap}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <!-- Deep-link to the module's documentation page -->
+          {p.docSlug && (
+            <div class="mt-6 border-t border-slate-200 pt-5 dark:border-slate-800">
+              <a
+                href={`/docs/${p.docSlug}`}
+                class="inline-flex items-center gap-2 font-mono text-xs font-semibold uppercase tracking-[0.18em] text-brand-700 hover:text-brand-800 dark:text-brand-400 dark:hover:text-brand-300"
+              >
+                Read the {p.name.toLowerCase()} documentation
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-3.5 w-3.5">
+                  <line x1="5" y1="12" x2="19" y2="12" />
+                  <polyline points="12 5 19 12 12 19" />
+                </svg>
+              </a>
+            </div>
+          )}
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <!-- Audience callouts (anchor targets for footer Solutions links) -->
+  <section class="border-t border-slate-200 bg-white py-20 sm:py-24 dark:border-slate-800 dark:bg-slate-950">
+    <div class="container-page">
+      <div class="mx-auto max-w-2xl text-center">
+        <p class="eyebrow mx-auto justify-center">Solutions</p>
+        <h2 class="section-title mt-6">Built for every kind of operation</h2>
+      </div>
+      <div class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <article id="3pl" class="card card-hover p-6">
+          <h3 class="font-display text-lg font-bold">3PL Operators</h3>
+          <p class="mt-3 text-sm text-slate-600 dark:text-slate-400">
+            Multi-client warehouses with tenant-isolated inventory, billing, and client portals.
+          </p>
+        </article>
+        <article id="ecommerce" class="card card-hover p-6">
+          <h3 class="font-display text-lg font-bold">eCommerce Brands</h3>
+          <p class="mt-3 text-sm text-slate-600 dark:text-slate-400">
+            DTC fulfillment workflows tuned for direct-to-consumer volume and retail compliance.
+          </p>
+        </article>
+        <article id="distributors" class="card card-hover p-6">
+          <h3 class="font-display text-lg font-bold">Distributors</h3>
+          <p class="mt-3 text-sm text-slate-600 dark:text-slate-400">
+            High-volume B2B order flows, returns handling, and storage dashboards built for throughput.
+          </p>
+        </article>
+        <article id="last-mile" class="card card-hover p-6">
+          <h3 class="font-display text-lg font-bold">Last-Mile Delivery</h3>
+          <p class="mt-3 text-sm text-slate-600 dark:text-slate-400">
+            Routes, driver fleet management, proof of delivery, and real-time exception handling.
+          </p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- 25 modules teaser → /docs -->
+  <section class="bg-slate-50 py-20 sm:py-24 dark:bg-slate-900/50">
+    <div class="container-narrow text-center">
+      <p class="eyebrow mx-auto justify-center">Full platform</p>
+      <h2 class="section-title mt-6">All 25 modules, available on every plan</h2>
+      <p class="section-sub mx-auto max-w-2xl">
+        From receiving to last-mile dispatch to client billing — the full platform is included regardless of which tier you start on.
+      </p>
+      <div class="mt-8">
+        <a href="/docs" class="btn-secondary">See every module →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="relative isolate overflow-hidden bg-slate-950 py-20 text-white sm:py-24">
+    <div class="dot-grid-bg absolute inset-0 -z-10 opacity-20"></div>
+    <div class="brand-glow -left-32 bottom-0 h-96 w-96"></div>
+    <div class="container-narrow text-center">
+      <p class="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-brand-400">
+        See it in action
+      </p>
+      <h2 class="font-display mt-3 text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">
+        Run the math against your own numbers
+      </h2>
+      <p class="mx-auto mt-4 max-w-2xl text-lg text-slate-300">
+        Start on the free PAYG tier and see how your numbers shake out, or talk to us about a Scale-tier rollout.
+      </p>
+      <div class="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+        <a href={`${appUrl}/signup`} class="btn-primary">Start Free Trial</a>
+        <a href="/contact" class="btn-secondary border-white/20 bg-white/5 text-white hover:bg-white/10">
+          Talk to Sales
+        </a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

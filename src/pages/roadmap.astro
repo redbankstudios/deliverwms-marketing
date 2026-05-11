@@ -1,0 +1,111 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+
+const title = "Deliver WMS Product Roadmap — What's Shipping Next";
+const description =
+  "See what's shipping next on the Deliver WMS roadmap: new modules, integrations, and improvements across WMS and last-mile delivery.";
+
+// Operator: replace placeholder bullets below with real items. Three sections, 3-5 items each.
+const sections = [
+  {
+    label: 'Now',
+    sub: 'Shipping this quarter',
+    accent: 'text-brand-500',
+    dot: 'bg-brand-500',
+    items: [
+      'Mobile-first picking app v2 with offline tolerance',
+      'Returns + disposition workflows with photo capture',
+      'Cycle count scheduler + variance reporting',
+    ],
+  },
+  {
+    label: 'Next',
+    sub: 'Planned',
+    accent: 'text-amber-500',
+    dot: 'bg-amber-500',
+    items: [
+      'Native Shopify integration (orders, inventory sync, returns)',
+      'Multi-currency invoicing for international 3PLs',
+      'Driver dispatch + last-mile route optimization v2',
+    ],
+  },
+  {
+    label: 'Later',
+    sub: 'Under consideration',
+    accent: 'text-cyan-500',
+    dot: 'bg-cyan-500',
+    items: [
+      'WooCommerce + TikTok Shop native integrations',
+      'Wave planning + zone-based picking optimization',
+      'Carrier rate-shopping engine with margin protection',
+    ],
+  },
+];
+---
+
+<BaseLayout title={title} description={description}>
+  <!-- Hero -->
+  <section class="relative isolate overflow-hidden border-b border-slate-200 bg-white py-24 sm:py-28 dark:border-slate-800 dark:bg-slate-950">
+    <div class="dot-grid-bg absolute inset-0 -z-10 opacity-50 [mask-image:radial-gradient(ellipse_at_center,white_30%,transparent_70%)]"></div>
+    <div class="brand-glow -right-32 top-12 h-96 w-96"></div>
+
+    <div class="container-narrow text-center">
+      <p class="eyebrow mx-auto justify-center">Roadmap</p>
+      <h1 class="display mt-6 text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl">
+        Product Roadmap
+      </h1>
+      <p class="mx-auto mt-6 max-w-2xl text-lg text-slate-600 dark:text-slate-400">
+        What's shipping next across Deliver WMS — warehouse management, last-mile delivery, integrations, and platform improvements.
+      </p>
+    </div>
+  </section>
+
+  <!-- Now / Next / Later -->
+  <section class="bg-slate-50 py-16 sm:py-20 dark:bg-slate-900/50">
+    <div class="container-page">
+      <div class="grid gap-6 lg:grid-cols-3">
+        {sections.map((section) => (
+          <article class="card relative overflow-hidden p-6 sm:p-8">
+            <div class="flex items-center gap-3">
+              <span class:list={['inline-block h-2.5 w-2.5 rounded-full ring-4 ring-opacity-20', section.dot]} style="ring-color: currentColor;"></span>
+              <p class:list={['font-mono text-xs font-semibold uppercase tracking-[0.18em]', section.accent]}>
+                {section.sub}
+              </p>
+            </div>
+            <h2 class="font-display mt-3 text-2xl font-bold tracking-tight">{section.label}</h2>
+            <ul class="mt-6 space-y-3">
+              {section.items.map((item) => (
+                <li class="flex items-start gap-3 text-sm text-slate-700 dark:text-slate-300">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="mt-0.5 h-4 w-4 shrink-0 text-brand-500">
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+          </article>
+        ))}
+      </div>
+
+      <p class="mx-auto mt-10 max-w-2xl text-center text-sm text-slate-500 dark:text-slate-500">
+        Roadmap items reflect current plans and can shift based on operator feedback and platform priorities. Nothing here is a commitment to ship by a specific date.
+      </p>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="border-t border-slate-200 bg-white py-20 text-center sm:py-24 dark:border-slate-800 dark:bg-slate-950">
+    <div class="container-narrow">
+      <p class="eyebrow mx-auto justify-center">Feedback</p>
+      <h2 class="section-title mt-6">
+        Have feedback on what we should build next?
+      </h2>
+      <p class="section-sub mx-auto max-w-2xl">
+        We prioritize the roadmap based on operator input. Tell us what would make the biggest difference for your warehouse.
+      </p>
+      <div class="mt-8">
+        <a href="/contact" class="btn-primary">Contact us →</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

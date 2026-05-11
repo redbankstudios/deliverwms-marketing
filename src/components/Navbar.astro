@@ -1,0 +1,176 @@
+---
+const appUrl = import.meta.env.PUBLIC_APP_URL || 'https://app.deliverwms.com';
+const navLinks = [
+  { href: '/features', label: 'Features' },
+  { href: '/compare', label: 'Compare' },
+  { href: '/pricing', label: 'Pricing' },
+  { href: '/roadmap', label: 'Roadmap' },
+  { href: '/docs', label: 'Docs' },
+  { href: '/about', label: 'About' },
+  { href: '/contact', label: 'Contact' },
+];
+const currentPath = Astro.url.pathname;
+---
+
+<header class="sticky top-0 z-40 border-b border-slate-200/70 bg-white/80 backdrop-blur-md dark:border-slate-800/70 dark:bg-slate-950/80">
+  <nav class="container-page flex h-16 items-center justify-between" aria-label="Main">
+    <!-- Logo -->
+    <a href="/" class="flex items-center gap-2 font-display font-bold text-slate-900 dark:text-white">
+      <span class="grid h-8 w-8 place-items-center rounded-lg bg-gradient-to-br from-brand-400 to-brand-600 text-white">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4">
+          <path d="M3 7l9-4 9 4-9 4-9-4z" />
+          <path d="M3 12l9 4 9-4" />
+          <path d="M3 17l9 4 9-4" />
+        </svg>
+      </span>
+      <span>Deliver WMS</span>
+    </a>
+
+    <!-- Desktop nav -->
+    <ul class="hidden items-center gap-1 md:flex">
+      {navLinks.map((link) => (
+        <li>
+          <a
+            href={link.href}
+            class:list={[
+              'rounded-lg px-3 py-2 text-sm font-medium transition-colors',
+              currentPath === link.href
+                ? 'bg-slate-100 text-slate-900 dark:bg-slate-800 dark:text-white'
+                : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-900 dark:hover:text-white',
+            ]}
+            aria-current={currentPath === link.href ? 'page' : undefined}
+          >
+            {link.label}
+          </a>
+        </li>
+      ))}
+    </ul>
+
+    <!-- Desktop CTAs + theme toggle -->
+    <div class="hidden items-center gap-1 md:flex">
+      <button
+        id="theme-toggle"
+        type="button"
+        class="rounded-lg p-2 text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white"
+        aria-label="Toggle theme"
+      >
+        <!-- Sun (shown in dark mode) -->
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="hidden h-5 w-5 dark:block">
+          <circle cx="12" cy="12" r="4" />
+          <path d="M12 2v2" />
+          <path d="M12 20v2" />
+          <path d="m4.93 4.93 1.41 1.41" />
+          <path d="m17.66 17.66 1.41 1.41" />
+          <path d="M2 12h2" />
+          <path d="M20 12h2" />
+          <path d="m6.34 17.66-1.41 1.41" />
+          <path d="m19.07 4.93-1.41 1.41" />
+        </svg>
+        <!-- Moon (shown in light mode) -->
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5 dark:hidden">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+        </svg>
+      </button>
+      <a href={`${appUrl}/login`} class="rounded-lg px-3 py-2 text-sm font-medium text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white">
+        Log In
+      </a>
+      <a href={`${appUrl}/signup`} class="btn-primary text-sm">
+        Start Free Trial
+      </a>
+    </div>
+
+    <!-- Mobile right cluster: theme + menu -->
+    <div class="flex items-center gap-1 md:hidden">
+      <button
+        id="theme-toggle-mobile"
+        type="button"
+        class="rounded-lg p-2 text-slate-600 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800"
+        aria-label="Toggle theme"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="hidden h-5 w-5 dark:block">
+          <circle cx="12" cy="12" r="4" />
+          <path d="M12 2v2" />
+          <path d="M12 20v2" />
+          <path d="m4.93 4.93 1.41 1.41" />
+          <path d="m17.66 17.66 1.41 1.41" />
+          <path d="M2 12h2" />
+          <path d="M20 12h2" />
+          <path d="m6.34 17.66-1.41 1.41" />
+          <path d="m19.07 4.93-1.41 1.41" />
+        </svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5 dark:hidden">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+        </svg>
+      </button>
+      <button
+        id="mobile-menu-toggle"
+        class="rounded-lg p-2 text-slate-600 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800"
+        aria-label="Toggle menu"
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6" data-icon="open">
+          <line x1="3" y1="6" x2="21" y2="6" />
+          <line x1="3" y1="12" x2="21" y2="12" />
+          <line x1="3" y1="18" x2="21" y2="18" />
+        </svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="hidden h-6 w-6" data-icon="close">
+          <line x1="18" y1="6" x2="6" y2="18" />
+          <line x1="6" y1="6" x2="18" y2="18" />
+        </svg>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Mobile menu panel -->
+  <div id="mobile-menu" class="hidden border-t border-slate-200 bg-white md:hidden dark:border-slate-800 dark:bg-slate-950">
+    <div class="container-page flex flex-col gap-1 py-3">
+      {navLinks.map((link) => (
+        <a
+          href={link.href}
+          class:list={[
+            'rounded-lg px-3 py-2 text-sm font-medium',
+            currentPath === link.href
+              ? 'bg-slate-100 text-slate-900 dark:bg-slate-800 dark:text-white'
+              : 'text-slate-600 hover:bg-slate-50 dark:text-slate-400 dark:hover:bg-slate-900',
+          ]}
+        >
+          {link.label}
+        </a>
+      ))}
+      <div class="mt-2 flex gap-2 border-t border-slate-200 pt-3 dark:border-slate-800">
+        <a href={`${appUrl}/login`} class="btn-secondary flex-1 text-sm">Log In</a>
+        <a href={`${appUrl}/signup`} class="btn-primary flex-1 text-sm">Start Free Trial</a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<script>
+  // Mobile menu toggle
+  const menuToggle = document.getElementById('mobile-menu-toggle');
+  const menu = document.getElementById('mobile-menu');
+  const openIcon = menuToggle?.querySelector('[data-icon="open"]');
+  const closeIcon = menuToggle?.querySelector('[data-icon="close"]');
+
+  menuToggle?.addEventListener('click', () => {
+    const isOpen = !menu?.classList.contains('hidden');
+    menu?.classList.toggle('hidden');
+    openIcon?.classList.toggle('hidden', !isOpen);
+    closeIcon?.classList.toggle('hidden', isOpen);
+    menuToggle?.setAttribute('aria-expanded', String(!isOpen));
+  });
+
+  // Theme toggle (desktop + mobile share behavior)
+  function toggleTheme() {
+    const isDark = document.documentElement.classList.toggle('dark');
+    try {
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    } catch (_) {
+      /* localStorage might be unavailable — ignore */
+    }
+  }
+
+  document.getElementById('theme-toggle')?.addEventListener('click', toggleTheme);
+  document.getElementById('theme-toggle-mobile')?.addEventListener('click', toggleTheme);
+</script>

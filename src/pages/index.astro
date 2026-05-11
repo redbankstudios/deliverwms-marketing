@@ -1,0 +1,314 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+
+const title = 'Deliver WMS — Warehouse Management & Last-Mile Delivery';
+const description =
+  'The all-in-one warehouse management and last-mile delivery platform for 3PLs, eCommerce brands, distributors, and delivery companies.';
+
+const appUrl = import.meta.env.PUBLIC_APP_URL || 'https://app.deliverwms.com';
+
+const savingsCards = [
+  {
+    title: 'Scan-driven Receiving',
+    savings: 'Could save up to ~24 hours / month',
+    body: 'Scan-driven receiving with automatic exception flagging vs spreadsheet entry and email-based discrepancy resolution.',
+  },
+  {
+    title: 'B2B Client Portal',
+    savings: 'Could save up to ~16 hours / month',
+    body: 'Self-serve client portal for inventory checks, outbound requests, and shipment tracking vs email and phone support.',
+  },
+  {
+    title: 'Billing Reconciliation',
+    savings: 'Could save up to ~11 hours / month',
+    body: 'Auto-invoiced billable events from the operational ledger vs month-end manual reconciliation across spreadsheets.',
+  },
+];
+
+const fulfillmentSteps = [
+  { label: 'Receive', detail: '~7 min / shipment' },
+  { label: 'Putaway', detail: '~2 min / pallet' },
+  { label: 'Pick', detail: '~45 sec / line' },
+  { label: 'Pack', detail: '~3 min / order' },
+  { label: 'Ship', detail: '~1 min / order' },
+  { label: 'Deliver', detail: 'Live tracking' },
+  { label: 'Report', detail: 'Real-time' },
+];
+
+const operatorFeatures = [
+  {
+    title: 'Smart Automations',
+    body: "Route exceptions to the right person, escalate stalled tasks, and trigger notifications without writing code. The platform's event stream feeds a no-code rules engine your operators can actually use.",
+  },
+  {
+    title: 'Marketplace Integrations (on the roadmap)',
+    body: 'Native integrations for Shopify, Amazon, WooCommerce, and TikTok Shop are on the roadmap. Order-import webhooks and a typed event API are available today for custom connections.',
+  },
+  {
+    title: 'Built on a Billing Ledger',
+    body: 'Every billable event — stops, labels, storage, picks — is captured at the moment it happens, not reconstructed at month end. Invoices reflect what actually occurred, with full audit trail.',
+  },
+  {
+    title: 'Retail Compliance Built In',
+    body: 'Receiving exceptions, photo-attached PODs, signature capture, and disposition-level returns workflows give you the documentation big-box retail clients ask for.',
+  },
+  {
+    title: 'Multi-tenant 3PL Focused',
+    body: "Tenant isolation isn't bolted on. Every table, query, and policy is tenant-aware from day one — built specifically for warehouses serving multiple clients, not retrofitted from a single-brand WMS.",
+  },
+  {
+    title: 'Ease of switching',
+    body: 'Migrate in days, not months. Bring your existing data with the CSV import flow. Smart field mapping handles non-matching column names automatically. Most mid-size 3PLs are operational on Deliver WMS within a week.',
+  },
+];
+
+const audiences = [
+  {
+    title: '3PL Operators',
+    body: 'Manage multiple clients, track inventory by owner, and bill transparently — all from a single tenant-aware platform.',
+  },
+  {
+    title: 'eCommerce Brands',
+    body: 'Run your own fulfillment with workflows tuned for direct-to-consumer volume and retail compliance.',
+  },
+  {
+    title: 'Distributors & Wholesalers',
+    body: 'High-volume B2B order flows, returns handling, and storage with operational dashboards built for throughput.',
+  },
+  {
+    title: 'Last-Mile Delivery',
+    body: 'Optimize routes, manage driver fleets, capture proof of delivery, and handle exceptions in real time.',
+  },
+];
+
+const platformViews = [
+  {
+    title: 'Operational dashboard',
+    body: 'Live KPI strip, completion checklist for new tenants, and workforce capacity at a glance. Everything an operator needs in the first 30 seconds of the morning.',
+  },
+  {
+    title: 'Inbound & receiving',
+    body: 'Session-based receiving with barcode resolution, exception flagging, and barcode learning for unknown SKUs. Built for the warehouse floor, not a desk.',
+  },
+  {
+    title: 'Billable events viewer',
+    body: "Every storage, label, stop, and pick event is captured the moment it happens. Reconciliation isn't a month-end project — it's already done.",
+  },
+  {
+    title: 'B2B client portal',
+    body: 'Your clients self-serve inventory checks, submit outbound requests, and track shipments. Your account managers stop being a switchboard.',
+  },
+];
+
+// Per-page SoftwareApplication JSON-LD for the homepage
+const softwareSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareApplication',
+  name: 'Deliver WMS',
+  applicationCategory: 'BusinessApplication',
+  applicationSubCategory: 'Warehouse Management Software',
+  operatingSystem: 'Web',
+  description,
+  url: 'https://deliverwms.com',
+  offers: {
+    '@type': 'Offer',
+    priceCurrency: 'USD',
+    price: '0',
+    description: 'Free PAYG tier · paid tiers from $299/mo',
+  },
+};
+---
+
+<BaseLayout title={title} description={description}>
+  <script slot="head" type="application/ld+json" set:html={JSON.stringify(softwareSchema)} />
+
+  <!-- Hero (full-bleed with warehouse photo background + dark overlay) -->
+  <section class="relative isolate overflow-hidden bg-slate-950 text-white">
+    <!-- Background image (drop /public/images/hero-warehouse.jpg to see it) -->
+    <img
+      src="/images/hero-warehouse.jpg"
+      alt=""
+      class="absolute inset-0 -z-10 h-full w-full object-cover opacity-60"
+      loading="eager"
+      fetchpriority="high"
+      onerror="this.style.display='none'"
+    />
+    <!-- Fallback gradient for when no image is loaded -->
+    <div class="absolute inset-0 -z-20 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950"></div>
+    <!-- Dark overlay for text legibility (always on top of image) -->
+    <div class="absolute inset-0 -z-10 bg-gradient-to-r from-slate-950/95 via-slate-950/80 to-slate-950/30"></div>
+    <!-- Brand accent glow (subtle emerald, top-right) -->
+    <div class="absolute -right-32 -top-32 -z-10 h-96 w-96 rounded-full bg-brand-500/20 blur-3xl"></div>
+
+    <div class="container-page py-24 sm:py-32 lg:py-40">
+      <div class="max-w-2xl">
+        <p class="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-brand-300">
+          Warehouse management · Last-mile delivery
+        </p>
+        <h1 class="font-display mt-4 text-4xl font-bold tracking-tight drop-shadow-sm sm:text-5xl lg:text-6xl">
+          The WMS that pays for itself in operational time
+        </h1>
+        <p class="mt-6 max-w-xl text-lg text-slate-200 sm:text-xl">
+          Built for mid-size 3PLs. Estimated <strong class="text-white">$800–$1,800 / month</strong> in operational time savings at typical volumes — across receiving, client support, and billing reconciliation.
+        </p>
+        <div class="mt-8 flex flex-col gap-3 sm:flex-row">
+          <a href={`${appUrl}/signup`} class="btn-primary">Start Free Trial</a>
+          <a href="/compare" class="btn-secondary border-white/20 bg-white/5 text-white backdrop-blur-sm hover:bg-white/10">
+            Compare to your current WMS
+          </a>
+        </div>
+        <p class="mt-4 text-sm text-slate-300">
+          Free PAYG tier · No credit card required to start
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Where the time savings come from -->
+  <section class="border-t border-slate-200 bg-white py-20 sm:py-24 dark:border-slate-800 dark:bg-slate-950">
+    <div class="container-page">
+      <div class="mx-auto max-w-2xl text-center">
+        <h2 class="text-3xl font-bold tracking-tight sm:text-4xl">
+          Where the time savings actually come from
+        </h2>
+        <p class="mt-4 text-lg text-slate-600 dark:text-slate-400">
+          Three places mid-size 3PLs lose hours every week — and what Deliver WMS does about each.
+        </p>
+      </div>
+      <div class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {savingsCards.map((card) => (
+          <article class="flex flex-col rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+            <h3 class="text-lg font-semibold">{card.title}</h3>
+            <p class="mt-2 text-sm font-medium text-brand-600 dark:text-brand-400">{card.savings}</p>
+            <p class="mt-3 text-sm text-slate-600 dark:text-slate-400">{card.body}</p>
+            <a href="/features" class="mt-4 text-sm font-medium text-brand-700 hover:text-brand-800 dark:text-brand-400 dark:hover:text-brand-300">
+              Show the math →
+            </a>
+          </article>
+        ))}
+      </div>
+      <p class="mx-auto mt-10 max-w-3xl text-center text-sm text-slate-500 dark:text-slate-500">
+        Estimated savings at typical mid-size 3PL volumes (200–1,000 monthly orders, ~5 active B2B clients). Real savings depend on your current process — see the <a href="/pricing" class="underline hover:text-slate-700 dark:hover:text-slate-300">savings calculator</a> to plug in your own numbers.
+      </p>
+    </div>
+  </section>
+
+  <!-- End-to-end fulfillment in one flow -->
+  <section class="bg-slate-50 py-20 sm:py-24 dark:bg-slate-900/50">
+    <div class="container-page">
+      <div class="mx-auto max-w-2xl text-center">
+        <h2 class="text-3xl font-bold tracking-tight sm:text-4xl">
+          End-to-end fulfillment in one flow
+        </h2>
+        <p class="mt-4 text-lg text-slate-600 dark:text-slate-400">
+          One platform replaces fragmented tools across receiving, fulfillment, and last-mile.
+        </p>
+      </div>
+      <div class="mt-12 overflow-x-auto">
+        <ol class="flex min-w-max items-stretch justify-center gap-3 px-4">
+          {fulfillmentSteps.map((step, i) => (
+            <li class="flex items-center gap-3">
+              <div class="flex w-32 flex-col items-center rounded-xl border border-slate-200 bg-white px-4 py-3 text-center shadow-sm dark:border-slate-800 dark:bg-slate-950">
+                <span class="text-sm font-semibold">{step.label}</span>
+                <span class="mt-1 text-xs text-slate-500 dark:text-slate-400">{step.detail}</span>
+              </div>
+              {i < fulfillmentSteps.length - 1 && (
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5 shrink-0 text-slate-400">
+                  <line x1="5" y1="12" x2="19" y2="12" />
+                  <polyline points="12 5 19 12 12 19" />
+                </svg>
+              )}
+            </li>
+          ))}
+        </ol>
+      </div>
+      <p class="mx-auto mt-10 max-w-3xl text-center text-sm text-slate-500 dark:text-slate-500">
+        Estimated processing times at typical mid-size 3PL volumes (200–1,000 monthly orders). Your actual times depend on team experience, warehouse layout, and order complexity.
+      </p>
+    </div>
+  </section>
+
+  <!-- Why operators choose Deliver WMS -->
+  <section class="border-t border-slate-200 bg-white py-20 sm:py-24 dark:border-slate-800 dark:bg-slate-950">
+    <div class="container-page">
+      <div class="mx-auto max-w-2xl text-center">
+        <h2 class="text-3xl font-bold tracking-tight sm:text-4xl">
+          Why operators choose Deliver WMS
+        </h2>
+        <p class="mt-4 text-lg text-slate-600 dark:text-slate-400">
+          Architecture decisions that show up in the day-to-day, not just the marketing slide.
+        </p>
+      </div>
+      <div class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {operatorFeatures.map((feat) => (
+          <article class="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-900">
+            <h3 class="text-lg font-semibold">{feat.title}</h3>
+            <p class="mt-3 text-sm text-slate-600 dark:text-slate-400">{feat.body}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Built for logistics teams of every size -->
+  <section class="bg-slate-50 py-20 sm:py-24 dark:bg-slate-900/50">
+    <div class="container-page">
+      <div class="mx-auto max-w-2xl text-center">
+        <h2 class="text-3xl font-bold tracking-tight sm:text-4xl">
+          Built for logistics teams of every size
+        </h2>
+        <p class="mt-4 text-lg text-slate-600 dark:text-slate-400">
+          Whether you run one warehouse for one brand or many for many — Deliver WMS adapts.
+        </p>
+      </div>
+      <div class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        {audiences.map((aud) => (
+          <article class="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-950">
+            <h3 class="text-lg font-semibold">{aud.title}</h3>
+            <p class="mt-3 text-sm text-slate-600 dark:text-slate-400">{aud.body}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- See the platform -->
+  <section class="border-t border-slate-200 bg-white py-20 sm:py-24 dark:border-slate-800 dark:bg-slate-950">
+    <div class="container-page">
+      <div class="mx-auto max-w-2xl text-center">
+        <h2 class="text-3xl font-bold tracking-tight sm:text-4xl">See the platform</h2>
+        <p class="mt-4 text-lg text-slate-600 dark:text-slate-400">
+          Real screens, not mockups. This is what your team will use every day.
+        </p>
+      </div>
+      <div class="mt-12 grid gap-6 sm:grid-cols-2">
+        {platformViews.map((view) => (
+          <article class="rounded-2xl border border-slate-200 bg-white p-8 dark:border-slate-800 dark:bg-slate-900">
+            <h3 class="text-xl font-semibold">{view.title}</h3>
+            <p class="mt-3 text-slate-600 dark:text-slate-400">{view.body}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Final CTA -->
+  <section class="bg-gradient-to-br from-brand-700 to-brand-900 py-20 text-white sm:py-24">
+    <div class="container-page text-center">
+      <h2 class="text-3xl font-bold tracking-tight sm:text-4xl">
+        Ready to get hours back every week?
+      </h2>
+      <p class="mx-auto mt-4 max-w-2xl text-lg text-brand-100">
+        Start on the free PAYG tier and only pay for what you use, or schedule a demo to see how Deliver WMS fits your operation.
+      </p>
+      <div class="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+        <a href={`${appUrl}/signup`} class="btn-primary bg-white text-brand-700 hover:bg-brand-50">
+          Start Free Trial
+        </a>
+        <a href="/contact" class="btn-secondary border-white/30 bg-transparent text-white hover:bg-white/10">
+          Talk to Sales
+        </a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
