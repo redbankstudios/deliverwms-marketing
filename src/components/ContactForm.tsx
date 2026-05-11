@@ -14,6 +14,7 @@ interface FormState {
   company: string;
   email: string;
   phone: string;
+  reason: string;
   ideal_time: string;
   message: string;
 }
@@ -23,9 +24,21 @@ const initial: FormState = {
   company: '',
   email: '',
   phone: '',
+  reason: '',
   ideal_time: '',
   message: '',
 };
+
+// Reasons map to short tags used in the email subject (for Gmail filtering)
+// and the human label shown to the user. Operator: edit/extend as needed.
+const REASONS = [
+  { value: 'Sales', label: 'Sales inquiry' },
+  { value: 'Demo', label: 'Schedule a demo' },
+  { value: 'Pricing', label: 'Pricing question' },
+  { value: 'Support', label: 'Technical support' },
+  { value: 'Partnership', label: 'Partnership opportunity' },
+  { value: 'Other', label: 'Other' },
+] as const;
 
 const fieldClass =
   'mt-1 block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm shadow-sm placeholder:text-slate-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/30 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:placeholder:text-slate-500';
@@ -48,6 +61,7 @@ export default function ContactForm() {
     setErrorMessage(null);
 
     try {
+      const reasonLabel = REASONS.find((r) => r.value === form.reason)?.label ?? form.reason;
       const res = await fetch(FORMSUBMIT_ENDPOINT, {
         method: 'POST',
         headers: {
@@ -55,7 +69,8 @@ export default function ContactForm() {
           Accept: 'application/json',
         },
         body: JSON.stringify({
-          // Form fields (these appear in the email body)
+          // Form fields (these appear in the email body in this order)
+          Reason: reasonLabel,
           Name: form.name,
           Company: form.company || '(not provided)',
           Email: form.email,
@@ -63,7 +78,8 @@ export default function ContactForm() {
           'Ideal time to contact': form.ideal_time || '(any time)',
           Message: form.message,
           // Formsubmit.co control parameters
-          _subject: `New contact form submission — ${form.name}`,
+          // Subject is prefixed with the reason tag so Gmail filters can route by it.
+          _subject: `[${form.reason}] Contact form — ${form.name}`,
           _template: 'table',
           _captcha: 'false', // Disable Formsubmit's default reCAPTCHA for cleaner UX
           _replyto: form.email, // Replying to the email goes back to the sender
@@ -170,22 +186,43 @@ export default function ContactForm() {
         </div>
       </div>
 
-      <div>
-        <label htmlFor="ideal_time" className={labelClass}>
-          Ideal Time to Contact
-        </label>
-        <select
-          id="ideal_time"
-          value={form.ideal_time}
-          onChange={updateField('ideal_time')}
-          className={fieldClass}
-        >
-          <option value="">Select a time</option>
-          <option value="Morning (9am–12pm)">Morning (9am–12pm)</option>
-          <option value="Afternoon (12pm–5pm)">Afternoon (12pm–5pm)</option>
-          <option value="Evening (5pm–8pm)">Evening (5pm–8pm)</option>
-          <option value="Any time">Any time</option>
-        </select>
+      <div className="grid gap-5 sm:grid-cols-2">
+        <div>
+          <label htmlFor="reason" className={labelClass}>
+            Reason for contact <span className="text-red-500">*</span>
+          </label>
+          <select
+            id="reason"
+            required
+            value={form.reason}
+            onChange={updateField('reason')}
+            className={fieldClass}
+          >
+            <option value="">Select a reason</option>
+            {REASONS.map((r) => (
+              <option key={r.value} value={r.value}>
+                {r.label}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div>
+          <label htmlFor="ideal_time" className={labelClass}>
+            Ideal Time to Contact
+          </label>
+          <select
+            id="ideal_time"
+            value={form.ideal_time}
+            onChange={updateField('ideal_time')}
+            className={fieldClass}
+          >
+            <option value="">Select a time</option>
+            <option value="Morning (9am–12pm)">Morning (9am–12pm)</option>
+            <option value="Afternoon (12pm–5pm)">Afternoon (12pm–5pm)</option>
+            <option value="Evening (5pm–8pm)">Evening (5pm–8pm)</option>
+            <option value="Any time">Any time</option>
+          </select>
+        </div>
       </div>
 
       <div>
