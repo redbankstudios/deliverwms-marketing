@@ -1,8 +1,11 @@
-import { useState, useRef, type FormEvent } from 'react';
-import { Turnstile, type TurnstileInstance } from '@marsidev/react-turnstile';
-import { invokeEdgeFunction } from '@/lib/api';
+import { useState, type FormEvent } from 'react';
 
-const TURNSTILE_SITE_KEY = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
+// Where contact form submissions land. Update this if the destination changes.
+const TO_EMAIL = 'wmsdeliver@gmail.com';
+// Formsubmit.co — free, no-signup form-to-email service. First submission triggers
+// a one-time confirmation email; click the link in that email to activate the inbox.
+// After that, every submission arrives directly at TO_EMAIL.
+const FORMSUBMIT_ENDPOINT = `https://formsubmit.co/ajax/${TO_EMAIL}`;
 
 type Status = 'idle' | 'submitting' | 'success' | 'error';
 
@@ -32,8 +35,6 @@ export default function ContactForm() {
   const [form, setForm] = useState<FormState>(initial);
   const [status, setStatus] = useState<Status>('idle');
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [turnstileToken, setTurnstileToken] = useState<string>('');
-  const turnstileRef = useRef<TurnstileInstance | null>(null);
 
   const updateField =
     (key: keyof FormState) =>
@@ -43,49 +44,52 @@ export default function ContactForm() {
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-
-    // If Turnstile is configured, require a token before submitting.
-    if (TURNSTILE_SITE_KEY && !turnstileToken) {
-      setStatus('error');
-      setErrorMessage('Please complete the verification challenge below before submitting.');
-      return;
-    }
-
     setStatus('submitting');
     setErrorMessage(null);
 
-    // Single call to the public submit-contact-form edge function.
-    // It handles validation, DB insert into contact_submissions, and the
-    // server-side notification email (using the service-role key internally).
-    // Returns { success: true, id } on success, { error: string } on failure.
-    const result = await invokeEdgeFunction<{ success: boolean; id: string }>(
-      'submit-contact-form',
-      {
-        body: {
-          name: form.name,
-          company: form.company || null,
-          email: form.email,
-          phone: form.phone || null,
-          preferred_contact_time: form.ideal_time || null,
-          message: form.message,
-          turnstileToken: turnstileToken || undefined,
+    try {
+      const res = await fetch(FORMSUBMIT_ENDPOINT, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
         },
-      },
-    );
+        body: JSON.stringify({
+          // Form fields (these appear in the email body)
+          Name: form.name,
+          Company: form.company || '(not provided)',
+          Email: form.email,
+          Phone: form.phone || '(not provided)',
+          'Ideal time to contact': form.ideal_time || '(any time)',
+          Message: form.message,
+          // Formsubmit.co control parameters
+          _subject: `New contact form submission — ${form.name}`,
+          _template: 'table',
+          _captcha: 'false', // Disable Formsubmit's default reCAPTCHA for cleaner UX
+          _replyto: form.email, // Replying to the email goes back to the sender
+        }),
+      });
 
-    if (result.error) {
+      const data = await res.json();
+      const ok = data?.success === true || data?.success === 'true';
+
+      if (!ok) {
+        setStatus('error');
+        setErrorMessage(
+          data?.message ||
+            'We could not send your message. Please email us directly at ' + TO_EMAIL + '.',
+        );
+        return;
+      }
+
+      setStatus('success');
+      setForm(initial);
+    } catch (_err) {
       setStatus('error');
-      setErrorMessage(result.error.message);
-      // Reset the Turnstile token so the user gets a fresh challenge on retry.
-      turnstileRef.current?.reset();
-      setTurnstileToken('');
-      return;
+      setErrorMessage(
+        'Network error. Please try again, or email us directly at ' + TO_EMAIL + '.',
+      );
     }
-
-    setStatus('success');
-    setForm(initial);
-    turnstileRef.current?.reset();
-    setTurnstileToken('');
   }
 
   if (status === 'success') {
@@ -115,11 +119,26 @@ export default function ContactForm() {
           <label htmlFor="name" className={labelClass}>
             Name <span className="text-red-500">*</span>
           </label>
-          <input id="name" type="text" required value={form.name} onChange={updateField('name')} className={fieldClass} />
+          <input
+            id="name"
+            type="text"
+            required
+            value={form.name}
+            onChange={updateField('name')}
+            className={fieldClass}
+          />
         </div>
         <div>
-          <label htmlFor="company" className={labelClass}>Company</label>
-          <input id="company" type="text" value={form.company} onChange={updateField('company')} className={fieldClass} />
+          <label htmlFor="company" className={labelClass}>
+            Company
+          </label>
+          <input
+            id="company"
+            type="text"
+            value={form.company}
+            onChange={updateField('company')}
+            className={fieldClass}
+          />
         </div>
       </div>
 
@@ -128,22 +147,44 @@ export default function ContactForm() {
           <label htmlFor="email" className={labelClass}>
             Email <span className="text-red-500">*</span>
           </label>
-          <input id="email" type="email" required value={form.email} onChange={updateField('email')} className={fieldClass} />
+          <input
+            id="email"
+            type="email"
+            required
+            value={form.email}
+            onChange={updateField('email')}
+            className={fieldClass}
+          />
         </div>
         <div>
-          <label htmlFor="phone" className={labelClass}>Phone</label>
-          <input id="phone" type="tel" value={form.phone} onChange={updateField('phone')} className={fieldClass} />
+          <label htmlFor="phone" className={labelClass}>
+            Phone
+          </label>
+          <input
+            id="phone"
+            type="tel"
+            value={form.phone}
+            onChange={updateField('phone')}
+            className={fieldClass}
+          />
         </div>
       </div>
 
       <div>
-        <label htmlFor="ideal_time" className={labelClass}>Ideal Time to Contact</label>
-        <select id="ideal_time" value={form.ideal_time} onChange={updateField('ideal_time')} className={fieldClass}>
+        <label htmlFor="ideal_time" className={labelClass}>
+          Ideal Time to Contact
+        </label>
+        <select
+          id="ideal_time"
+          value={form.ideal_time}
+          onChange={updateField('ideal_time')}
+          className={fieldClass}
+        >
           <option value="">Select a time</option>
-          <option value="morning">Morning (9am–12pm)</option>
-          <option value="afternoon">Afternoon (12pm–5pm)</option>
-          <option value="evening">Evening (5pm–8pm)</option>
-          <option value="any">Any time</option>
+          <option value="Morning (9am–12pm)">Morning (9am–12pm)</option>
+          <option value="Afternoon (12pm–5pm)">Afternoon (12pm–5pm)</option>
+          <option value="Evening (5pm–8pm)">Evening (5pm–8pm)</option>
+          <option value="Any time">Any time</option>
         </select>
       </div>
 
@@ -161,19 +202,6 @@ export default function ContactForm() {
           placeholder="Tell us about your operation — how many SKUs, how many monthly orders, what's painful today."
         />
       </div>
-
-      {TURNSTILE_SITE_KEY && (
-        <div className="flex justify-center">
-          <Turnstile
-            ref={turnstileRef}
-            siteKey={TURNSTILE_SITE_KEY}
-            onSuccess={(token) => setTurnstileToken(token)}
-            onExpire={() => setTurnstileToken('')}
-            onError={() => setTurnstileToken('')}
-            options={{ theme: 'auto', size: 'normal' }}
-          />
-        </div>
-      )}
 
       {status === 'error' && errorMessage && (
         <div className="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-800 dark:border-red-900/50 dark:bg-red-950/40 dark:text-red-200">
