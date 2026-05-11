@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from 'react';
-import { invokeEdgeFunction, restInsert } from '@/lib/api';
+import { invokeEdgeFunction } from '@/lib/api';
 
 type Status = 'idle' | 'submitting' | 'success' | 'error';
 
@@ -41,38 +41,28 @@ export default function ContactForm() {
     setStatus('submitting');
     setErrorMessage(null);
 
-    // Mirror the original Lovable behavior: insert into contact_submissions,
-    // then fire the transactional-email edge function. Both must succeed.
-    const insert = await restInsert('contact_submissions', {
-      name: form.name,
-      company: form.company || null,
-      email: form.email,
-      phone: form.phone || null,
-      preferred_contact_time: form.ideal_time || null,
-      message: form.message,
-    });
-
-    if (insert.error) {
-      setStatus('error');
-      setErrorMessage(insert.error.message);
-      return;
-    }
-
-    const emailResult = await invokeEdgeFunction('send-transactional-email', {
-      body: {
-        type: 'contact_submission',
-        name: form.name,
-        company: form.company,
-        email: form.email,
-        phone: form.phone,
-        preferred_contact_time: form.ideal_time,
-        message: form.message,
+    // Single call to the public submit-contact-form edge function.
+    // It handles validation, DB insert into contact_submissions, and the
+    // server-side notification email (using the service-role key internally).
+    // Returns { success: true, id } on success, { error: string } on failure.
+    const result = await invokeEdgeFunction<{ success: boolean; id: string }>(
+      'submit-contact-form',
+      {
+        body: {
+          name: form.name,
+          company: form.company || null,
+          email: form.email,
+          phone: form.phone || null,
+          preferred_contact_time: form.ideal_time || null,
+          message: form.message,
+        },
       },
-    });
+    );
 
-    if (emailResult.error) {
-      // Submission saved but email failed — treat as success since the lead is captured.
-      console.warn('Email send failed:', emailResult.error.message);
+    if (result.error) {
+      setStatus('error');
+      setErrorMessage(result.error.message);
+      return;
     }
 
     setStatus('success');
