@@ -1,5 +1,8 @@
-import { useState, type FormEvent } from 'react';
+import { useState, useRef, type FormEvent } from 'react';
+import { Turnstile, type TurnstileInstance } from '@marsidev/react-turnstile';
 import { invokeEdgeFunction } from '@/lib/api';
+
+const TURNSTILE_SITE_KEY = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
 
 type Status = 'idle' | 'submitting' | 'success' | 'error';
 
@@ -29,6 +32,8 @@ export default function ContactForm() {
   const [form, setForm] = useState<FormState>(initial);
   const [status, setStatus] = useState<Status>('idle');
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [turnstileToken, setTurnstileToken] = useState<string>('');
+  const turnstileRef = useRef<TurnstileInstance | null>(null);
 
   const updateField =
     (key: keyof FormState) =>
@@ -38,6 +43,14 @@ export default function ContactForm() {
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
+
+    // If Turnstile is configured, require a token before submitting.
+    if (TURNSTILE_SITE_KEY && !turnstileToken) {
+      setStatus('error');
+      setErrorMessage('Please complete the verification challenge below before submitting.');
+      return;
+    }
+
     setStatus('submitting');
     setErrorMessage(null);
 
@@ -55,6 +68,7 @@ export default function ContactForm() {
           phone: form.phone || null,
           preferred_contact_time: form.ideal_time || null,
           message: form.message,
+          turnstileToken: turnstileToken || undefined,
         },
       },
     );
@@ -62,11 +76,16 @@ export default function ContactForm() {
     if (result.error) {
       setStatus('error');
       setErrorMessage(result.error.message);
+      // Reset the Turnstile token so the user gets a fresh challenge on retry.
+      turnstileRef.current?.reset();
+      setTurnstileToken('');
       return;
     }
 
     setStatus('success');
     setForm(initial);
+    turnstileRef.current?.reset();
+    setTurnstileToken('');
   }
 
   if (status === 'success') {
@@ -142,6 +161,19 @@ export default function ContactForm() {
           placeholder="Tell us about your operation — how many SKUs, how many monthly orders, what's painful today."
         />
       </div>
+
+      {TURNSTILE_SITE_KEY && (
+        <div className="flex justify-center">
+          <Turnstile
+            ref={turnstileRef}
+            siteKey={TURNSTILE_SITE_KEY}
+            onSuccess={(token) => setTurnstileToken(token)}
+            onExpire={() => setTurnstileToken('')}
+            onError={() => setTurnstileToken('')}
+            options={{ theme: 'auto', size: 'normal' }}
+          />
+        </div>
+      )}
 
       {status === 'error' && errorMessage && (
         <div className="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-800 dark:border-red-900/50 dark:bg-red-950/40 dark:text-red-200">
