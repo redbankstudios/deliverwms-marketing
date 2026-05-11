@@ -43,15 +43,12 @@ export default function ContactForm() {
 
     // Mirror the original Lovable behavior: insert into contact_submissions,
     // then fire the transactional-email edge function. Both must succeed.
-    // Note: ideal_time is intentionally NOT inserted here because the
-    // contact_submissions table doesn't have that column. It's still
-    // passed to send-transactional-email so the operator sees it in the
-    // email notification.
     const insert = await restInsert('contact_submissions', {
       name: form.name,
       company: form.company || null,
       email: form.email,
       phone: form.phone || null,
+      preferred_contact_time: form.ideal_time || null,
       message: form.message,
     });
 
@@ -68,7 +65,7 @@ export default function ContactForm() {
         company: form.company,
         email: form.email,
         phone: form.phone,
-        ideal_time: form.ideal_time,
+        preferred_contact_time: form.ideal_time,
         message: form.message,
       },
     });
