@@ -1,15 +1,51 @@
 ---
 const appUrl = import.meta.env.PUBLIC_APP_URL || 'https://app.deliverwms.com';
-const navLinks = [
+
+// Top-level nav. The "Resources" item is rendered specially below as a dropdown
+// containing Docs, Learn, Blog, and Roadmap.
+const primaryLinks = [
   { href: '/features', label: 'Features' },
   { href: '/compare', label: 'Compare' },
   { href: '/pricing', label: 'Pricing' },
-  { href: '/roadmap', label: 'Roadmap' },
-  { href: '/docs', label: 'Docs' },
+];
+
+const trailingLinks = [
   { href: '/about', label: 'About' },
   { href: '/contact', label: 'Contact' },
 ];
+
+// Items inside the Resources dropdown. Order intentional: docs (most-used),
+// learn (fundamentals), blog (insight), roadmap (forward-looking).
+const resourceLinks = [
+  {
+    href: '/docs',
+    label: 'Docs',
+    description: 'Platform documentation across all 30 modules.',
+    icon: 'book',
+  },
+  {
+    href: '/learn',
+    label: 'Learn',
+    description: 'Plain-English fundamentals: WMS, multi-tenancy, billing ledgers.',
+    icon: 'lightbulb',
+  },
+  {
+    href: '/blog',
+    label: 'Blog',
+    description: 'How-tos, original benchmarks, and commentary from the founder.',
+    icon: 'pen',
+  },
+  {
+    href: '/roadmap',
+    label: 'Roadmap',
+    description: "What's shipping this quarter, next, and under consideration.",
+    icon: 'rocket',
+  },
+];
+
 const currentPath = Astro.url.pathname;
+const resourcePaths = ['/docs', '/learn', '/blog', '/roadmap'];
+const isInResources = resourcePaths.some((p) => currentPath === p || currentPath.startsWith(`${p}/`));
 ---
 
 <header class="sticky top-0 z-40 border-b border-slate-200/70 bg-white/80 backdrop-blur-md dark:border-slate-800/70 dark:bg-slate-950/80">
@@ -28,7 +64,117 @@ const currentPath = Astro.url.pathname;
 
     <!-- Desktop nav -->
     <ul class="hidden items-center gap-1 md:flex">
-      {navLinks.map((link) => (
+      {primaryLinks.map((link) => (
+        <li>
+          <a
+            href={link.href}
+            class:list={[
+              'rounded-lg px-3 py-2 text-sm font-medium transition-colors',
+              currentPath === link.href
+                ? 'bg-slate-100 text-slate-900 dark:bg-slate-800 dark:text-white'
+                : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-900 dark:hover:text-white',
+            ]}
+            aria-current={currentPath === link.href ? 'page' : undefined}
+          >
+            {link.label}
+          </a>
+        </li>
+      ))}
+
+      <!-- Resources dropdown (desktop) -->
+      <li class="relative" data-resources-root>
+        <button
+          type="button"
+          id="resources-trigger"
+          aria-haspopup="true"
+          aria-expanded="false"
+          aria-controls="resources-menu"
+          class:list={[
+            'flex items-center gap-1 rounded-lg px-3 py-2 text-sm font-medium transition-colors',
+            isInResources
+              ? 'bg-slate-100 text-slate-900 dark:bg-slate-800 dark:text-white'
+              : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-900 dark:hover:text-white',
+          ]}
+        >
+          Resources
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-3.5 w-3.5 transition-transform" data-chevron>
+            <polyline points="6 9 12 15 18 9" />
+          </svg>
+        </button>
+
+        <!-- Dropdown panel -->
+        <div
+          id="resources-menu"
+          role="menu"
+          aria-labelledby="resources-trigger"
+          class="invisible absolute left-1/2 top-full z-50 mt-2 w-[22rem] -translate-x-1/2 translate-y-1 rounded-2xl border border-slate-200 bg-white p-2 opacity-0 shadow-xl transition-all duration-150 ease-out dark:border-slate-800 dark:bg-slate-900"
+          data-resources-menu
+        >
+          <ul class="grid gap-1">
+            {resourceLinks.map((item) => {
+              const isActive = currentPath === item.href || currentPath.startsWith(`${item.href}/`);
+              return (
+                <li>
+                  <a
+                    href={item.href}
+                    role="menuitem"
+                    class:list={[
+                      'group flex items-start gap-3 rounded-xl p-3 transition-colors',
+                      isActive
+                        ? 'bg-brand-50 dark:bg-brand-950/40'
+                        : 'hover:bg-slate-50 dark:hover:bg-slate-800/60',
+                    ]}
+                  >
+                    <span
+                      class:list={[
+                        'flex h-9 w-9 shrink-0 items-center justify-center rounded-lg transition-colors',
+                        isActive
+                          ? 'bg-brand-600 text-white'
+                          : 'bg-slate-100 text-slate-600 group-hover:bg-brand-100 group-hover:text-brand-700 dark:bg-slate-800 dark:text-slate-400 dark:group-hover:bg-brand-950 dark:group-hover:text-brand-400',
+                      ]}
+                      aria-hidden="true"
+                    >
+                      {item.icon === 'book' && (
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4">
+                          <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+                          <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+                        </svg>
+                      )}
+                      {item.icon === 'lightbulb' && (
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4">
+                          <path d="M9 18h6" />
+                          <path d="M10 22h4" />
+                          <path d="M12 2a7 7 0 0 0-4 12.74V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.26A7 7 0 0 0 12 2z" />
+                        </svg>
+                      )}
+                      {item.icon === 'pen' && (
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4">
+                          <path d="M12 20h9" />
+                          <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
+                        </svg>
+                      )}
+                      {item.icon === 'rocket' && (
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4">
+                          <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z" />
+                          <path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z" />
+                          <path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0" />
+                          <path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5" />
+                        </svg>
+                      )}
+                    </span>
+                    <span class="flex-1">
+                      <span class="block text-sm font-semibold text-slate-900 dark:text-white">{item.label}</span>
+                      <span class="mt-0.5 block text-xs leading-snug text-slate-500 dark:text-slate-400">{item.description}</span>
+                    </span>
+                  </a>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      </li>
+
+      {trailingLinks.map((link) => (
         <li>
           <a
             href={link.href}
@@ -54,7 +200,6 @@ const currentPath = Astro.url.pathname;
         class="rounded-lg p-2 text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white"
         aria-label="Toggle theme"
       >
-        <!-- Sun (shown in dark mode) -->
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="hidden h-5 w-5 dark:block">
           <circle cx="12" cy="12" r="4" />
           <path d="M12 2v2" />
@@ -66,7 +211,6 @@ const currentPath = Astro.url.pathname;
           <path d="m6.34 17.66-1.41 1.41" />
           <path d="m19.07 4.93-1.41 1.41" />
         </svg>
-        <!-- Moon (shown in light mode) -->
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5 dark:hidden">
           <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
         </svg>
@@ -125,7 +269,7 @@ const currentPath = Astro.url.pathname;
   <!-- Mobile menu panel -->
   <div id="mobile-menu" class="hidden border-t border-slate-200 bg-white md:hidden dark:border-slate-800 dark:bg-slate-950">
     <div class="container-page flex flex-col gap-1 py-3">
-      {navLinks.map((link) => (
+      {primaryLinks.map((link) => (
         <a
           href={link.href}
           class:list={[
@@ -138,6 +282,47 @@ const currentPath = Astro.url.pathname;
           {link.label}
         </a>
       ))}
+
+      <!-- Mobile Resources section (always expanded; native + accessible) -->
+      <div class="mt-1 border-t border-slate-200 pt-2 dark:border-slate-800">
+        <p class="px-3 pb-1 font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-400">
+          Resources
+        </p>
+        {resourceLinks.map((item) => {
+          const isActive = currentPath === item.href || currentPath.startsWith(`${item.href}/`);
+          return (
+            <a
+              href={item.href}
+              class:list={[
+                'block rounded-lg px-3 py-2 text-sm',
+                isActive
+                  ? 'bg-slate-100 font-semibold text-slate-900 dark:bg-slate-800 dark:text-white'
+                  : 'text-slate-600 hover:bg-slate-50 dark:text-slate-400 dark:hover:bg-slate-900',
+              ]}
+            >
+              <span class="font-medium">{item.label}</span>
+              <span class="mt-0.5 block text-xs text-slate-500 dark:text-slate-400">{item.description}</span>
+            </a>
+          );
+        })}
+      </div>
+
+      <div class="mt-1 border-t border-slate-200 pt-2 dark:border-slate-800">
+        {trailingLinks.map((link) => (
+          <a
+            href={link.href}
+            class:list={[
+              'block rounded-lg px-3 py-2 text-sm font-medium',
+              currentPath === link.href
+                ? 'bg-slate-100 text-slate-900 dark:bg-slate-800 dark:text-white'
+                : 'text-slate-600 hover:bg-slate-50 dark:text-slate-400 dark:hover:bg-slate-900',
+            ]}
+          >
+            {link.label}
+          </a>
+        ))}
+      </div>
+
       <div class="mt-2 flex gap-2 border-t border-slate-200 pt-3 dark:border-slate-800">
         <a href={`${appUrl}/login`} class="btn-secondary flex-1 text-sm">Log In</a>
         <a href={`${appUrl}/signup`} class="btn-primary flex-1 text-sm">Start Free Trial</a>
@@ -173,4 +358,61 @@ const currentPath = Astro.url.pathname;
 
   document.getElementById('theme-toggle')?.addEventListener('click', toggleTheme);
   document.getElementById('theme-toggle-mobile')?.addEventListener('click', toggleTheme);
+
+  // Desktop "Resources" dropdown — accessible, keyboard-friendly, click-outside-closes.
+  const resourcesRoot = document.querySelector('[data-resources-root]') as HTMLElement | null;
+  const resourcesTrigger = document.getElementById('resources-trigger');
+  const resourcesPanel = document.querySelector('[data-resources-menu]') as HTMLElement | null;
+  const resourcesChevron = resourcesTrigger?.querySelector('[data-chevron]');
+
+  function openResources() {
+    if (!resourcesPanel) return;
+    resourcesPanel.classList.remove('invisible', 'opacity-0', 'translate-y-1');
+    resourcesPanel.classList.add('visible', 'opacity-100', 'translate-y-0');
+    resourcesTrigger?.setAttribute('aria-expanded', 'true');
+    resourcesChevron?.classList.add('rotate-180');
+  }
+
+  function closeResources() {
+    if (!resourcesPanel) return;
+    resourcesPanel.classList.add('invisible', 'opacity-0', 'translate-y-1');
+    resourcesPanel.classList.remove('visible', 'opacity-100', 'translate-y-0');
+    resourcesTrigger?.setAttribute('aria-expanded', 'false');
+    resourcesChevron?.classList.remove('rotate-180');
+  }
+
+  function isResourcesOpen() {
+    return resourcesTrigger?.getAttribute('aria-expanded') === 'true';
+  }
+
+  resourcesTrigger?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    isResourcesOpen() ? closeResources() : openResources();
+  });
+
+  // Hover open with a small delay (prevents accidental triggers).
+  let hoverTimer: number | undefined;
+  resourcesRoot?.addEventListener('mouseenter', () => {
+    window.clearTimeout(hoverTimer);
+    hoverTimer = window.setTimeout(openResources, 80);
+  });
+  resourcesRoot?.addEventListener('mouseleave', () => {
+    window.clearTimeout(hoverTimer);
+    hoverTimer = window.setTimeout(closeResources, 150);
+  });
+
+  // Close on outside click
+  document.addEventListener('click', (e) => {
+    if (!isResourcesOpen()) return;
+    const target = e.target as Node | null;
+    if (target && !resourcesRoot?.contains(target)) closeResources();
+  });
+
+  // Close on ESC
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && isResourcesOpen()) {
+      closeResources();
+      resourcesTrigger?.focus();
+    }
+  });
 </script>
