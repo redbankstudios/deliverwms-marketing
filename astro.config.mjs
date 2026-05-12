@@ -15,19 +15,22 @@ export default defineConfig({
       changefreq: 'weekly',
       priority: 0.7,
       lastmod: new Date(),
-      // Custom serialization for higher-priority pages
+      // Custom serialization for higher-priority pages.
+      // Normalize trailing slashes so the matches work regardless of Astro's
+      // trailingSlash setting.
       serialize(item) {
         const url = new URL(item.url);
-        if (url.pathname === '/') {
+        const path = url.pathname.replace(/\/$/, '') || '/';
+        if (path === '/') {
           item.priority = 1.0;
           item.changefreq = 'weekly';
-        } else if (['/features', '/pricing', '/compare'].includes(url.pathname)) {
+        } else if (['/features', '/pricing', '/compare'].includes(path)) {
           item.priority = 0.9;
           item.changefreq = 'weekly';
-        } else if (url.pathname.startsWith('/docs')) {
+        } else if (path.startsWith('/docs')) {
           item.priority = 0.8;
           item.changefreq = 'monthly';
-        } else if (url.pathname.startsWith('/legal')) {
+        } else if (path.startsWith('/legal')) {
           item.priority = 0.3;
           item.changefreq = 'yearly';
         }
