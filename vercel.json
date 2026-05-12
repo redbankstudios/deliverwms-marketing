@@ -8,19 +8,6 @@
       "destination": "/sitemap-index.xml"
     }
   ],
-  "redirects": [
-    {
-      "source": "/(.*)",
-      "has": [
-        {
-          "type": "host",
-          "value": "www.deliverwms.com"
-        }
-      ],
-      "destination": "https://deliverwms.com/$1",
-      "permanent": true
-    }
-  ],
   "headers": [
     {
       "source": "/(.*)",

@@ -65,4 +65,23 @@ const blog = defineCollection({
     }),
 });
 
-export const collections = { blog };
+/**
+ * Legal documents — Privacy Policy, Terms of Service, MSA, DPA.
+ * Stored as markdown so the prose is easy to update and review without
+ * touching component code. Rendered via src/pages/legal/[slug].astro.
+ */
+const legal = defineCollection({
+  type: 'content',
+  schema: z.object({
+    title: z.string(),
+    shortTitle: z.string(), // for breadcrumb + nav
+    description: z.string().min(60).max(165),
+    summary: z.string(), // 1-2 sentence hero blurb
+    effectiveDate: z.date(),
+    lastUpdated: z.date(),
+    version: z.string().default('1.0'),
+    order: z.number().int().positive(), // for footer/nav ordering
+  }),
+});
+
+export const collections = { blog, legal };
