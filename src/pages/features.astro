@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
+import SoftwareApplicationSchema from '@/components/schema/SoftwareApplicationSchema.astro';
 
 const title = 'Deliver WMS Features — Inventory, Picking, Routing & Tracking';
 const description =
@@ -203,6 +204,16 @@ const trustChips = [
 ---
 
 <BaseLayout title={title} description={description}>
+  <SoftwareApplicationSchema
+    slot="head"
+    description="Deliver WMS bundles WMS, last-mile dispatch, B2B client portal, and billing into one multi-tenant platform built for mid-size 3PLs. 30 modules across 7 categories — receiving, fulfillment, dispatch, mobile apps, client, reports, and platform admin."
+    offers={[
+      { name: 'Free PAYG', price: '0', description: 'Pay-as-you-go on stops, labels, and storage. No platform fee.' },
+      { name: 'Starter', price: '299', description: '1,000 orders / month included, single warehouse.' },
+      { name: 'Growth', price: '799', description: '5,000 orders / month, automations + advanced routing.' },
+      { name: 'Scale', price: '1799', description: '15,000 orders / month, multi-warehouse, SLA support.' },
+    ]}
+  />
   <!-- Hero -->
   <section class="relative isolate overflow-hidden border-b border-slate-200 bg-white py-24 sm:py-28 dark:border-slate-800 dark:bg-slate-950">
     <!-- Decorative dot grid background -->

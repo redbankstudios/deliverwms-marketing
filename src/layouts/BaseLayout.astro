@@ -2,6 +2,7 @@
 import '@/styles/global.css';
 import Navbar from '@/components/Navbar.astro';
 import Footer from '@/components/Footer.astro';
+import { SITE_URL, BRAND, SAME_AS, BRAND_ADDRESS, BRAND_CONTACT_POINTS } from '@/lib/brand';
 
 interface Props {
   title: string;
@@ -16,26 +17,55 @@ const {
   title,
   description,
   canonical,
-  ogImage = 'https://deliverwms.com/images/hero.webp',
+  ogImage = `${SITE_URL}/images/hero.webp`,
   ogType = 'website',
   noindex = false,
 } = Astro.props;
 
-const siteUrl = 'https://deliverwms.com';
+const siteUrl = SITE_URL;
 const pageUrl = canonical ?? new URL(Astro.url.pathname, siteUrl).toString();
 
+// Only include the postal address if at least one location field is populated.
+const hasAddress = !!(BRAND_ADDRESS.streetAddress || BRAND_ADDRESS.addressLocality);
+const addressBlock = hasAddress
+  ? {
+      address: {
+        '@type': 'PostalAddress',
+        ...(BRAND_ADDRESS.streetAddress ? { streetAddress: BRAND_ADDRESS.streetAddress } : {}),
+        ...(BRAND_ADDRESS.addressLocality ? { addressLocality: BRAND_ADDRESS.addressLocality } : {}),
+        ...(BRAND_ADDRESS.addressRegion ? { addressRegion: BRAND_ADDRESS.addressRegion } : {}),
+        ...(BRAND_ADDRESS.postalCode ? { postalCode: BRAND_ADDRESS.postalCode } : {}),
+        addressCountry: BRAND_ADDRESS.addressCountry,
+      },
+    }
+  : {};
+
+// Only include contact points that have at least an email or telephone.
+const contactPoints = BRAND_CONTACT_POINTS.filter((cp) => cp.email || cp.telephone).map((cp) => ({
+  '@type': 'ContactPoint',
+  contactType: cp.contactType,
+  ...(cp.email ? { email: cp.email } : {}),
+  ...(cp.telephone ? { telephone: cp.telephone } : {}),
+  ...(cp.availableLanguage ? { availableLanguage: cp.availableLanguage } : {}),
+  ...(cp.areaServed ? { areaServed: cp.areaServed } : {}),
+}));
+
 // Site-wide Organization JSON-LD — boosts entity recognition for Google + AI engines.
+// sameAs is sourced from src/lib/brand.ts so social profile URLs are managed in one place.
 const organizationSchema = {
   '@context': 'https://schema.org',
   '@type': 'Organization',
-  name: 'Deliver WMS',
+  name: BRAND.name,
+  legalName: BRAND.legalName,
   url: siteUrl,
-  logo: `${siteUrl}/logo.png`,
-  description:
-    'The all-in-one warehouse management and last-mile delivery platform for 3PLs, eCommerce brands, distributors, and delivery companies.',
-  sameAs: [
-    // Add real social profile URLs here once they exist.
-  ],
+  logo: BRAND.logo,
+  description: BRAND.description,
+  email: BRAND.email,
+  ...(BRAND.telephone ? { telephone: BRAND.telephone } : {}),
+  ...(SAME_AS.length ? { sameAs: SAME_AS } : {}),
+  ...(contactPoints.length ? { contactPoint: contactPoints } : {}),
+  ...addressBlock,
+  foundingDate: BRAND.foundingDate,
 };
 
 // WebSite schema with site-search action — strengthens brand entity in Google Knowledge Graph
@@ -43,11 +73,11 @@ const organizationSchema = {
 const websiteSchema = {
   '@context': 'https://schema.org',
   '@type': 'WebSite',
-  name: 'Deliver WMS',
+  name: BRAND.name,
   url: siteUrl,
   publisher: {
     '@type': 'Organization',
-    name: 'Deliver WMS',
+    name: BRAND.name,
   },
 };
 ---

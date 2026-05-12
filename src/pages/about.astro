@@ -1,9 +1,12 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
+import HowToSchema from '@/components/schema/HowToSchema.astro';
+import PersonSchema from '@/components/schema/PersonSchema.astro';
+import { FOUNDER, BRAND, SITE_URL } from '@/lib/brand';
 
 const title = 'About Deliver WMS — Built for Modern Warehouses & 3PLs';
 const description =
-  'Learn about Deliver WMS — the team building modern warehouse management and last-mile delivery software for 3PLs and eCommerce.';
+  'Learn about Deliver WMS — built by a working operator and software engineer who set out to make warehouse management simpler, more intuitive, and more cost-effective for the operators legacy WMS vendors leave behind.';
 
 const whyCards = [
   {
@@ -46,9 +49,46 @@ const steps = [
   { n: '04', title: 'Dispatch & Deliver', body: 'Orders ship via your fleet or carrier — automatically routed by delivery zone. Plan routes, assign drivers, and track delivery progress in real time with proof of delivery.' },
   { n: '05', title: 'Report & Bill', body: 'Operational dashboards show throughput, SLA performance, and cost drivers. Billing views give clients full transparency.' },
 ];
+
+// Founder story principles — anchored in *why this product exists*, not company puffery.
+const founderPrinciples = [
+  {
+    title: 'Simpler beats feature-rich',
+    body: 'Most WMS platforms read like enterprise checklists. We choose the smallest interface that lets an operator finish the job — then stop adding things.',
+  },
+  {
+    title: 'Intuitive enough for the warehouse floor',
+    body: "If a Day-One picker can't use it without a training video, it's broken. We design every screen for the person actually scanning the carton, not the executive demoing the dashboard.",
+  },
+  {
+    title: 'Priced like software, not consulting',
+    body: 'Legacy WMS pricing punishes you for growing. Our pricing scales with the value you get — not with seats, modules, or implementation hours.',
+  },
+];
 ---
 
 <BaseLayout title={title} description={description}>
+  <!-- Per-page schemas -->
+  <PersonSchema
+    slot="head"
+    id={FOUNDER.id}
+    name={FOUNDER.name}
+    jobTitle={FOUNDER.jobTitle}
+    description={FOUNDER.description}
+    image={FOUNDER.image}
+    url={FOUNDER.url}
+    sameAs={FOUNDER.sameAs}
+    worksFor={{ name: BRAND.name, url: SITE_URL }}
+  />
+  <HowToSchema
+    slot="head"
+    name="How Deliver WMS processes a warehouse-to-doorstep order"
+    description="The end-to-end Deliver WMS flow from inbound receiving through last-mile delivery, billing, and reporting."
+    image={`${SITE_URL}/images/app-dashboard.webp`}
+    totalTime="PT1H"
+    steps={steps.map((s) => ({ name: s.title, text: s.body }))}
+  />
+
   <!-- Hero -->
   <section class="relative isolate overflow-hidden border-b border-slate-200 bg-white py-24 sm:py-28 dark:border-slate-800 dark:bg-slate-950">
     <div class="dot-grid-bg absolute inset-0 -z-10 opacity-50 [mask-image:radial-gradient(ellipse_at_center,white_30%,transparent_70%)]"></div>
@@ -57,11 +97,82 @@ const steps = [
     <div class="container-narrow text-center">
       <p class="eyebrow mx-auto justify-center">About</p>
       <h1 class="display mt-6 text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl">
-        Logistics software built by <span class="text-brand-600 dark:text-brand-400">operators</span>, for operators
+        Logistics software built by an <span class="text-brand-600 dark:text-brand-400">operator who codes</span>
       </h1>
       <p class="mx-auto mt-6 max-w-2xl text-lg text-slate-600 dark:text-slate-400">
-        Deliver WMS was created to replace the patchwork of spreadsheets, legacy WMS tools, and disconnected delivery apps that slow logistics teams down.
+        Deliver WMS was created to replace the patchwork of spreadsheets, legacy WMS tools, and disconnected delivery apps that slow logistics teams down — at a price the operators legacy vendors ignore can actually afford.
       </p>
+    </div>
+  </section>
+
+  <!-- Founder Story -->
+  <section id="founder" class="border-b border-slate-200 bg-white py-20 sm:py-24 dark:border-slate-800 dark:bg-slate-950">
+    <div class="container-page">
+      <div class="mx-auto max-w-2xl text-center">
+        <p class="eyebrow mx-auto justify-center">The Story</p>
+        <h2 class="section-title mt-6">Why Deliver WMS exists</h2>
+      </div>
+
+      <div class="mx-auto mt-14 grid max-w-5xl items-start gap-12 lg:grid-cols-5">
+        <!-- Photo -->
+        <div class="lg:col-span-2">
+          <figure class="relative">
+            <div class="absolute -inset-2 rounded-3xl bg-gradient-to-tr from-brand-500/30 via-brand-400/10 to-transparent blur-2xl"></div>
+            <img
+              src="/images/founder.jpeg"
+              alt={`${FOUNDER.name}, founder of Deliver WMS`}
+              width="640"
+              height="800"
+              loading="lazy"
+              decoding="async"
+              class="relative aspect-[4/5] w-full rounded-2xl object-cover shadow-xl ring-1 ring-slate-200 dark:ring-slate-800"
+            />
+            <figcaption class="mt-4 text-center">
+              <p class="font-display text-lg font-bold text-slate-900 dark:text-white">{FOUNDER.name}</p>
+              <p class="text-sm text-slate-600 dark:text-slate-400">{FOUNDER.jobTitle}, Deliver WMS</p>
+            </figcaption>
+          </figure>
+        </div>
+
+        <!-- Story -->
+        <div class="lg:col-span-3">
+          <div class="prose prose-slate max-w-none dark:prose-invert prose-p:text-slate-700 prose-strong:text-slate-900 dark:prose-p:text-slate-300 dark:prose-strong:text-white">
+            <p class="lead text-lg leading-relaxed">
+              I'm <strong>{FOUNDER.name}</strong> — a business owner and a software engineer. Deliver WMS exists because I kept watching the same thing happen to small and mid-size warehouse operators: they grew, the workload grew, and the tools they were sold by legacy WMS vendors quietly became the bottleneck instead of the leverage.
+            </p>
+
+            <p>
+              The spreadsheets started as a workaround. The email threads with clients started as a courtesy. The month-end billing reconciliation started as a "we'll fix it later." None of it scaled. And the alternative — six-figure enterprise WMS quotes with twelve-week implementations — wasn't an alternative at all for the operators I cared about. So I started building.
+            </p>
+
+            <p>
+              I'm not a sales engineer. I run a business, I write the code, I talk to operators on the warehouse floor, and I sit with the dispatcher when the route board is on fire at 7am. That's the lens this product is built through. <strong>Simpler. More intuitive. More cost-effective.</strong> Not as a tagline — as the only constraint that matters when you're deciding whether to ship a feature.
+            </p>
+
+            <p>
+              Deliver WMS is the WMS I wanted to use when I was tired of fighting the one I had. It's transparent about pricing, honest about what's shipped versus what's on the roadmap, and architected for warehouses serving multiple clients from day one — not retrofitted from a single-brand tool. If that sounds like the partner you want for the next five years of your operation, we should talk.
+            </p>
+
+            <!-- Principles strip -->
+            <div class="not-prose mt-10 grid gap-4 sm:grid-cols-3">
+              {founderPrinciples.map((p) => (
+                <div class="card p-5">
+                  <h3 class="font-display text-sm font-bold uppercase tracking-wide text-brand-700 dark:text-brand-400">
+                    {p.title}
+                  </h3>
+                  <p class="mt-2 text-sm text-slate-600 dark:text-slate-400">{p.body}</p>
+                </div>
+              ))}
+            </div>
+
+            <!-- Signature CTA -->
+            <div class="not-prose mt-10 flex flex-col items-start gap-3 sm:flex-row sm:items-center">
+              <a href="/contact" class="btn-primary">Talk to {FOUNDER.name}</a>
+              <a href="/features" class="btn-secondary">See what's actually shipped</a>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -74,7 +185,7 @@ const steps = [
           Our Mission
         </p>
         <p class="font-display mt-4 text-xl tracking-tight text-slate-800 sm:text-2xl lg:text-3xl dark:text-slate-100">
-          Give every logistics operation — from a single warehouse to a multi-site network — the tools to execute with speed, accuracy, and full visibility.
+          Give every logistics operation — from a single warehouse to a multi-site network — the tools to execute with speed, accuracy, and full visibility, at a price the operators legacy vendors ignore can actually afford.
         </p>
       </div>
     </div>

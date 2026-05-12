@@ -1,21 +1,34 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import ContactForm from '@/components/ContactForm';
+import { BRAND, SITE_URL } from '@/lib/brand';
 
 const title = 'Contact Deliver WMS — Talk to Sales or Support';
 const description =
   'Get in touch with Deliver WMS. Talk to sales about plans for your 3PL or warehouse, or reach support for help with your account.';
 
-// ContactPage JSON-LD for entity clarity
+// ContactPage JSON-LD with full ContactPoint when telephone is populated in brand.ts.
 const contactSchema = {
   '@context': 'https://schema.org',
   '@type': 'ContactPage',
-  url: 'https://deliverwms.com/contact',
+  url: `${SITE_URL}/contact`,
   about: {
     '@type': 'Organization',
-    name: 'Deliver WMS',
-    email: 'hello@deliverwms.com',
-    url: 'https://deliverwms.com',
+    name: BRAND.name,
+    email: BRAND.email,
+    url: SITE_URL,
+    ...(BRAND.telephone
+      ? {
+          contactPoint: {
+            '@type': 'ContactPoint',
+            contactType: 'sales',
+            telephone: BRAND.telephone,
+            email: BRAND.email,
+            availableLanguage: 'English',
+            areaServed: 'Worldwide',
+          },
+        }
+      : {}),
   },
 };
 ---
@@ -57,6 +70,16 @@ const contactSchema = {
                 </a>
               </dd>
             </div>
+            {BRAND.telephone && (
+              <div>
+                <dt class="text-sm font-semibold uppercase tracking-wider text-brand-600 dark:text-brand-400">Phone</dt>
+                <dd class="mt-1">
+                  <a href={`tel:${BRAND.telephone.replace(/[^+\d]/g, '')}`} class="text-slate-900 hover:text-brand-700 dark:text-white dark:hover:text-brand-400">
+                    {BRAND.telephone}
+                  </a>
+                </dd>
+              </div>
+            )}
             <div>
               <dt class="text-sm font-semibold uppercase tracking-wider text-brand-600 dark:text-brand-400">Location</dt>
               <dd class="mt-1 text-slate-700 dark:text-slate-300">

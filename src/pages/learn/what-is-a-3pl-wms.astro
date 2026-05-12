@@ -1,0 +1,198 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Breadcrumb from '@/components/Breadcrumb.astro';
+import BreadcrumbSchema from '@/components/schema/BreadcrumbSchema.astro';
+import FaqSchema from '@/components/schema/FaqSchema.astro';
+import { SITE_URL } from '@/lib/brand';
+
+const title = 'What is a 3PL WMS? — Capabilities, fit, and how to evaluate one | Deliver WMS';
+const description =
+  'A 3PL WMS is a warehouse management system built for operators who serve multiple client brands from the same physical warehouse. Here is what it does, how it differs from brand-side WMS, and what to look for.';
+const pageUrl = `${SITE_URL}/learn/what-is-a-3pl-wms`;
+
+const faqs = [
+  {
+    q: 'What is a 3PL WMS in one sentence?',
+    a: 'A 3PL warehouse management system (WMS) is software that runs day-to-day warehouse operations — receiving, storage, picking, packing, shipping, billing, and client reporting — across multiple client tenants from a single warehouse or network.',
+  },
+  {
+    q: 'How is a 3PL WMS different from a brand-side WMS?',
+    a: 'A brand-side WMS optimizes for a single inventory owner. A 3PL WMS must isolate inventory, orders, billing rates, and client visibility per tenant — every table, query, and report needs to know which client the data belongs to. Bolting tenancy onto a brand-side WMS later rarely produces clean data isolation.',
+  },
+  {
+    q: 'Does a 3PL WMS replace an ERP or accounting system?',
+    a: 'No. A 3PL WMS handles operational events (receipts, picks, stops, storage accruals) and produces a billable event stream that flows into accounting. Most 3PL WMS platforms export to QuickBooks or general-ledger systems but are not a replacement for them.',
+  },
+  {
+    q: 'How long does it take to implement a 3PL WMS?',
+    a: 'Legacy implementations historically run 6–12 weeks with a paid services engagement. Modern cloud 3PL WMS platforms with CSV-based migration tooling can be operational in a week for a mid-size 3PL with under 1,000 monthly orders and ~5 active clients.',
+  },
+  {
+    q: 'What should I look for when evaluating a 3PL WMS?',
+    a: 'Five things matter most: (1) real multi-tenancy enforced at the database level via row-level security, (2) an event-driven billing ledger that produces defensible invoices, (3) self-serve client portals so account managers stop being a switchboard, (4) clean migration tooling, and (5) transparent, usage-based pricing.',
+  },
+  {
+    q: 'Is a 3PL WMS the same as an OMS or TMS?',
+    a: 'No. An order management system (OMS) sits upstream and routes orders to fulfillment. A transportation management system (TMS) sits downstream and handles freight/parcel rate-shopping and dispatch. A 3PL WMS sits in the middle and runs the warehouse itself. Many modern platforms (Deliver WMS included) bundle WMS + last-mile dispatch + lightweight OMS in one application.',
+  },
+  {
+    q: 'How does pricing usually work?',
+    a: 'Three common models: (1) per-user/per-seat (penalizes growth — avoid for 3PL), (2) order-volume-based platform tier with optional overage rates, (3) usage-based per-event (stops, labels, storage). Modern platforms often combine 2 and 3. Demand published pricing — if a vendor will not show you a number before a sales call, that is a signal.',
+  },
+];
+
+const definedTermSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'DefinedTerm',
+  '@id': `${pageUrl}#definition`,
+  name: '3PL Warehouse Management System (3PL WMS)',
+  description:
+    'Software that runs day-to-day warehouse operations — receiving, storage, picking, packing, shipping, billing, and client reporting — across multiple client tenants from a single warehouse or network.',
+  inDefinedTermSet: {
+    '@type': 'DefinedTermSet',
+    name: 'Deliver WMS Fundamentals',
+    url: `${SITE_URL}/learn`,
+  },
+  url: pageUrl,
+};
+
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'What is a 3PL WMS?',
+  description,
+  datePublished: '2026-05-12',
+  dateModified: '2026-05-12',
+  url: pageUrl,
+  mainEntityOfPage: { '@type': 'WebPage', '@id': pageUrl },
+  author: {
+    '@type': 'Organization',
+    name: 'Deliver WMS',
+    url: SITE_URL,
+  },
+  publisher: {
+    '@type': 'Organization',
+    name: 'Deliver WMS',
+    url: SITE_URL,
+    logo: { '@type': 'ImageObject', url: `${SITE_URL}/logo.png` },
+  },
+};
+---
+
+<BaseLayout title={title} description={description}>
+  <BreadcrumbSchema
+    slot="head"
+    crumbs={[
+      { name: 'Home', url: `${SITE_URL}/` },
+      { name: 'Learn', url: `${SITE_URL}/learn` },
+      { name: 'What is a 3PL WMS?', url: pageUrl },
+    ]}
+  />
+  <FaqSchema slot="head" items={faqs} />
+  <script slot="head" type="application/ld+json" set:html={JSON.stringify(definedTermSchema)} />
+  <script slot="head" type="application/ld+json" set:html={JSON.stringify(articleSchema)} />
+
+  <!-- Header -->
+  <section class="relative isolate overflow-hidden border-b border-slate-200 bg-white py-16 sm:py-20 dark:border-slate-800 dark:bg-slate-950">
+    <div class="container-narrow">
+      <Breadcrumb crumbs={[
+        { name: 'Home', href: '/' },
+        { name: 'Learn', href: '/learn' },
+        { name: 'What is a 3PL WMS?' },
+      ]} />
+      <p class="eyebrow mt-6">Fundamentals · 8 min read</p>
+      <h1 class="display mt-3 text-4xl font-bold tracking-tight sm:text-5xl">What is a 3PL WMS?</h1>
+      <p class="mt-4 max-w-3xl text-lg text-slate-600 dark:text-slate-400">
+        A 3PL WMS is a warehouse management system built for operators who serve multiple client brands from the same physical warehouse. Here is what it does, how it differs from brand-side WMS, and what to look for when evaluating one.
+      </p>
+    </div>
+  </section>
+
+  <article class="bg-white py-12 sm:py-16 dark:bg-slate-950">
+    <div class="container-narrow">
+      <div class="prose prose-slate prose-lg max-w-none dark:prose-invert prose-headings:font-display prose-h2:mt-12 prose-h2:scroll-mt-24 prose-h3:scroll-mt-24 prose-a:text-brand-700 dark:prose-a:text-brand-400">
+
+        <h2>Definition</h2>
+        <p>
+          A <strong>3PL warehouse management system (3PL WMS)</strong> is software that runs the day-to-day operations of a third-party logistics warehouse — receiving inbound shipments, storing inventory, picking and packing orders, shipping them out, billing the client, and giving each client visibility into their own operation. The defining feature is that it does all of this <em>for multiple client tenants at the same time</em>, with strict data isolation between them.
+        </p>
+
+        <h2>How a 3PL WMS differs from a brand-side WMS</h2>
+        <p>
+          A brand-side WMS (the kind a single retailer or DTC brand uses for their own warehouse) optimizes for one inventory owner. Every product, every order, every report belongs to the company running the warehouse. The schema can be simple.
+        </p>
+        <p>
+          A 3PL WMS has to answer a harder question on every query: <em>"which client does this belong to?"</em> A picker on the floor might handle inventory for Client A and Client B in adjacent bins. Client A should never see Client B's data — not in the portal, not in a report, not in an export. That requirement reshapes the database schema, the API surface, and the access control model.
+        </p>
+        <p>
+          The clean way to build a 3PL WMS is with <strong>real multi-tenancy</strong> — every table has a tenant column, every query is tenant-scoped at the database level, and row-level security policies enforce the rules so they cannot be bypassed by application code. The compromised way is to start with a brand-side WMS and bolt a tenant filter on top later. The compromise shows up in subtle ways: a report that accidentally reveals a competitor's volumes, an export with rows from the wrong client, a customization that has to be redone for every tenant. Once you know what to look for, you can usually tell which kind of platform you are evaluating.
+        </p>
+
+        <h2>Core capabilities a 3PL WMS must have</h2>
+        <p>
+          A real 3PL WMS covers the entire operational arc, not just one part of it. The capabilities below are the floor, not the ceiling.
+        </p>
+        <ol>
+          <li><strong>Inbound receiving with exception handling.</strong> Scan-driven receiving against an ASN or purchase order, with structured handling for overages, shortages, damage, and unknown SKUs. Every receipt should write to an audit trail by user and time.</li>
+          <li><strong>Storage and putaway management.</strong> Bin-level locations, zone affinity per client, and putaway tasks generated automatically from receiving sessions. Visibility into utilization at the zone, rack, and bin level.</li>
+          <li><strong>Inventory tracking with per-client isolation.</strong> SKU-level on-hand, reserved, and available quantities, with the option to filter by owner. Ledger-backed (append-only) is the strongest pattern because adjustments preserve full history.</li>
+          <li><strong>Order allocation and pick-pack-ship.</strong> Auto-allocation across warehouse locations, pick-list generation, packing workflows, and label generation. Mobile-friendly worker apps for the floor.</li>
+          <li><strong>Last-mile dispatch (for operations that deliver themselves).</strong> Route construction, driver assignment, mobile driver app, and proof-of-delivery capture. If the 3PL only uses carriers, a strong carrier integration is sufficient.</li>
+          <li><strong>B2B client portal.</strong> Self-serve inventory checks, outbound order submission, shipment tracking, and returns. The portal is what moves account managers from "switchboard" to "strategic."</li>
+          <li><strong>Event-driven billing.</strong> Every billable event — stops, labels, storage, picks, returns — captured at the moment it occurs and flowed into an invoice the client can audit line by line.</li>
+          <li><strong>Reports and analytics.</strong> Operational dashboards for throughput and SLA, financial reports for cost-to-serve per client, and exportable data for the 3PL's accounting system.</li>
+        </ol>
+
+        <h2>How modern 3PL WMS differs from legacy</h2>
+        <p>
+          The legacy 3PL WMS market is dominated by platforms designed when warehouses still had on-prem servers and Internet Explorer 6 was the browser of record. Modern 3PL WMS platforms changed a few things that matter:
+        </p>
+        <ul>
+          <li><strong>Cloud-native, multi-tenant by default.</strong> No server install, no IT engagement, no per-warehouse license.</li>
+          <li><strong>Mobile-first worker apps.</strong> Built for a phone or rugged scanner, not a Windows desktop.</li>
+          <li><strong>API and webhook-first integration.</strong> Order import, status webhooks, and modern carrier integrations rather than overnight EDI batches.</li>
+          <li><strong>Self-serve onboarding with CSV imports.</strong> A mid-size 3PL can be operational in days, not weeks.</li>
+          <li><strong>Usage-based pricing.</strong> Pay for what you process, not for how many staff seats you happen to have logged in.</li>
+        </ul>
+
+        <h2>What to evaluate before signing</h2>
+        <p>
+          The buying signals that actually correlate with long-term satisfaction are not the ones the vendor demos. From operators who have switched, the questions that matter most are:
+        </p>
+        <ul>
+          <li>Show me a query that proves tenant isolation. Not a screenshot — a query.</li>
+          <li>Show me a billable-event log for a real (anonymized) client over a real month. Can disputes be defended line by line?</li>
+          <li>What does the client portal look like when an operator manager is impersonating a client? Is the data scope tight?</li>
+          <li>Show me the migration path off your platform. If switching back is hard, switching in carries hidden cost.</li>
+          <li>Publish your pricing. If you will not show me a number before a sales call, what is the relationship going to look like at renewal time?</li>
+        </ul>
+
+        <h2>How Deliver WMS fits</h2>
+        <p>
+          We built Deliver WMS specifically for mid-size 3PLs (roughly 200–1,000 monthly orders, 3–20 active client brands). Multi-tenancy is enforced at the database level via row-level security from day one. The billing ledger captures every billable event at the moment it happens. The B2B portal is included on every plan. CSV migration with smart field mapping gets most operators live in under a week. Pricing is published openly.
+        </p>
+        <p>
+          If you want to see how it works on your numbers, the <a href="/pricing">savings calculator</a> takes your monthly order volume, client count, and returns volume and shows an estimate. If you want to talk it through with the operator who built the product, <a href="/contact">come find me</a>.
+        </p>
+
+        <h2>Frequently asked questions</h2>
+        <dl class="space-y-4">
+          {faqs.map((f) => (
+            <div class="card p-6">
+              <dt class="font-display text-lg font-bold">{f.q}</dt>
+              <dd class="mt-3 text-slate-700 dark:text-slate-300">{f.a}</dd>
+            </div>
+          ))}
+        </dl>
+
+        <h2>Related reading</h2>
+        <ul>
+          <li><a href="/learn/what-is-multi-tenant-wms">What is a multi-tenant WMS?</a></li>
+          <li><a href="/learn/what-is-a-billing-ledger">What is a billing ledger in a WMS?</a></li>
+          <li><a href="/compare">How Deliver WMS compares to Extensiv, Logiwa, ShipHero, CartonCloud, and Fishbowl</a></li>
+          <li><a href="/features">Full feature breakdown across all 30 modules</a></li>
+        </ul>
+      </div>
+    </div>
+  </article>
+</BaseLayout>

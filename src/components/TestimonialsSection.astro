@@ -1,0 +1,144 @@
+---
+/**
+ * Reusable testimonials section. Renders cards from src/data/testimonials.ts.
+ *
+ * - Placeholder cards render with a clear visible "Sample — replace before launch"
+ *   strip so you can never accidentally ship them as real customer claims.
+ * - Real cards render clean, with avatar/logo if provided.
+ *
+ * Pair with ReviewSchema in the page <head> slot so the structured data follows
+ * the same source of truth.
+ */
+
+import { TESTIMONIALS } from '@/data/testimonials';
+
+interface Props {
+  /** Optional heading override. */
+  heading?: string;
+  /** Optional eyebrow override. */
+  eyebrow?: string;
+  /** Optional subheading override. */
+  subheading?: string;
+  /** Max cards to show. Defaults to all. */
+  limit?: number;
+  /** Background variant: 'light' (default) or 'dark' for inversion. */
+  variant?: 'light' | 'dark';
+}
+
+const {
+  heading = 'Operators using Deliver WMS',
+  eyebrow = 'Customer outcomes',
+  subheading = 'Real numbers from operators running on Deliver WMS today.',
+  limit,
+  variant = 'light',
+} = Astro.props;
+
+const items = limit ? TESTIMONIALS.slice(0, limit) : TESTIMONIALS;
+const hasAnyReal = items.some((t) => !t.placeholder);
+
+// Pre-launch / no-customer state: render nothing. The section reappears the
+// moment a non-placeholder entry lands in src/data/testimonials.ts.
+const shouldRender = hasAnyReal;
+---
+
+{shouldRender && (
+<section class:list={[
+  'py-20 sm:py-24',
+  variant === 'dark'
+    ? 'bg-slate-950 text-white'
+    : 'bg-slate-50 dark:bg-slate-900/50'
+]}>
+  <div class="container-page">
+    <div class="mx-auto max-w-2xl text-center">
+      <p class:list={['eyebrow mx-auto justify-center', variant === 'dark' && 'text-brand-400']}>
+        {eyebrow}
+      </p>
+      <h2 class="section-title mt-6">{heading}</h2>
+      <p class:list={['section-sub', variant === 'dark' && 'text-slate-300']}>{subheading}</p>
+    </div>
+
+    {!hasAnyReal && (
+      <p class="mx-auto mt-6 max-w-2xl text-center text-sm font-medium uppercase tracking-wider text-amber-700 dark:text-amber-400">
+        Stand-in copy — replace with real testimonials before launch.
+      </p>
+    )}
+
+    <ul class="mt-12 grid gap-6 lg:grid-cols-3">
+      {items.map((t) => (
+        <li>
+          <article class:list={[
+            'card relative flex h-full flex-col p-6 sm:p-8',
+            t.placeholder && 'ring-1 ring-amber-300 dark:ring-amber-700',
+          ]}>
+            {t.placeholder && (
+              <span class="absolute -top-2 right-4 rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-amber-800 dark:bg-amber-900/40 dark:text-amber-300">
+                Sample
+              </span>
+            )}
+
+            {t.metric && (
+              <p class:list={[
+                'font-display text-2xl font-bold tracking-tight',
+                variant === 'dark' ? 'text-brand-400' : 'text-brand-600 dark:text-brand-400',
+              ]}>
+                {t.metric}
+              </p>
+            )}
+
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+              class="mt-2 h-6 w-6 shrink-0 text-slate-300 dark:text-slate-700"
+              fill="currentColor"
+            >
+              <path d="M7.17 6.43A5.21 5.21 0 003 11.43V18h6v-6.57H6.43c0-1.86 1.5-3 2.43-3l-1.69-1zm10 0a5.21 5.21 0 00-4.17 5v6.57h6V11.43h-2.57c0-1.86 1.5-3 2.43-3l-1.69-1z" />
+            </svg>
+
+            <blockquote class:list={[
+              'mt-3 flex-1 text-base leading-relaxed',
+              variant === 'dark' ? 'text-slate-200' : 'text-slate-700 dark:text-slate-300',
+            ]}>
+              {t.quote}
+            </blockquote>
+
+            <footer class="mt-6 flex items-center gap-3">
+              {t.avatar ? (
+                <img src={t.avatar} alt={t.authorName} class="h-10 w-10 rounded-full object-cover" />
+              ) : (
+                <span class:list={[
+                  'flex h-10 w-10 items-center justify-center rounded-full font-display text-sm font-bold',
+                  variant === 'dark' ? 'bg-white/10 text-white' : 'bg-slate-200 text-slate-700 dark:bg-slate-800 dark:text-slate-200',
+                ]}>
+                  {t.authorName.split(' ').map((p) => p[0]).join('').slice(0, 2).toUpperCase()}
+                </span>
+              )}
+              <div>
+                <p class="text-sm font-semibold">{t.authorName}</p>
+                <p class:list={[
+                  'text-xs',
+                  variant === 'dark' ? 'text-slate-400' : 'text-slate-500',
+                ]}>
+                  {t.authorTitle}{t.companyName ? `, ${t.companyName}` : ''}
+                </p>
+              </div>
+            </footer>
+
+            {t.caseStudyUrl && !t.placeholder && (
+              <a
+                href={t.caseStudyUrl}
+                class="mt-4 inline-flex w-fit items-center gap-1 text-sm font-semibold text-brand-700 hover:text-brand-900 dark:text-brand-400 dark:hover:text-brand-300"
+              >
+                Read the full story
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-3.5 w-3.5">
+                  <polyline points="9 18 15 12 9 6" />
+                </svg>
+              </a>
+            )}
+          </article>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+)}

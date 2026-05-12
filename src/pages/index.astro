@@ -1,5 +1,9 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
+import HowToSchema from '@/components/schema/HowToSchema.astro';
+import ReviewSchema from '@/components/schema/ReviewSchema.astro';
+import TestimonialsSection from '@/components/TestimonialsSection.astro';
+import { SITE_URL } from '@/lib/brand';
 
 const title = 'Deliver WMS — Warehouse Management & Last-Mile Delivery';
 const description =
@@ -122,6 +126,15 @@ const softwareSchema = {
 
 <BaseLayout title={title} description={description}>
   <script slot="head" type="application/ld+json" set:html={JSON.stringify(softwareSchema)} />
+  <HowToSchema
+    slot="head"
+    name="How an order flows through Deliver WMS — receive to deliver"
+    description="The seven-step Deliver WMS fulfillment flow, from inbound receiving to last-mile delivery and real-time reporting."
+    image={`${SITE_URL}/images/app-dashboard.webp`}
+    totalTime="PT15M"
+    steps={fulfillmentSteps.map((s) => ({ name: s.label, text: `${s.label} — ${s.detail}` }))}
+  />
+  <ReviewSchema slot="head" />
 
   <!-- Hero (full-bleed with warehouse photo background + dark overlay) -->
   <section class="relative isolate overflow-hidden bg-slate-950 text-white">
@@ -272,6 +285,13 @@ const softwareSchema = {
       </div>
     </div>
   </section>
+
+  <!-- Customer testimonials -->
+  <TestimonialsSection
+    heading="Operators getting hours back every week"
+    eyebrow="Customer outcomes"
+    subheading="Real numbers from 3PLs running on Deliver WMS today."
+  />
 
   <!-- See the platform -->
   <section class="relative isolate overflow-hidden border-t border-slate-200 bg-white py-20 sm:py-24 dark:border-slate-800 dark:bg-slate-950">

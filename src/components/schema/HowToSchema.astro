@@ -1,0 +1,56 @@
+---
+/**
+ * Reusable HowTo JSON-LD schema component.
+ *
+ * Mount this in the `head` slot of any page that has a step-by-step process.
+ * Eligible for HowTo rich results in Google and citation-worthy for AI engines
+ * that synthesize procedural answers.
+ *
+ * Usage in a page:
+ *   <HowToSchema
+ *     slot="head"
+ *     name="From dock to doorstep: how Deliver WMS processes an order"
+ *     description="The end-to-end flow inside Deliver WMS from inbound receiving to last-mile delivery."
+ *     steps={[
+ *       { name: 'Receive & Store', text: '...' },
+ *       { name: 'Manage Inventory', text: '...' },
+ *     ]}
+ *   />
+ */
+
+export interface HowToStep {
+  name: string;
+  text: string;
+  image?: string;
+  url?: string;
+}
+
+interface Props {
+  name: string;
+  description: string;
+  steps: HowToStep[];
+  totalTime?: string; // ISO 8601 duration, e.g. 'PT15M'
+  image?: string;
+}
+
+const { name, description, steps, totalTime, image } = Astro.props;
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name,
+  description,
+  ...(image ? { image } : {}),
+  ...(totalTime ? { totalTime } : {}),
+  step: steps.map((s, i) => ({
+    '@type': 'HowToStep',
+    position: i + 1,
+    name: s.name,
+    text: s.text,
+    ...(s.image ? { image: s.image } : {}),
+    ...(s.url ? { url: s.url } : {}),
+  })),
+};
+---
+
+<script type="application/ld+json" set:html={JSON.stringify(schema)} />

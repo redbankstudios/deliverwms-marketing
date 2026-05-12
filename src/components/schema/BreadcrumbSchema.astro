@@ -1,0 +1,38 @@
+---
+/**
+ * BreadcrumbList JSON-LD wrapper.
+ *
+ * Use anywhere you also render the visual Breadcrumb component, so the data
+ * stays in sync. Drop into the page's `head` slot.
+ *
+ *   <BreadcrumbSchema slot="head" crumbs={[
+ *     { name: 'Home', url: 'https://deliverwms.com/' },
+ *     { name: 'Blog', url: 'https://deliverwms.com/blog' },
+ *     { name: postTitle, url: postUrl },
+ *   ]} />
+ */
+
+export interface SchemaCrumb {
+  name: string;
+  url: string;
+}
+
+interface Props {
+  crumbs: SchemaCrumb[];
+}
+
+const { crumbs } = Astro.props;
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: crumbs.map((c, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    name: c.name,
+    item: c.url,
+  })),
+};
+---
+
+<script type="application/ld+json" set:html={JSON.stringify(schema)} />

@@ -1,0 +1,90 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import BreadcrumbSchema from '@/components/schema/BreadcrumbSchema.astro';
+import { SITE_URL, BRAND } from '@/lib/brand';
+import { AUTHORS, type AuthorSlug } from '@/lib/authors';
+import { getCollection } from 'astro:content';
+
+const title = `Blog — ${BRAND.name}`;
+const description =
+  'Operator-grade writing on warehouse management, 3PL operations, last-mile delivery, and the economics of running a modern warehouse. New posts every two weeks.';
+
+// Only show published posts (drafts excluded in prod builds).
+const allPosts = await getCollection('blog', ({ data }) => import.meta.env.DEV || !data.draft);
+const posts = allPosts.sort((a, b) => b.data.publishDate.valueOf() - a.data.publishDate.valueOf());
+
+const pillarOf = {
+  'how-to': 'How-To',
+  'benchmark': 'Benchmark',
+  'commentary': 'Commentary',
+} as const;
+---
+
+<BaseLayout title={title} description={description}>
+  <BreadcrumbSchema
+    slot="head"
+    crumbs={[
+      { name: 'Home', url: `${SITE_URL}/` },
+      { name: 'Blog', url: `${SITE_URL}/blog` },
+    ]}
+  />
+
+  <!-- Hero -->
+  <section class="relative isolate overflow-hidden border-b border-slate-200 bg-white py-20 sm:py-24 dark:border-slate-800 dark:bg-slate-950">
+    <div class="dot-grid-bg absolute inset-0 -z-10 opacity-50 [mask-image:radial-gradient(ellipse_at_center,white_30%,transparent_70%)]"></div>
+    <div class="container-narrow text-center">
+      <p class="eyebrow mx-auto justify-center">Blog</p>
+      <h1 class="display mt-6 text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl">
+        Notes from the warehouse floor
+      </h1>
+      <p class="mx-auto mt-6 max-w-2xl text-lg text-slate-600 dark:text-slate-400">
+        How-to playbooks, original benchmarks, and unvarnished commentary on running a modern WMS. New posts every two weeks.
+      </p>
+    </div>
+  </section>
+
+  <!-- Posts -->
+  <section class="bg-slate-50 py-16 sm:py-20 dark:bg-slate-900/50">
+    <div class="container-page">
+      {posts.length === 0 ? (
+        <div class="card mx-auto max-w-2xl p-10 text-center">
+          <p class="font-display text-2xl font-bold">First post is on the way.</p>
+          <p class="mt-3 text-slate-600 dark:text-slate-400">
+            We're publishing every two weeks. Bookmark this page or follow along by signing up for the platform — we'll email you when the first benchmark drops.
+          </p>
+          <a href="/contact" class="btn-primary mt-6 inline-flex">Get notified</a>
+        </div>
+      ) : (
+        <ul class="grid gap-6 lg:grid-cols-2">
+          {posts.map((post) => {
+            const author = AUTHORS[post.data.author as AuthorSlug];
+            return (
+              <li>
+                <a href={`/blog/${post.slug}`} class="card card-hover block h-full p-6 sm:p-8">
+                  <div class="flex items-center gap-3 text-xs font-medium uppercase tracking-wide text-brand-700 dark:text-brand-400">
+                    <span>{pillarOf[post.data.pillar]}</span>
+                    <span class="text-slate-400">·</span>
+                    <time datetime={post.data.publishDate.toISOString()} class="text-slate-500">
+                      {post.data.publishDate.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
+                    </time>
+                  </div>
+                  <h2 class="font-display mt-3 text-xl font-bold tracking-tight sm:text-2xl">
+                    {post.data.title}
+                  </h2>
+                  <p class="mt-3 text-sm text-slate-600 dark:text-slate-400">
+                    {post.data.description}
+                  </p>
+                  <div class="mt-6 flex items-center gap-3 text-sm text-slate-500">
+                    <img src={author.image} alt={author.name} class="h-7 w-7 rounded-full object-cover" />
+                    <span>{author.name}</span>
+                    {post.data.readingMinutes && <span>· {post.data.readingMinutes} min read</span>}
+                  </div>
+                </a>
+              </li>
+            );
+          })}
+        </ul>
+      )}
+    </div>
+  </section>
+</BaseLayout>

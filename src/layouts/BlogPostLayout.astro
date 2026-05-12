@@ -1,0 +1,195 @@
+---
+/**
+ * Layout for individual blog posts.
+ *
+ * Responsibilities:
+ *   - Render the post header (title, meta, hero image)
+ *   - Render the author byline + bio strip
+ *   - Slot in the post body
+ *   - Emit Article + Person + BreadcrumbList JSON-LD
+ *   - Optionally emit FAQPage and HowTo JSON-LD if the post declares them
+ *   - Set canonical, OG, Twitter, og:type=article
+ */
+
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Breadcrumb from '@/components/Breadcrumb.astro';
+import ArticleSchema from '@/components/schema/ArticleSchema.astro';
+import PersonSchema from '@/components/schema/PersonSchema.astro';
+import BreadcrumbSchema from '@/components/schema/BreadcrumbSchema.astro';
+import FaqSchema from '@/components/schema/FaqSchema.astro';
+import HowToSchema from '@/components/schema/HowToSchema.astro';
+import { SITE_URL, BRAND } from '@/lib/brand';
+import { AUTHORS, authorIdFor, type AuthorSlug } from '@/lib/authors';
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  post: CollectionEntry<'blog'>;
+}
+
+const { post } = Astro.props;
+const { data, slug, body } = post;
+
+const author = AUTHORS[data.author as AuthorSlug];
+const aid = authorIdFor(data.author as AuthorSlug);
+
+const url = `${SITE_URL}/blog/${slug}`;
+const heroImageUrl = data.ogImage
+  ?? (data.heroImage ? data.heroImage.src : `${SITE_URL}/images/hero.webp`);
+
+const pillarLabel = {
+  'how-to': 'How-To',
+  'benchmark': 'Benchmark',
+  'commentary': 'Commentary',
+}[data.pillar];
+
+// Cheap word count for the Article schema. The `body` string is the raw markdown.
+const wordCount = body ? body.split(/\s+/).filter(Boolean).length : undefined;
+const readingMinutes = data.readingMinutes ?? (wordCount ? Math.max(1, Math.round(wordCount / 220)) : undefined);
+
+const publishedFormatted = data.publishDate.toLocaleDateString('en-US', {
+  year: 'numeric', month: 'long', day: 'numeric',
+});
+const updatedFormatted = data.updateDate?.toLocaleDateString('en-US', {
+  year: 'numeric', month: 'long', day: 'numeric',
+});
+---
+
+<BaseLayout
+  title={`${data.title} — ${BRAND.name}`}
+  description={data.description}
+  canonical={data.canonicalOverride ?? url}
+  ogImage={heroImageUrl}
+  ogType="article"
+>
+  <!-- Per-post schemas -->
+  <ArticleSchema
+    slot="head"
+    url={url}
+    title={data.title}
+    description={data.description}
+    image={heroImageUrl}
+    datePublished={data.publishDate}
+    dateModified={data.updateDate}
+    authorId={aid}
+    authorName={author.name}
+    keywords={data.tags}
+    wordCount={wordCount}
+    articleSection={pillarLabel}
+  />
+  <PersonSchema
+    slot="head"
+    id={aid}
+    name={author.name}
+    jobTitle={author.jobTitle}
+    description={author.bio}
+    image={author.image}
+    url={`${SITE_URL}/about#${author.slug}`}
+    sameAs={[...author.sameAs]}
+    worksFor={{ name: BRAND.name, url: SITE_URL }}
+  />
+  <BreadcrumbSchema
+    slot="head"
+    crumbs={[
+      { name: 'Home', url: `${SITE_URL}/` },
+      { name: 'Blog', url: `${SITE_URL}/blog` },
+      { name: data.title, url },
+    ]}
+  />
+  {data.faq && data.faq.length > 0 && <FaqSchema slot="head" items={data.faq} />}
+  {data.howto && (
+    <HowToSchema
+      slot="head"
+      name={data.howto.name}
+      description={data.howto.description}
+      totalTime={data.howto.totalTime}
+      steps={data.howto.steps}
+    />
+  )}
+
+  <!-- Header -->
+  <section class="relative isolate overflow-hidden border-b border-slate-200 bg-white py-16 sm:py-20 dark:border-slate-800 dark:bg-slate-950">
+    <div class="dot-grid-bg absolute inset-0 -z-10 opacity-40 [mask-image:radial-gradient(ellipse_at_top,white_30%,transparent_70%)]"></div>
+    <div class="container-narrow">
+      <Breadcrumb crumbs={[
+        { name: 'Home', href: '/' },
+        { name: 'Blog', href: '/blog' },
+        { name: data.title },
+      ]} />
+
+      <p class="eyebrow mt-6">{pillarLabel}</p>
+      <h1 class="display mt-3 text-4xl font-bold tracking-tight sm:text-5xl">
+        {data.title}
+      </h1>
+      <p class="mt-4 max-w-3xl text-lg text-slate-600 dark:text-slate-400">
+        {data.description}
+      </p>
+
+      <div class="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-slate-600 dark:text-slate-400">
+        <div class="flex items-center gap-2">
+          <img src={author.image} alt={author.name} class="h-7 w-7 rounded-full object-cover" />
+          <span>By <strong class="text-slate-900 dark:text-white">{author.name}</strong></span>
+        </div>
+        <time datetime={data.publishDate.toISOString()}>Published {publishedFormatted}</time>
+        {data.updateDate && (
+          <time datetime={data.updateDate.toISOString()}>· Updated {updatedFormatted}</time>
+        )}
+        {readingMinutes && <span>· {readingMinutes} min read</span>}
+      </div>
+
+      {data.tags.length > 0 && (
+        <ul class="mt-6 flex flex-wrap gap-2">
+          {data.tags.map((tag) => (
+            <li>
+              <a href={`/blog?tag=${encodeURIComponent(tag)}`}
+                 class="rounded-full border border-slate-200 px-3 py-1 text-xs font-medium text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800">
+                {tag}
+              </a>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  </section>
+
+  <!-- Body -->
+  <article class="bg-white py-14 sm:py-20 dark:bg-slate-950">
+    <div class="container-narrow">
+      <div class="prose prose-slate prose-lg max-w-none dark:prose-invert prose-headings:font-display prose-h2:mt-12 prose-h2:scroll-mt-24 prose-h3:scroll-mt-24 prose-img:rounded-xl prose-a:text-brand-700 dark:prose-a:text-brand-400">
+        <slot />
+      </div>
+    </div>
+  </article>
+
+  <!-- Author bio -->
+  <section class="border-t border-slate-200 bg-slate-50 py-12 dark:border-slate-800 dark:bg-slate-900/50">
+    <div class="container-narrow">
+      <div class="card flex flex-col items-start gap-5 p-6 sm:flex-row sm:items-center sm:p-8">
+        <img src={author.image} alt={author.name} class="h-16 w-16 shrink-0 rounded-full object-cover ring-2 ring-white dark:ring-slate-800" />
+        <div>
+          <p class="font-display text-lg font-bold">About {author.name}</p>
+          <p class="text-sm text-slate-500">{author.jobTitle}</p>
+          <p class="mt-2 text-sm text-slate-600 dark:text-slate-400">{author.bio}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="relative isolate overflow-hidden bg-slate-950 py-16 text-white">
+    <div class="dot-grid-bg absolute inset-0 -z-10 opacity-20"></div>
+    <div class="container-narrow text-center">
+      <h2 class="font-display text-3xl font-bold tracking-tight sm:text-4xl">
+        Run your warehouse on something simpler.
+      </h2>
+      <p class="mx-auto mt-3 max-w-2xl text-slate-300">
+        Start on the free PAYG tier. No credit card. Operational in a week.
+      </p>
+      <div class="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
+        <a href="https://app.deliverwms.com/signup" class="btn-primary">Start Free Trial</a>
+        <a href="/features" class="btn-secondary border-white/20 bg-white/5 text-white hover:bg-white/10">
+          See features
+        </a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

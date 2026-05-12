@@ -1,0 +1,196 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Breadcrumb from '@/components/Breadcrumb.astro';
+import BreadcrumbSchema from '@/components/schema/BreadcrumbSchema.astro';
+import FaqSchema from '@/components/schema/FaqSchema.astro';
+import { SITE_URL } from '@/lib/brand';
+
+const title = 'What is a multi-tenant WMS? — Real vs retrofitted, explained | Deliver WMS';
+const description =
+  'A multi-tenant WMS isolates inventory, orders, billing, and reporting per client tenant. Here is the difference between real multi-tenancy and a single-brand WMS with a tenant filter bolted on.';
+const pageUrl = `${SITE_URL}/learn/what-is-multi-tenant-wms`;
+
+const faqs = [
+  {
+    q: 'What is multi-tenancy in a WMS?',
+    a: 'Multi-tenancy is an architectural pattern where a single instance of the software serves multiple isolated customers — called tenants — with their own data, configuration, and access controls. In a WMS context, each 3PL client is typically a tenant, and the system must guarantee that one client cannot see or affect another.',
+  },
+  {
+    q: 'Is multi-tenancy the same as multi-warehouse?',
+    a: 'No. Multi-warehouse means the system can manage operations across more than one physical location. Multi-tenant means the system can isolate multiple client brands within the same operation. A 3PL needs both: multi-tenant always, multi-warehouse if they run more than one site.',
+  },
+  {
+    q: 'How can I tell if a WMS is "real" multi-tenant or retrofitted?',
+    a: 'Ask the vendor to show a database query that returns inventory for one client. If their answer involves application-level filtering (WHERE client_id = X applied in code), the tenancy is bolted on and prone to leakage. If their answer involves row-level security policies enforced at the database, the tenancy is real.',
+  },
+  {
+    q: 'Why does row-level security (RLS) matter?',
+    a: 'RLS pushes the tenant filter from application code (which can be forgotten, bypassed, or written incorrectly) down to the database itself. Once a connection is scoped to a tenant, no query can return rows from another tenant — even a malicious or buggy one. It is the strongest practical defense against cross-tenant data leakage.',
+  },
+  {
+    q: 'What are the most common multi-tenancy failure modes?',
+    a: 'Reports that aggregate across tenants by accident. Exports that include rows from the wrong client. Customizations that have to be redone per tenant. New features that ship with a missing tenant filter and leak data until someone notices. All of these become much rarer when tenancy is enforced at the database level.',
+  },
+  {
+    q: 'Does multi-tenancy hurt performance?',
+    a: 'Done well, multi-tenancy adds a constant-time check per query — negligible at any realistic scale. The performance issues that real 3PLs hit are usually about indexing strategy and query patterns, not multi-tenancy itself. A well-indexed multi-tenant database can serve thousands of clients on the same instance.',
+  },
+  {
+    q: 'Can a brand-side WMS be made multi-tenant later?',
+    a: 'Technically yes, practically rarely. Retrofitting tenancy means revisiting every table, query, report, export, and integration. Most "multi-tenant" features added to a single-brand WMS years after launch are incomplete — the marketing claims tenancy, the architecture is partial. Build native or pick a vendor that did.',
+  },
+];
+
+const definedTermSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'DefinedTerm',
+  '@id': `${pageUrl}#definition`,
+  name: 'Multi-tenant WMS',
+  description:
+    'A warehouse management system that serves multiple isolated client tenants from a single software instance, with data, configuration, and access strictly scoped per tenant.',
+  inDefinedTermSet: {
+    '@type': 'DefinedTermSet',
+    name: 'Deliver WMS Fundamentals',
+    url: `${SITE_URL}/learn`,
+  },
+  url: pageUrl,
+};
+
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'What is a multi-tenant WMS?',
+  description,
+  datePublished: '2026-05-12',
+  dateModified: '2026-05-12',
+  url: pageUrl,
+  mainEntityOfPage: { '@type': 'WebPage', '@id': pageUrl },
+  author: { '@type': 'Organization', name: 'Deliver WMS', url: SITE_URL },
+  publisher: {
+    '@type': 'Organization',
+    name: 'Deliver WMS',
+    url: SITE_URL,
+    logo: { '@type': 'ImageObject', url: `${SITE_URL}/logo.png` },
+  },
+};
+---
+
+<BaseLayout title={title} description={description}>
+  <BreadcrumbSchema
+    slot="head"
+    crumbs={[
+      { name: 'Home', url: `${SITE_URL}/` },
+      { name: 'Learn', url: `${SITE_URL}/learn` },
+      { name: 'What is a multi-tenant WMS?', url: pageUrl },
+    ]}
+  />
+  <FaqSchema slot="head" items={faqs} />
+  <script slot="head" type="application/ld+json" set:html={JSON.stringify(definedTermSchema)} />
+  <script slot="head" type="application/ld+json" set:html={JSON.stringify(articleSchema)} />
+
+  <section class="relative isolate overflow-hidden border-b border-slate-200 bg-white py-16 sm:py-20 dark:border-slate-800 dark:bg-slate-950">
+    <div class="container-narrow">
+      <Breadcrumb crumbs={[
+        { name: 'Home', href: '/' },
+        { name: 'Learn', href: '/learn' },
+        { name: 'What is a multi-tenant WMS?' },
+      ]} />
+      <p class="eyebrow mt-6">Fundamentals · 7 min read</p>
+      <h1 class="display mt-3 text-4xl font-bold tracking-tight sm:text-5xl">What is a multi-tenant WMS?</h1>
+      <p class="mt-4 max-w-3xl text-lg text-slate-600 dark:text-slate-400">
+        A multi-tenant WMS isolates inventory, orders, billing, and reporting per client tenant from a single software instance. Here is what real multi-tenancy looks like, what retrofitted multi-tenancy looks like, and how to spot the difference before you sign.
+      </p>
+    </div>
+  </section>
+
+  <article class="bg-white py-12 sm:py-16 dark:bg-slate-950">
+    <div class="container-narrow">
+      <div class="prose prose-slate prose-lg max-w-none dark:prose-invert prose-headings:font-display prose-h2:mt-12 prose-h2:scroll-mt-24 prose-a:text-brand-700 dark:prose-a:text-brand-400">
+
+        <h2>Definition</h2>
+        <p>
+          A <strong>multi-tenant WMS</strong> is a warehouse management system architected to serve multiple isolated client tenants from a single software instance. Each tenant has their own inventory, orders, billing rates, configuration, and reports. The platform guarantees — at the database level, not just in the UI — that one tenant cannot read, modify, or even see data belonging to another.
+        </p>
+
+        <h2>Why this matters for 3PLs</h2>
+        <p>
+          For a third-party logistics provider, multi-tenancy is not an architectural preference. It is the difference between a viable platform and a platform that will eventually leak one client's data to another, costing the 3PL a major account and possibly a lawsuit.
+        </p>
+        <p>
+          A single warehouse can serve a dozen client brands. Their inventory sits in adjacent bins. Their orders flow through the same picker. Their data must never cross. The WMS is the system of record that enforces that boundary.
+        </p>
+
+        <h2>Real multi-tenancy vs retrofitted multi-tenancy</h2>
+        <p>
+          The most useful distinction to draw when evaluating WMS platforms is between systems built multi-tenant from day one and systems that started as single-brand WMS and added tenant support later.
+        </p>
+        <h3>Real multi-tenancy looks like</h3>
+        <ul>
+          <li>Every table has a <code>tenant_id</code> column (or equivalent) as part of the primary key or a non-nullable column with an index.</li>
+          <li>Database-level row-level security policies enforce tenant scoping on every read, write, update, and delete.</li>
+          <li>Application connections are scoped to a tenant context the moment they are established — code does not have to remember to filter.</li>
+          <li>Reports and exports inherit the same tenant scope automatically.</li>
+          <li>New features ship with tenancy already enforced because there is no application-code filter to forget.</li>
+        </ul>
+        <h3>Retrofitted multi-tenancy looks like</h3>
+        <ul>
+          <li>Some tables have a tenant column; others do not.</li>
+          <li>Tenant filtering is done in application code (<code>WHERE client_id = ?</code>) and depends on the developer remembering to include it.</li>
+          <li>Reports occasionally aggregate across tenants by accident, requiring a hotfix.</li>
+          <li>Customizations and integrations have to be configured per tenant rather than inheriting global behavior.</li>
+          <li>Adding a new tenant requires a non-trivial onboarding script — not just an INSERT.</li>
+        </ul>
+        <p>
+          You can sometimes tell from the marketing copy. Vendors who built multi-tenant from day one tend to say so explicitly. Vendors who retrofitted tend to use softer language: "supports multi-tenant operations," "can be configured for 3PL use cases," "compatible with multi-client workflows."
+        </p>
+
+        <h2>The role of row-level security</h2>
+        <p>
+          Row-level security (RLS) is a database feature — supported natively by PostgreSQL, SQL Server, and a few others — that lets the database itself enforce row-level access rules. Instead of trusting every developer to write <code>WHERE tenant_id = current_tenant()</code> on every query, the database applies the rule automatically. If a query tries to read a row from another tenant, the database returns nothing — silently, regardless of the query.
+        </p>
+        <p>
+          RLS is the strongest practical defense against cross-tenant data leakage. It does not depend on the application being bug-free. It does not require code review to catch a missing filter. It does not assume the developer remembered the rules. It just enforces them.
+        </p>
+
+        <h2>Common failure modes (and what they cost)</h2>
+        <p>
+          When a WMS gets multi-tenancy wrong, the failure modes follow a pattern. Knowing the pattern helps you spot the risk during evaluation.
+        </p>
+        <ul>
+          <li><strong>Cross-tenant report aggregation.</strong> A dashboard that quietly includes another client's volume in the totals. Reported by the client. Damages trust. Usually a missing tenant filter on a SELECT.</li>
+          <li><strong>Export with extra rows.</strong> A CSV download that includes rows from another tenant near the boundary. Reported by the client. Sometimes triggers a contract review.</li>
+          <li><strong>Search that returns hits from other tenants.</strong> An SKU search that returns inventory from a different brand. Quietly noticed by warehouse staff first.</li>
+          <li><strong>API endpoint that ignores the tenant context.</strong> An integration that returns all data when called with the right (or wrong) credentials. Often discovered by a security review or a penetration test.</li>
+        </ul>
+        <p>
+          The cost of each individual incident varies. The systemic cost is reputational — once a 3PL has had one of these issues, every account they lose to a competitor cites it as the reason.
+        </p>
+
+        <h2>Multi-tenancy in Deliver WMS</h2>
+        <p>
+          Deliver WMS was built multi-tenant from the first commit. Every table is tenant-scoped. Every query runs under a connection bound to a tenant context. Row-level security policies enforce the rules in PostgreSQL — the database itself rejects any read that crosses tenants. New features inherit this scoping automatically because there is no application-level filter to forget.
+        </p>
+        <p>
+          This is the kind of architecture decision that is invisible right up until the moment it would have mattered. We made it the foundation because retrofitting it later is structurally hard, and most 3PLs cannot afford to be the operator who finds out the hard way.
+        </p>
+
+        <h2>Frequently asked questions</h2>
+        <dl class="space-y-4">
+          {faqs.map((f) => (
+            <div class="card p-6">
+              <dt class="font-display text-lg font-bold">{f.q}</dt>
+              <dd class="mt-3 text-slate-700 dark:text-slate-300">{f.a}</dd>
+            </div>
+          ))}
+        </dl>
+
+        <h2>Related reading</h2>
+        <ul>
+          <li><a href="/learn/what-is-a-3pl-wms">What is a 3PL WMS?</a></li>
+          <li><a href="/learn/what-is-a-billing-ledger">What is a billing ledger in a WMS?</a></li>
+          <li><a href="/compare">How Deliver WMS compares to other multi-tenant platforms</a></li>
+        </ul>
+      </div>
+    </div>
+  </article>
+</BaseLayout>

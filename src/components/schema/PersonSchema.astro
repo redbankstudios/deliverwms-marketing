@@ -1,0 +1,48 @@
+---
+/**
+ * Person JSON-LD schema — named expert / founder / author signal.
+ *
+ * Critical for E-E-A-T. Mount on /about to attach Person to the founder bio.
+ * Link Article.author.@id to this Person's @id in blog posts to make the
+ * author entity consistent across the site.
+ */
+
+interface Props {
+  id: string; // canonical URL+#fragment for this Person
+  name: string;
+  jobTitle?: string;
+  description?: string;
+  image?: string;
+  url?: string;
+  sameAs?: string[]; // LinkedIn, X, GitHub, etc.
+  worksFor?: {
+    name: string;
+    url: string;
+  };
+}
+
+const { id, name, jobTitle, description, image, url, sameAs, worksFor } = Astro.props;
+
+const schema: Record<string, unknown> = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  '@id': id,
+  name,
+  ...(jobTitle ? { jobTitle } : {}),
+  ...(description ? { description } : {}),
+  ...(image ? { image } : {}),
+  ...(url ? { url } : {}),
+  ...(sameAs && sameAs.length ? { sameAs } : {}),
+  ...(worksFor
+    ? {
+        worksFor: {
+          '@type': 'Organization',
+          name: worksFor.name,
+          url: worksFor.url,
+        },
+      }
+    : {}),
+};
+---
+
+<script type="application/ld+json" set:html={JSON.stringify(schema)} />

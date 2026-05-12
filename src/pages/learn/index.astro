@@ -1,0 +1,86 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import BreadcrumbSchema from '@/components/schema/BreadcrumbSchema.astro';
+import { SITE_URL } from '@/lib/brand';
+
+const title = 'Learn — WMS, 3PL, and warehouse fundamentals | Deliver WMS';
+const description =
+  'Plain-English explanations of the concepts that shape modern warehouse management: 3PL WMS, multi-tenant architecture, billing ledgers, last-mile delivery, and more.';
+
+const articles = [
+  {
+    href: '/learn/what-is-a-3pl-wms',
+    title: 'What is a 3PL WMS?',
+    summary:
+      'The core capabilities, the difference from brand-side WMS, and how to evaluate one for a multi-client warehouse.',
+    readingMinutes: 8,
+  },
+  {
+    href: '/learn/what-is-multi-tenant-wms',
+    title: 'What is a multi-tenant WMS?',
+    summary:
+      'Real multi-tenancy vs retrofitted single-brand systems. Why row-level security matters. How to spot the difference.',
+    readingMinutes: 7,
+  },
+  {
+    href: '/learn/what-is-a-billing-ledger',
+    title: 'What is a billing ledger in a WMS?',
+    summary:
+      'Event-stream billing beats month-end reconciliation. How a ledger-backed WMS keeps invoices defensible line by line.',
+    readingMinutes: 6,
+  },
+];
+---
+
+<BaseLayout title={title} description={description}>
+  <BreadcrumbSchema
+    slot="head"
+    crumbs={[
+      { name: 'Home', url: `${SITE_URL}/` },
+      { name: 'Learn', url: `${SITE_URL}/learn` },
+    ]}
+  />
+
+  <!-- Hero -->
+  <section class="relative isolate overflow-hidden border-b border-slate-200 bg-white py-20 sm:py-24 dark:border-slate-800 dark:bg-slate-950">
+    <div class="dot-grid-bg absolute inset-0 -z-10 opacity-50 [mask-image:radial-gradient(ellipse_at_center,white_30%,transparent_70%)]"></div>
+    <div class="container-narrow text-center">
+      <p class="eyebrow mx-auto justify-center">Learn</p>
+      <h1 class="display mt-6 text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl">
+        Fundamentals, defined honestly
+      </h1>
+      <p class="mx-auto mt-6 max-w-2xl text-lg text-slate-600 dark:text-slate-400">
+        Plain-English explanations of the WMS, 3PL, and warehouse concepts that actually shape your day. No fluff, no consultant-speak.
+      </p>
+    </div>
+  </section>
+
+  <!-- Articles -->
+  <section class="bg-slate-50 py-16 sm:py-20 dark:bg-slate-900/50">
+    <div class="container-page">
+      <ul class="grid gap-6 lg:grid-cols-3">
+        {articles.map((a) => (
+          <li>
+            <a href={a.href} class="card card-hover block h-full p-6 sm:p-8">
+              <p class="text-xs font-medium uppercase tracking-wide text-brand-700 dark:text-brand-400">
+                Fundamentals · {a.readingMinutes} min read
+              </p>
+              <h2 class="font-display mt-3 text-xl font-bold tracking-tight">
+                {a.title}
+              </h2>
+              <p class="mt-3 text-sm text-slate-600 dark:text-slate-400">
+                {a.summary}
+              </p>
+              <span class="mt-6 inline-flex items-center gap-1 text-sm font-semibold text-brand-700 dark:text-brand-400">
+                Read the explainer
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-3.5 w-3.5">
+                  <polyline points="9 18 15 12 9 6" />
+                </svg>
+              </span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+</BaseLayout>
