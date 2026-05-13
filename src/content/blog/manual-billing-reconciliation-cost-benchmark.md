@@ -6,7 +6,7 @@ publishDate: 2026-05-26
 pillar: benchmark
 tags: ["billing", "3PL economics", "benchmark", "finance", "WMS"]
 readingMinutes: 11
-draft: true
+draft: false
 featured: true
 faq:
   - q: "How was the benchmark collected?"

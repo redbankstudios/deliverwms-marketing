@@ -5,7 +5,85 @@ const title = "Deliver WMS Product Roadmap — What's Shipping Next";
 const description =
   "See what's shipping next on the Deliver WMS roadmap: new modules, integrations, and improvements across WMS and last-mile delivery.";
 
-// Operator: replace placeholder bullets below with real items. Three sections, 3-5 items each.
+// "Just shipped" — most operator-relevant recent shipments. Acts as proof-of-velocity above
+// the forward-looking roadmap. Pulled from real shipments documented in the build log.
+const justShipped = [
+  {
+    label: 'AR Aging Report',
+    detail: 'Customer-grouped buckets with backdating + invoice drilldown. Disputed AR in its own column.',
+    date: 'May 2026',
+    href: '/blog/three-days-thirteen-ships-may-2026',
+  },
+  {
+    label: 'Throughput Report',
+    detail: 'Five charts including p50/p90 cycle time, with shared Day/Week granularity toggle.',
+    date: 'May 2026',
+    href: '/blog/three-days-thirteen-ships-may-2026',
+  },
+  {
+    label: 'Invoice integrity sweep',
+    detail: 'Due dates, status/timestamp CHECK constraints, cancel + void API gating. Three-layer defense end-to-end.',
+    date: 'May 2026',
+    href: '/blog/full-revenue-lifecycle-three-layer-defense',
+  },
+  {
+    label: 'Revenue by Customer',
+    detail: 'Per-tenant revenue slicing with date range, sort, filter, and clean export.',
+    date: 'May 2026',
+    href: '/blog/three-days-thirteen-ships-may-2026',
+  },
+  {
+    label: 'B2B portal rebuild — Inventory + Orders + Outbound',
+    detail: 'Self-serve client surfaces with strict business-level RLS isolation. Cross-tenant leak fix landed pre-launch.',
+    date: 'May 2026',
+    href: '/blog/sprint-g-b2b-portal-rebuild',
+  },
+  {
+    label: 'Settings shell repair',
+    detail: 'Every input maps to a real column. Honest UI: hide tabs that don\'t do anything yet.',
+    date: 'May 2026',
+    href: '/blog/three-days-thirteen-ships-may-2026',
+  },
+  {
+    label: 'Full invoice lifecycle',
+    detail: 'Draft → sent → paid → overdue → disputed → resolved → void/cancelled. Every transition gated three ways.',
+    date: 'May 2026',
+    href: '/blog/full-revenue-lifecycle-three-layer-defense',
+  },
+  {
+    label: 'Billable events ledger + 14 event types',
+    detail: 'Every billable event captured at the moment it happens. 4 production rules + daily storage accrual.',
+    date: 'April 2026',
+    href: '/blog/foundation-multi-tenant-onboarding-billable-events',
+  },
+  {
+    label: 'Multi-tenant RLS hardening',
+    detail: '24 RESTRICTIVE business-isolation policies across 23 tables. Database-enforced tenant boundaries.',
+    date: 'April 2026',
+    href: '/blog/foundation-multi-tenant-onboarding-billable-events',
+  },
+  {
+    label: 'Self-serve signup + onboarding',
+    detail: 'Two-minute signup with Cloudflare Turnstile. First-dashboard checklist. Role-aware welcome screens.',
+    date: 'April–May 2026',
+    href: '/blog/billing-platform-and-the-go-live-stack',
+  },
+  {
+    label: 'Sentry observability + source maps',
+    detail: 'Full instrumentation across web + edge functions. Single-source release-name pattern prevents silent map mismatches.',
+    date: 'May 2026',
+    href: '/blog/billing-platform-and-the-go-live-stack',
+  },
+  {
+    label: 'Ledger integrity sweep',
+    detail: '3-way reconciliation, daily cron, quarantine for uninvited signups, demo data provenance fixes.',
+    date: 'April 2026',
+    href: '/blog/integrity-sweep-why-we-built-the-audit-first',
+  },
+];
+
+// Forward-looking roadmap. "Now" reflects what's actively in flight. "Next" + "Later" preserve
+// originally-planned items and add the real planned work surfaced in the build log.
 const sections = [
   {
     label: 'Now',
@@ -13,9 +91,11 @@ const sections = [
     accent: 'text-brand-500',
     dot: 'bg-brand-500',
     items: [
-      'Mobile-first picking app v2 with offline tolerance',
-      'Returns + disposition workflows with photo capture',
-      'Cycle count scheduler + variance reporting',
+      'Billing depth — invoice line-item drilldown + dispute workflow polish',
+      'B2B Reports rewrite — same caliber of analytics for clients as operators',
+      'B2B Billing page — clients see their own line items + statements in the portal',
+      'B2B storefront — public surface for end customers to track orders without an account',
+      'Stripe production switchover — first paying customer go-live',
     ],
   },
   {
@@ -27,6 +107,11 @@ const sections = [
       'Native Shopify integration (orders, inventory sync, returns)',
       'Multi-currency invoicing for international 3PLs',
       'Driver dispatch + last-mile route optimization v2',
+      'Mobile-first picking app v2 with offline tolerance',
+      'Returns + disposition workflows with photo capture',
+      'Cycle count scheduler + variance reporting',
+      'PDF export for Revenue Reports + AR Aging + Throughput',
+      'Type Normalization pass — schema-wide column type cleanup',
     ],
   },
   {
@@ -35,9 +120,14 @@ const sections = [
     accent: 'text-cyan-500',
     dot: 'bg-cyan-500',
     items: [
-      'WooCommerce + TikTok Shop native integrations',
+      'WooCommerce + Amazon + TikTok Shop native integrations',
       'Wave planning + zone-based picking optimization',
       'Carrier rate-shopping engine with margin protection',
+      'Retail compliance suite — receiving exceptions, photo PODs, signature capture, retailer docs',
+      'Workforce management — scheduling, time-on-task, labor utilization analytics',
+      'Notifications platform — email, SMS, in-app, with per-recipient routing',
+      'External REST API for custom integrations',
+      'Intelligence layer — demand forecasting + anomaly detection',
     ],
   },
 ];
@@ -55,15 +145,69 @@ const sections = [
         Product Roadmap
       </h1>
       <p class="mx-auto mt-6 max-w-2xl text-lg text-slate-600 dark:text-slate-400">
-        What's shipping next across Deliver WMS — warehouse management, last-mile delivery, integrations, and platform improvements.
+        What we just shipped, what's in flight, and what's coming next across Deliver WMS — warehouse management, last-mile delivery, integrations, and platform improvements.
       </p>
+    </div>
+  </section>
+
+  <!-- Just Shipped -->
+  <section class="border-b border-slate-200 bg-white py-16 sm:py-20 dark:border-slate-800 dark:bg-slate-950">
+    <div class="container-page">
+      <div class="mx-auto max-w-2xl text-center">
+        <div class="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-emerald-700 dark:border-emerald-900 dark:bg-emerald-950/40 dark:text-emerald-400">
+          <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
+          Just shipped
+        </div>
+        <h2 class="font-display mt-4 text-3xl font-bold tracking-tight sm:text-4xl">
+          Recent operator-facing shipments
+        </h2>
+        <p class="mt-3 text-base text-slate-600 dark:text-slate-400">
+          Real changes that landed on the platform in the last 30 days. Each one ties back to the build-log post that walked through it.
+        </p>
+      </div>
+
+      <ul class="mx-auto mt-12 grid max-w-5xl gap-3 sm:grid-cols-2">
+        {justShipped.map((item) => (
+          <li>
+            <a href={item.href} class="group flex h-full flex-col rounded-xl border border-slate-200 bg-white p-5 transition-all hover:border-brand-300 hover:shadow-md dark:border-slate-800 dark:bg-slate-900 dark:hover:border-brand-700">
+              <div class="flex items-start justify-between gap-3">
+                <p class="font-display text-base font-bold leading-snug text-slate-900 dark:text-white">
+                  {item.label}
+                </p>
+                <span class="shrink-0 rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400">
+                  {item.date}
+                </span>
+              </div>
+              <p class="mt-2 text-sm leading-relaxed text-slate-600 dark:text-slate-400">
+                {item.detail}
+              </p>
+              <span class="mt-3 inline-flex items-center gap-1 text-xs font-semibold text-brand-700 transition-colors group-hover:text-brand-900 dark:text-brand-400 dark:group-hover:text-brand-300">
+                Read the build log
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-3 w-3">
+                  <polyline points="9 18 15 12 9 6" />
+                </svg>
+              </span>
+            </a>
+          </li>
+        ))}
+      </ul>
     </div>
   </section>
 
   <!-- Now / Next / Later -->
   <section class="bg-slate-50 py-16 sm:py-20 dark:bg-slate-900/50">
     <div class="container-page">
-      <div class="grid gap-6 lg:grid-cols-3">
+      <div class="mx-auto max-w-2xl text-center">
+        <p class="eyebrow mx-auto justify-center">Forward-looking</p>
+        <h2 class="font-display mt-4 text-3xl font-bold tracking-tight sm:text-4xl">
+          What's next
+        </h2>
+        <p class="mt-3 text-base text-slate-600 dark:text-slate-400">
+          The locked next-arc sequence and the planned work behind it. Honest framing: dates erode trust, so we don't put dates on roadmap items.
+        </p>
+      </div>
+
+      <div class="mt-12 grid gap-6 lg:grid-cols-3">
         {sections.map((section) => (
           <article class="card relative overflow-hidden p-6 sm:p-8">
             <div class="flex items-center gap-3">
@@ -72,7 +216,7 @@ const sections = [
                 {section.sub}
               </p>
             </div>
-            <h2 class="font-display mt-3 text-2xl font-bold tracking-tight">{section.label}</h2>
+            <h3 class="font-display mt-3 text-2xl font-bold tracking-tight">{section.label}</h3>
             <ul class="mt-6 space-y-3">
               {section.items.map((item) => (
                 <li class="flex items-start gap-3 text-sm text-slate-700 dark:text-slate-300">
