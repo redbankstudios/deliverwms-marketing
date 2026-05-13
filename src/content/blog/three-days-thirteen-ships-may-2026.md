@@ -1,22 +1,25 @@
 ---
-title: "Three days, 13 ships: AR aging, throughput, and an integrity sweep"
-description: "What we shipped over three days in May: AR aging, warehouse throughput reporting, and a defense-in-depth pass on invoice integrity. A founder's build log."
-author: michael
-publishDate: 2026-05-12
-pillar: commentary
-tags: ["build log", "AR aging", "throughput", "billing", "operator updates"]
-readingMinutes: 8
-draft: true
-featured: false
+
+title: "Three days, 13 ships: AR aging, throughput, and an integrity sweep"  
+description: "What we shipped over three days in May: AR aging, warehouse throughput reporting, and a defense-in-depth pass on invoice integrity. A founder's build log."  
+author: michael  
+publishDate: 2026-05-12  
+pillar: commentary  
+tags: ["build log", "AR aging", "throughput", "billing", "operator updates"]  
+readingMinutes: 8  
+draft: false  
+featured: false  
 faq:
-  - q: "Is the platform live for customers right now?"
-    a: "We're in pre-launch and lining up our first design-partner customers. Everything described in this post is shipped and running on the platform. If you're a mid-size 3PL interested in being an early customer, the contact form is the right next step."
-  - q: "How can a small team ship this much in three days?"
-    a: "Two things: tight scope per chunk (each piece does one thing), and an explicit habit of splitting data-integrity work out as its own precursor before building the report or screen on top of it. The data shape is settled before the surface lands. Reports never end up showing the wrong number because the column wasn't there yet."
-  - q: "What's the next thing you're shipping?"
-    a: "Billing depth: invoice line-item drilldown, dispute workflow, and a few pieces that connect the operational ledger to a clean exportable invoice. After that, finishing the B2B client portal rebuild (B2B Billing page, then a public storefront) is the path to platform completeness for a 3PL operator."
-  - q: "Where can I see this in action?"
-    a: "Schedule a 30-minute walkthrough through the contact form. The fastest version is a screen-share where I show the AR aging and throughput screens running on real data, then we plug in your operation and see what would change."
+
+- q: "Is the platform live for customers right now?"
+a: "We're in pre-launch and lining up our first design-partner customers. Everything described in this post is shipped and running on the platform. If you're a mid-size 3PL interested in being an early customer, the contact form is the right next step."
+- q: "How can a small team ship this much in three days?"
+a: "Two things: tight scope per chunk (each piece does one thing), and an explicit habit of splitting data-integrity work out as its own precursor before building the report or screen on top of it. The data shape is settled before the surface lands. Reports never end up showing the wrong number because the column wasn't there yet."
+- q: "What's the next thing you're shipping?"
+a: "Billing depth: invoice line-item drilldown, dispute workflow, and a few pieces that connect the operational ledger to a clean exportable invoice. After that, finishing the B2B client portal rebuild (B2B Billing page, then a public storefront) is the path to platform completeness for a 3PL operator."
+- q: "Where can I see this in action?"
+a: "Schedule a 30-minute walkthrough through the contact form. The fastest version is a screen-share where I show the AR aging and throughput screens running on real data, then we plug in your operation and see what would change."
+
 ---
 
 Three days. Thirteen things shipped. AR aging, warehouse throughput, a four-step pass on invoice integrity, and a settings page that quietly stopped losing data when operators clicked Save. I want to walk through what landed and, more importantly, why it landed in this particular order — because the sequencing tells you more about how this product is going to evolve than the individual changes do.
@@ -52,11 +55,8 @@ This is the chunk of work I'm most actually proud of, and it's probably the leas
 The shape:
 
 1. **Due dates exist now.** Until Tuesday, the `invoices` table had no `due_date` column. Net terms lived as a vibe ("we're net-30, mostly"). The migration added a real `due_date` populated by a function that resolves the right value: business-specific override → tenant default → 30. Existing invoices got backfilled. New invoices get the right `due_date` at the moment they're created.
-
 2. **AR aging now means something.** Once due dates were real, the AR aging report could be built on top. (See above.)
-
 3. **Status and timestamps can't disagree.** The audit on the AR aging chunk surfaced five rows where the invoice's `status` and its `paid_at` / `sent_at` timestamps disagreed (an invoice marked `paid` with no `paid_at` value, etc.). We backfilled the inconsistencies, then added a database-level constraint that prevents the inconsistency from happening again. After the cleanup, two customer accounts' open AR shifted noticeably — one by $2,185, one by $567 — because the underlying data was finally coherent.
-
 4. **Critical actions can't fail silently.** While auditing the constraint, we discovered that the API endpoints for canceling and voiding an invoice would accept the action without requiring a reason. Both endpoints now return a 400 if the reason is empty, and the dialogs that submit those requests gate the button on a non-empty reason field. Three layers of defense (UI, API, DB) for the actions that an operator would never want to undo silently.
 
 The reason this is worth four paragraphs: the integrity layer is what makes the rest of the product trustworthy. An AR aging report on top of inconsistent data is worse than no report at all — it gives you a number you'd defend in a client meeting, and the number is wrong. We did the boring work first.
@@ -82,7 +82,7 @@ Five of the thirteen ships were "precursor" chunks — small, focused changes th
 Three days, three precursors:
 
 - **Due dates** before AR aging
-- **`shipped_at` timestamps** before the throughput cycle-time chart
+- `**shipped_at` timestamps** before the throughput cycle-time chart
 - **Status/timestamp consistency** before letting invoices change state via the dialog
 
 Each precursor was small. Each had its own audit-build-verify loop. None of them were exciting on their own. All of them are why the reports built on top of them aren't quietly lying.
@@ -94,11 +94,8 @@ The alternative — what most software gets shipped this way avoids — would be
 The locked sequence from here:
 
 1. **Billing depth.** Invoice line-item drilldown, dispute workflow, and the connective tissue that makes the operational event ledger feel like a full billing surface. This is the last chunk of the originally-scoped operator billing arc.
-
 2. **B2B Reports rewrite.** The current B2B reports surface for client tenants is honest but skeletal. The rewrite gives clients the same caliber of analytics operators have.
-
 3. **B2B Billing page.** Clients see their own billing inside the client portal — line items, statements, invoice status. Eliminates the "can you re-send my invoice" email entirely.
-
 4. **B2B storefront.** A public-facing surface where end customers of a 3PL's clients can see their order status without an account. Last piece of the platform-completeness arc for a 3PL operator.
 
 I'm not going to put dates on those because dates on roadmap items are how trust gets eroded. They'll ship in that order, and they'll ship at roughly the cadence of the last three days. Subscribe to the [blog feed](/blog) or follow along on [LinkedIn](#) (link going live shortly) for updates.
