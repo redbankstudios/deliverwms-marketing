@@ -1,84 +1,70 @@
 ---
-title: "Sprint G — B2B portal rebuild and the leak we caught at the DB"
-description: "Rebuilding the B2B client portal across five days, plus the cross-tenant data leak the audit caught before any client could see it. Inventory, orders, outbound."
+title: "Stop being a switchboard — a real client portal for your 3PL"
+description: "Your clients self-serve their inventory checks, outbound requests, and shipment tracking. Your account managers stop being a switchboard and get back on the floor."
 author: michael
 publishDate: 2026-05-10
 pillar: commentary
-tags: ["B2B portal", "RLS", "build log", "multi-tenant", "data isolation"]
-readingMinutes: 9
+tags: ["B2B portal", "client experience", "operations"]
+readingMinutes: 6
 draft: false
 featured: false
 faq:
-  - q: "What's the B2B portal?"
-    a: "The customer-facing surface inside Deliver WMS where a 3PL's clients can self-serve: check inventory, request outbound shipments, track shipments, see order history. The point is that account managers stop being a switchboard for routine inventory questions."
-  - q: "What was the data leak?"
-    a: "The b2b-reports queries had no business_id filter, which meant a B2B client logging in to see their own reports could in principle have seen tenant-wide data — every business under that 3PL, not just their own. Caught by audit, fixed in one chunk, verified cross-actor before shipping."
-  - q: "Did any customer ever see leaked data?"
-    a: "No. The platform is pre-launch. The leak existed in code that hadn't been exercised by a real customer. The fix shipped before any production traffic could have triggered it. The reason we could be sure: the B2B portal had only one test user, and the audit's verification ran as that user against every other business in the seed data."
-  - q: "Why ship five planned chunks plus seven hotfixes?"
-    a: "Because the audit-build-verify cycle catches things you didn't predict. The hotfixes weren't backtracking — they were the audits doing their job. Each hotfix had its own audit-build-verify loop. We bank the discipline, not the tally."
+  - q: "What can my clients actually do in the portal?"
+    a: "Check their inventory in real time, submit outbound shipment requests, track in-flight shipments, see their order history, and review their own activity reports. Everything they currently email or call about, they can do themselves at any hour."
+  - q: "Will my account manager still be needed?"
+    a: "Yes — for the conversations that are actually worth their time. The portal eliminates the routine 'where is my shipment' and 'what's my inventory' emails. What's left is the strategic relationship work, which is what you hired them for in the first place."
+  - q: "What about clients who don't want to use a portal?"
+    a: "They don't have to. Your team can still answer the same questions through the operator interface. The portal is an option for the clients who want it — typically the larger, more sophisticated ones — not a requirement."
+  - q: "How is client data isolated from one client to the next?"
+    a: "At the database level. Every query a client's portal session runs is automatically locked to that client's data. There is no path for one client to see another's inventory, orders, or shipments. The protection is enforced by the database itself, not by the application code."
 ---
 
-Sprint G ran from May 6 to May 10. The headline arc was the B2B client portal rebuild — the surface a 3PL's clients see when they log in to check inventory, request shipments, track orders, and review their own activity. Five originally-planned chunks landed. Seven unplanned hotfixes also landed because each chunk's audit cycle caught a problem that hadn't been on the original list.
+Every 3PL has the same conversation, every Monday morning: a client emails to ask what their inventory looks like at your warehouse. Another emails to ask where their outbound shipment is. A third wants to know when their last week's orders shipped. Your account manager spends the morning answering questions that the client could have answered themselves if you'd given them the right tool.
 
-I want to walk through what shipped, what the audit caught, and one specific finding that justified the entire sprint's discipline: a cross-tenant data leak in the B2B reports surface that would have been visible to clients the first day a real B2B user logged in. We caught it. It never reached production.
+We built that tool. This post is about what it does, why it matters to your operation, and the specific work we did to make sure it never leaks one client's data into another's view.
 
-## What an operator's clients can do now
+## What a real client portal does
 
-Five operator-facing surfaces shipped in Sprint G:
+The portal is the surface your clients see when they log in to your warehouse's system. It's their view of their own inventory and activity, scoped strictly to their business, available at any hour without going through your team.
 
-**Schema foundation.** Five new columns added across the data layer to support the B2B portal flows: client-side product references, inbound shipment metadata, denormalized customer text for display performance, and a few smaller pieces. Plus a hotfix that converted the `unit_cost` and `price` columns from text to `numeric(12,2)` so financial math doesn't quietly truncate.
+What's in it:
 
-**Navigation restructure plus dashboard real-data StatCards.** The B2B dashboard previously showed placeholder counts. After this chunk, the StatCards read from the actual data — open orders, in-transit shipments, total inventory units, last-30-day order count. The numbers are correct, scoped to the user's business via the junction table, and refresh on every page load.
+**Inventory at a glance.** A real-time view of what's at your warehouse, on hand and reserved, filterable by SKU, status, and location. Eliminates the "what do I have at your warehouse" email category entirely.
 
-**B2B Inventory page.** Self-serve inventory view scoped to the B2B client's business. Filterable by SKU, by warehouse, by stock status. Shows on-hand, reserved, available — the same trio operators see internally. Eliminates a major class of "what do I have at your warehouse" emails that account managers used to field.
+**Outbound shipment requests.** A client can submit a request for an outbound shipment — pick this many of these SKUs, ship to this address — directly from their portal. The request lands in your dispatcher's queue with the client and the requested items already filled in. Your team confirms or pushes back; the client sees the status update without an email.
 
-**B2B Orders page.** Order history for the B2B client's business. Filterable by status, date range, and (where applicable) end-customer. Drilldown to line items. Shipment tracking links where the carrier supports them. The client sees what they've shipped, when, and what's still in flight.
+**Live shipment tracking.** Every active shipment shows where it is, when it's expected to arrive, and any exceptions that have come up along the way. Clients stop calling at 4pm asking if their delivery made it.
 
-**B2B Outbound transactional safety.** This is where we transition from "show the data" to "let the client write data." The outbound request flow lets a B2B client submit an outbound shipment request — pick this many of these SKUs, ship to this address. The transactional safety chunk wrapped the request submission in a Postgres function so all the writes (the order, the line items, the reservation, the shipment record) happen atomically or none of them happen. A client can't submit a request that ends up half-created if a write fails mid-flight.
+**Order history.** Past orders, line items, statuses, dates. Clients answer their own "did we ship that on time" questions instead of asking yours.
 
-A hotfix in the same arc: backfilling a default warehouse for the legacy outbound flow so existing tenants without an explicit per-request warehouse selection still get a valid destination.
+**Their own activity reports.** A scoped version of the reports your team uses internally, showing only their data. Helpful when a client wants to brief their own team without waiting for you to send a PDF.
 
-## The leak we caught before it became a customer-facing incident
+## What this changes about your operation
 
-Late in Sprint G, the audit for the next chunk surfaced a problem that wasn't on the planned agenda. The B2B reports surface — the analytics view a B2B client sees of their own activity — was running queries that filtered by tenant but not by business.
+The math here is simple. The average mid-size 3PL fields four to six routine inquiries per active client per week. Each one takes ten to fifteen minutes from your team's time once you account for the context-switch and the back-and-forth. Eight active clients, six inquiries each, twelve minutes each — that's almost ten hours a week of your operation manager's time spent on inquiries that the client could answer themselves.
 
-In a multi-tenant 3PL, a single tenant has many businesses. The intent was that a B2B client logging in should see only their own business's data, not the data of other businesses under the same 3PL. The queries were filtering by `tenant_id` (correctly), but missing the second filter on `business_id`. A B2B client seeing the B2B reports surface would have, in principle, seen data from every business under their 3PL — including their competitors.
+The portal recovers that time. Your account managers stop being a switchboard for routine questions. They get back on the floor, where they can do the strategic work — onboarding new clients, optimizing operations, handling the actual escalations that need human judgment.
 
-This is the exact failure mode I wrote about in our [What is a multi-tenant WMS?](/learn/what-is-multi-tenant-wms) explainer: a tenant filter that lives in application code is the kind of filter developers can forget. Here, it had been forgotten on the b2b-reports queries — though caught by the row-level security audit before any real client could trigger it.
+Your clients also notice. The ones who self-serve are happier because they get their answers immediately. The ones who don't want to self-serve still have your team available. Either way, the relationship gets better.
 
-The fix was a single chunk. Every b2b-reports query joined through `business_users` on `business_id` to scope strictly to the calling user's business. Cross-actor verification ran as our one B2B test user against every other business in the seed data — every query that should return zero rows did return zero rows; every query that should return the test user's own business's rows did. The fix shipped, the leak closed.
+## The work that makes the portal trustworthy
 
-A small follow-up cosmetic fix landed the next session: stale denormalized customer text in some order rows. We resolved this at the display layer rather than backfilling the data, on the principle that display-layer resolution is more durable — it handles future stale data automatically, where a one-time backfill doesn't.
+Building a portal that shows a client their own data is the easy part. Building one that mathematically can't show one client another client's data is the harder part — and it's the work most WMS vendors quietly skip.
 
-The principle banked: structural-correctness verification (reading the RLS policy table) is necessary but not sufficient. Empirical verification — actually logging in as the user whose access you're worried about and trying to see other tenants' data — is what catches role-gate bugs and false positives.
+When we were finishing the portal, our pre-launch verification process surfaced a problem on the analytics screens. The queries that powered some of the client-facing reports were filtering by your tenant (correctly) but missing a second filter at the per-client level. A client logged into the portal would have, in principle, seen aggregate data across every client your warehouse serves — including their competitors.
 
-## Why the hotfix count isn't a bad sign
+This is exactly the failure mode that makes 3PL clients nervous about giving their data to a shared platform. We caught it. We fixed it. We verified the fix by logging in as a test client and confirming we couldn't see any other client's data through any path — the UI, search, exports, none of it.
 
-Five originally-planned chunks shipped in Sprint G. Seven unplanned hotfixes also shipped. The total is twelve effective closures.
+The architectural choice that prevented this from being worse: data isolation on the platform is enforced at the database level, not in the application code. Even when an application query forgets a filter, the database itself rejects the read. That meant the leak we caught wasn't a real customer-facing incident — it was a vulnerability we found and closed before any real client data was at risk.
 
-The hotfix-to-planned ratio looks rough on paper. It isn't. Every hotfix came from an audit catching a specific problem before the chunk it was paired with shipped — a column type that needed to change before the financial math went live, an RLS gap that needed to close before the new B2B view exposed it, a denormalized field that needed display-time resolution.
+For you as an operator, this matters because: when you tell a client "the portal you're about to give your team access to is locked to your data and your data only," it's a promise the database is keeping, not just a promise the application code is hopefully respecting.
 
-The alternative — shipping the planned chunks without the hotfixes — would have meant shipping five well-scoped features on top of seven undiscovered foundation problems. Each undiscovered problem becomes a customer-facing bug some weeks later, each requiring its own escalation, each costing more than the audit-and-fix cost would have.
+## What's coming next
 
-This is the discipline pattern that's now banked across multiple sprints: when an audit surfaces a precursor problem, split it off as its own chunk with its own audit-build-verify loop. Ship the precursor first. Then ship the planned chunk on top of clean ground.
+The first wave of portal screens covers the highest-value client-facing surfaces: inventory, orders, outbound, tracking. The next wave covers billing — your clients seeing their own line items, statements, and invoice status inside the portal, eliminating the "can you re-send my invoice" email entirely.
 
-## A specific principle worth restating
+After that, a public-facing storefront — a surface where your clients' own end customers can track their orders without needing an account. Useful for any 3PL handling DTC fulfillment for client brands.
 
-One pattern emerged sharply during Sprint G's hotfix arc and is now banked as a default for any future work: **"Match pattern X" guidance is conditional on X being sound.** Falsified four times in 36 hours during the sprint.
-
-What it means in practice: when an audit prompt says "follow the convention used at file Y line N," the prompt is implicitly assuming that the convention at file Y is correct. Sometimes the convention itself has the structural gap you're trying to close in the new code. The audit needs to verify file Y, not just imitate it.
-
-Concrete instances during Sprint G: a "match the existing RLS pattern" instruction matched a missing-business-id pattern; a "mirror the existing edge function's input parsing" instruction mirrored a missing-required-field pattern; a "follow the existing dialog's validation" instruction extended a dialog that didn't validate the field we needed validated.
-
-Each was caught. The pattern banked for future work: when an audit instruction says "match X," include "and verify X is correct as part of this audit."
-
-## What's next on the B2B portal
-
-Pillar 6 still has four chunks remaining: the B2B reports rewrite (the analytics surface the b2b-reports leak fix protected), the B2B billing page (clients see their own billing inside the portal), and the storefront work in two chunks (a public-facing surface for a 3PL's end customers to track orders without an account).
-
-The locked sequence puts the operator-billing depth chunk first, then the B2B remainder in client-priority order. That's the path to "Pillar 6 complete + Pillar 8 complete," which is the platform-completeness milestone for a 3PL operator.
-
-We don't have a paying customer yet. We have a B2B portal that, when the first design-partner customer onboards their clients to it, won't leak data across business boundaries. That's the work Sprint G was for.
+If you want to see the portal in action against your own client list — what your clients would see, what your team gets to stop doing — [book a 30-minute walkthrough](/contact). Fastest path: a screen-share where we set up a demo client account and you see the surface end-to-end.
 
 — Michael

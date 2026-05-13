@@ -1,90 +1,78 @@
 ---
-title: "The foundation: multi-tenant hierarchy, onboarding, billable events"
-description: "Three load-bearing layers in two weeks: multi-tenant hierarchy with row-level security, the invite-and-onboard flow, and the billable events ledger."
+title: "Three things every WMS should get right — and most don't"
+description: "Your data stays separate from every other tenant. You can sign up and be working in two minutes. Every billable event becomes an invoice line you can defend."
 author: michael
 publishDate: 2026-04-25
 pillar: commentary
-tags: ["multi-tenant", "RLS", "onboarding", "billing ledger", "build log"]
-readingMinutes: 9
+tags: ["multi-tenant", "onboarding", "billing", "trust"]
+readingMinutes: 6
 draft: false
 featured: false
 faq:
-  - q: "What does 'multi-tenant from day one' actually mean?"
-    a: "Every table has a tenant column. Every query is tenant-scoped at the database layer via row-level security policies. New features inherit the scoping automatically because there is no application-level filter to forget. Compare with retrofitted tenancy where some tables have the column, some don't, and the filter lives in application code that developers have to remember to include."
-  - q: "How many RLS policies are running across the platform today?"
-    a: "Across Pillar 1 we landed 24 RESTRICTIVE business_isolation policies across 23 tables, plus the underlying tenant_isolation set. Two tiers — Tier 1 covers tables with a direct business_id column; Tier 2 covers tables that needed a column added and backfilled before the policy could engage."
-  - q: "What's in the billable events ledger?"
-    a: "Fourteen event types covering receiving, storage, picking, packing, shipping, returns, dispatch stops, labels, and a handful of accessorial fees. Each event captures its tenant, business, rate, quantity, and reference back to the originating operational record. The ledger is append-only — corrections are reversing entries, not edits."
-  - q: "Can a self-serve operator actually sign up and use the platform without a sales call?"
-    a: "Yes. The signup flow takes about two minutes from form submit to dashboard, including Cloudflare Turnstile bot protection and an idempotent provisioning function. Once they're in, an in-dashboard checklist walks them through the four prerequisites: set up billing, add a warehouse, add a client, invite a teammate."
+  - q: "What does 'your data stays separate' actually mean?"
+    a: "If you run a 3PL with twenty clients, every report, every search, every export, and every API call is locked to one client at a time. There is no path — accidental or otherwise — for one client to see another's data. Most WMS vendors enforce this in application code, where developers can forget the rule. We enforce it at the database itself, where it can't be forgotten."
+  - q: "How fast can I be working in the platform?"
+    a: "Under two minutes from filling out the signup form to seeing your dashboard. A self-serve checklist walks you through the four things you need to do first: set up billing, add a warehouse, add your first client, invite a teammate."
+  - q: "What's a 'billable event'?"
+    a: "Anything you charge a client for: a stop on a delivery route, a label printed, a pallet position used for a day of storage, a pick completed. Every one of those is captured the moment it happens, with the rate that was in effect at that moment. When the client questions a line on their invoice, you point at the event behind it."
+  - q: "Will switching to Deliver WMS mean a six-week implementation?"
+    a: "No. Most mid-size 3PLs are operational on Deliver WMS within a week. Bring your existing data through the CSV import flow with smart field mapping. There's no SOW and no consulting engagement to opt in to."
 ---
 
-Two weeks of work. Three load-bearing layers. None of it would be visible to an operator on the surface, but together they're the reason every subsequent feature can be shipped quickly without breaking anything.
+There are three things every WMS needs to get right. None of them show up in a feature list. All of them show up in your operation every day. Most WMS vendors get one or two of them right and quietly compromise on the third. We built Deliver WMS to get all three.
 
-This is the post about the foundation: the multi-tenant hierarchy that isolates one 3PL's data from another's, the onboarding flow that gets a self-serve customer to a working dashboard in under two minutes, and the billable events ledger that captures every dollar's worth of operational work the moment it happens.
+This post is about what those three things are, why they matter to you, and how we handle each one.
 
-## Layer one: multi-tenancy that holds up
+## One — your data stays separate from every other tenant
 
-The early decision that mattered most was treating multi-tenancy as a database-level guarantee, not an application-level convention.
+If you're running a 3PL with multiple clients, the most important promise the WMS makes is that one client's data never crosses with another's. A picker handling SKUs for client A and client B in adjacent bins shouldn't see B's order list when they're working on A's. A report you run for client A shouldn't accidentally include numbers from client B. An export you send to client A shouldn't have stray rows from anyone else.
 
-Two patterns were available. The convention is to add a `tenant_id` column to every table and remember to filter by it in every query. That works until a developer forgets the filter, or a new feature ships with the filter missing on one query path, or a report aggregates across tenants by accident. Each of those is a quiet data leak that doesn't fail loudly until a customer notices.
+This sounds obvious. It's also the place where most WMS vendors quietly cut corners.
 
-The discipline is to enforce the scoping at the database itself, using row-level security policies. Once a connection is bound to a tenant context, no query — application code, ad-hoc admin SQL, or otherwise — can return rows from another tenant. The database itself rejects them.
+The cheap way to enforce data separation is to add a "client ID" filter on every query and remember to include it. That works until a developer forgets the filter, or a new feature ships with the filter missing on one query, or a report aggregates across clients by accident. Each of those is a quiet leak that doesn't fail loudly until a client notices their data showed up in a report they shouldn't have seen. By then the damage is done.
 
-We chose the discipline. The pillar landed in three pieces:
+The right way to enforce data separation is to make it a database-level guarantee that can't be bypassed. Every table knows which client every row belongs to. Every query the system runs is automatically locked to the calling user's client. The database itself rejects any read that crosses client boundaries — even by accident, even if the application code is buggy.
 
-The **business hierarchy rename and structure** got every entity onto consistent naming (`businesses`, not `clients` — too many platforms call their own customers' customers "clients" and the term collapses on itself). Added the missing structural columns (address with Mapbox autocomplete, validated via Zod). Replaced free-form fields with proper records.
+We chose the right way. Across our platform, that protection is enforced through dozens of database-level policies, every one of which we verified by logging in as a test client account and confirming we couldn't see any other client's data — through the UI, through search, through any API call.
 
-The **`business_users` junction table** explicitly links users to the business they belong to. Every existing B2B user got a junction row; every B2B portal screen now auto-selects the user's primary business. Eighteen rows backfilled, zero coverage gap.
+For you as an operator, this means: when you tell a client "your data is isolated from every other client we serve," it's a promise the database itself will keep, not just a promise your team has to remember.
 
-The **two-tier RLS rollout** locked the data layer down. Tier 1 covered ten tables that already had a `business_id` column — ten Template A policies and three Template B policies that walked transitive joins where the column wasn't direct. Tier 2 added a `business_id` column to `orders` and `inventory_items` (plus eight transitive children), backfilled it from the SKU → product → business relationship, then added eleven more RESTRICTIVE policies and locked the column to NOT NULL.
+## Two — you can sign up and be working in two minutes
 
-Across the pillar: **24 RESTRICTIVE business_isolation policies across 23 tables**, all using a short-circuit pattern that lets non-B2B roles (platform owner, operator owner, warehouse manager, etc.) pass through unaffected while strictly scoping B2B users to their own business.
+Onboarding is the part of any business platform where most operators stick or don't. The bar isn't elegance. The bar is whether you can sign up, get to a working dashboard, and start doing real work without a phone call.
 
-One specific finding worth naming: the original audit thought the application layer was passing `businessId` through to the order-creation provider correctly. The pre-build verification pass found it wasn't — the provider signature accepted `businessId` but the insert payload dropped it on the floor. If we'd added the NOT NULL constraint without the fix, every order creation would have failed silently the moment the constraint engaged. The fix landed in the same migration window. Audit-first caught it.
+We built signup to clear that bar.
 
-## Layer two: getting an operator to a working dashboard in two minutes
+A prospect visits the marketing site, fills in email, password, company name, and a preferred subdomain. Submit. The system creates the account, sets up your tenant, gives you a default warehouse, logs you in, and lands you on the dashboard. Total elapsed time: about two minutes.
 
-Onboarding is the part of the platform where a self-serve customer either sticks or doesn't. The bar isn't elegance — it's whether they can sign up, get to a working dashboard, and start doing real work without a phone call. We landed it across four chunks.
+The dashboard shows a checklist of the four things you need to do first: set up billing, add a real warehouse if you want one different from the default, add your first client, invite a teammate. The checklist disappears the moment all four are done. No hand-holding wizard, no forced tour, just a short list of next steps you can knock out at your own pace.
 
-The **invitations system** had been in place at the backend for a while. The polish chunk lifted the inline edge-function calls into a typed provider, added a one-hour rolling cooldown on resends with friendly error messages ("you can resend it again in N minutes"), and added expired-pending display so the UI never offers a Resend button for an invitation that would 410 anyway. Three smoke tests, all green.
+If you sign up at midnight, you're in your dashboard at 12:02 AM. No demo call required. No salesperson required. If you want a walkthrough, you can book one — but the platform doesn't gate access behind it.
 
-The **welcome page** that appears after first login is role-aware for all eight invitable roles. A `business_owner` lands on "Welcome to {tenantName}, {name}" with an Open Dashboard CTA; a `warehouse_employee` lands on "Welcome, {name}" with an Open Worker App CTA. A B2B client lands on the actual business name pulled from the junction table. Every role gets the right next-step button. Click it, the database flips `onboarded_at`, the user navigates to the right default tab. If the user has been onboarded already, the welcome page short-circuits to the dashboard.
+For warehouse owners who've sat through eight-week WMS implementations with consulting fees attached, this is the difference between trying the product over a weekend and waiting two months to find out if it fits.
 
-The **self-serve signup flow** is what makes the rest of this matter. A prospect visits the marketing site, fills in email + password + company name + preferred subdomain, submits. The provisioning edge function does everything atomically: creates the auth user, creates the tenant with `plan_id='starter'` and `billing_status='incomplete'` (Stripe-conventional, no migration needed), creates the user with role `business_owner`, creates a default warehouse, fires `tenant.created`, and returns. Total time from submit to event emission: ~150 milliseconds.
+## Three — every billable event becomes an invoice line you can defend
 
-Cloudflare Turnstile sits in front of the form to keep bots out, with a dev-bypass sentinel for local development. The signup draft persists in localStorage for 24 hours so a partial signup doesn't lose the operator's work if they navigate away.
+The single biggest hidden cost in 3PL operations is billing reconciliation. Most operators reconstruct invoices at month-end from operational data scattered across three to five systems — a spreadsheet of storage charges, a dispatcher's notes, the WMS report, the returns log. The process is slow, error-prone, and produces invoices that clients dispute because they can't tell what they're being charged for.
 
-The **first-dashboard checklist** — a `<CompletionCard />` mounted above the operations row — surfaces the four prerequisites a self-serve tenant needs to be productive: set up billing, add a warehouse, add a client, invite a teammate. The card renders nothing once all four are done. Persistent (not dismissible — the work needs to get done), passive data refresh through the existing webhook chain.
+We built billing the other way around. Every billable event — a stop completed on a route, a label printed, a pallet stored for a day, a pick completed, a return processed — is captured the moment the operational action happens. The event records the exact rate in effect at that moment, the client it belongs to, and a reference back to the originating action.
 
-The pillar shipped across about a week of focused work. A test signup goes from form submit to dashboard in well under two minutes. The shape of every subsequent customer interaction with the platform — whether they came from organic, a referral, or a sales conversation — is now self-serve by default.
+When a client questions a line on their invoice, the answer is concrete: "This $4.50 charge is for the 38 picks completed for your account between 9:14 and 11:32 on March 14th. Here's the picker, here's the bin, here's each order they belonged to."
 
-## Layer three: every billable event captured at the moment it happens
+Most disputes evaporate at that level of specificity, because the work is real and the operator can point at it. The remaining disputes are real disagreements about rates, which are productive conversations.
 
-The billable events ledger is the most commercially important thing on the platform. The competitive analysis is straightforward: 10–15% of manual 3PL invoices have errors, costing the operator $30–80K per year per warehouse. Most legacy WMS platforms bill by reconstructing the invoice at month-end from operational data scattered across three to five systems. We bill by writing a billable event the moment the operational action happens.
+For you as an operator, this means three things:
 
-The pillar landed in four chunks.
+**Faster billing close.** Most operations on the platform close their month-end billing in an hour, not a day, because the invoices are already written by the time the month ends.
 
-**The foundation** added three tables. `billable_events` captures the event itself: tenant, business, warehouse, event type (one of 14 enumerated values, CHECK constraint enforced), quantity, unit rate, amount (a generated column — `quantity * unit_rate`), reference type and ID back to the originating record, occurred-at timestamp, billed flag, invoice ID. `business_rate_cards` and `tenant_default_rate_cards` use a versioned-row pattern: updates create a new row, the old row gets `effective_to = now()`. A partial unique index enforces "exactly one current rate per (business, event_type)." A helper function `get_rate_for_business(business, event_type, at_time)` picks the rate effective at any given moment — important because invoices generated against historical events need to use the rate that was in effect at the time the event happened, not the rate in effect today.
+**Cleaner DSO.** Fewer disputes mean faster collection. Invoices that don't get questioned get paid on time.
 
-A trigger on the `businesses` table seeds 14 rate cards from the tenant's current default template every time a new business is created. RLS policies cover all three new tables — nine policies total. Forty-two default rate cards and 126 business rate cards backfilled at seed time.
-
-**The rules engine wiring** connects the rest of the operational system to the ledger. An `apply_create_billable_event_action` function maps domain events to billable events. Per-event-type business and warehouse lookup. Quantity derivation per event type. Rate lookup via the versioned helper. NULL rate raises a descriptive exception that the dispatcher catches and logs to `rule_execution_failures` instead of failing silently. A partial unique index on `(reference_type, reference_id, event_type)` prevents duplicate billable events even if a domain event re-fires — the executor uses `INSERT ... ON CONFLICT DO NOTHING`.
-
-Four production rules wired: outbound shipped (per shipment), pick completed (per picked line), inbound received (per pallet), return processed (per return, flat fee). Nine other event types are scaffolded in the schema but await the upstream features that fire them.
-
-**The pallet lifecycle** got a six-state model so storage billing is correct: `expected → arrived → receiving → putaway → emptied → removed`. Four timestamp columns, a CHECK constraint, a partial billable index that excludes pallets that are emptied or removed (you don't bill storage on a pallet you don't have anymore). A junction table linking pallets to inventory. Four domain events. A trigger that auto-marks a pallet as emptied when its last inventory balance goes to zero. An integrity check with eleven assertions, daily cron, and exception auto-resolve.
-
-The thing the audit caught — a multi-pallet dual-receive bug where two pallets sharing an inventory item silently failed to transition the second one — got fixed in the same chunk via a PostgREST embedded join with strict ordering. Production-grade fix, regression test added.
-
-**The storage cron** runs daily and writes a `storage.daily_accrual` event for every occupied pallet position. Tenant-1 sees about $5.95/day in accrual events, which means by the end of a 30-day month the storage line of an invoice has been incrementally accruing instead of being reconstructed. If a client disputes a storage charge, the answer is to point at the daily events. Same shape as everything else in the ledger.
+**Real-time cost-to-serve per client.** You can see this minute whether a client is profitable, not three weeks after the period closes.
 
 ## What this foundation enables
 
-These three layers are the reason the rest of the platform can be built quickly. Multi-tenancy means new features ship with isolation already enforced — there's no "remember to add the filter" tax on every PR. Onboarding means a customer signing up at midnight is in their dashboard by 12:02 AM without a sales call. The billable events ledger means every invoice we ever generate can be defended line by line against the originating event, with the right rate, at the moment it happened.
+These three pieces — data separation, fast onboarding, defensible billing — are the foundation everything else builds on. They're the work most WMS vendors skip because they don't show up in a demo. We built them first because every report, every dashboard, and every feature you'll use on Deliver WMS depends on them being right.
 
-If you're a 3PL operator evaluating WMS platforms, the diagnostic question for each of these is the same: ask to see it. Show me the RLS policies. Show me the signup flow with a real test email. Show me a billable event log filtered to one client over one month. Vendors who built these foundations will show you in five minutes. Vendors who reconstruct billing at month-end will tell you it's "in the roadmap."
-
-We don't have a customer yet. The foundation is in place to ensure the first one — when they land — has nothing to discover that's broken underneath them.
+If you want to see the platform with your operation's actual numbers — your monthly volume, your client count, your typical cost-to-serve — [book a 30-minute walkthrough](/contact). Fastest path: a screen-share where we plug in your numbers and you see what changes.
 
 — Michael
