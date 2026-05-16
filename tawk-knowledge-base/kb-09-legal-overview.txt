@@ -1,0 +1,408 @@
+DELIVER WMS — KNOWLEDGE BASE FILE 09: LEGAL OVERVIEW
+====================================================
+
+Summary of the four legal documents covering use of Deliver WMS. Full
+documents linked. AI should reference these summaries; for specific
+contractual questions or red-line negotiations, escalate to Michael.
+
+================================================================
+LEGAL ENTITY
+================================================================
+
+Deliver WMS LLC, a Delaware limited liability company.
+
+Governing law and venue: New Jersey law, with exclusive venue in the state
+courts of Monmouth County, New Jersey.
+
+Privacy scope: US-only (CCPA-aware + general US privacy law). Customers
+needing GDPR or UK GDPR Standard Contractual Clauses should email
+privacy@deliverwms.com before uploading personal data from those
+jurisdictions.
+
+================================================================
+PRIVACY POLICY
+================================================================
+
+URL: https://deliverwms.com/legal/privacy
+
+WHAT WE COLLECT:
+- Account information: name, work email, company name, password (hashed),
+  role, optional phone number.
+- Customer warehouse data: anything you upload (tenants, products, orders,
+  inventory, billable events, etc.). Processed on your behalf under the
+  MSA and DPA. Your data, not ours.
+- Billing information: billing contact, billing address, last 4 digits of
+  payment card (full card numbers handled by Stripe).
+- Communications: support tickets, contact form, email content.
+- Marketing preferences (only if you opt in).
+- Log and usage data: IP, browser, device, sessions, errors.
+- Cookies (strictly necessary, performance/analytics, preferences). No
+  cross-site advertising tracking.
+- Information from authentication providers and Stripe.
+
+HOW WE USE IT:
+Provide and operate the Service, authenticate users, process payments,
+respond to support, send service announcements, detect fraud, comply with
+law, send opt-in marketing.
+
+WHAT WE DON'T DO:
+- We do NOT sell personal information.
+- We do NOT use customer warehouse data to train AI models without
+  explicit, separate, written authorization from the customer.
+
+SUB-PROCESSORS (vetted third-party service providers):
+- Vercel Inc. — Web hosting, CDN
+- Supabase (or successor PostgreSQL provider) — Application database
+- Stripe, Inc. — Payment processing
+- Postmark (or successor email service) — Transactional email
+- Tawk.to — Live chat widget on marketing site
+
+LEGAL DISCLOSURE: We disclose information when required by subpoena/court
+order, to enforce Terms, to investigate fraud or security incidents, or to
+protect rights/safety. When permitted, we notify affected customers before
+responding to a government request.
+
+DATA RETENTION:
+- Account information: while active + up to 90 days after termination.
+- Customer warehouse data: while subscription active; deleted within 30
+  days post-termination unless contract or law requires longer.
+- Billing records: 7 years for tax/accounting.
+- Communications: up to 3 years.
+- Logs: up to 12 months.
+
+SECURITY: Encryption in transit (TLS) and at rest, role-based access
+controls, multi-factor authentication on admin access, multi-tenant
+isolation via database-level row-level security, regular access reviews,
+incident response process. Affected customers notified of confirmed
+security incidents without undue delay.
+
+USER RIGHTS (CCPA — California residents):
+- Know what's collected/used/shared
+- Access a copy of personal information
+- Delete personal information
+- Correct inaccurate information
+- Limit use of sensitive information
+- Opt out of sale/sharing (we don't sell or share)
+- Non-discrimination for exercising rights
+
+To exercise rights: email privacy@deliverwms.com. Response within 45 days.
+
+OTHER US STATE LAWS: VA, CO, CT, UT, TX residents have similar rights —
+honored using the same contact method.
+
+END CUSTOMERS OF DELIVER WMS CUSTOMERS: If a 3PL uses the Service to
+process information about you, that 3PL is the data controller. Contact
+them directly to exercise rights. We assist as needed.
+
+================================================================
+TERMS OF SERVICE
+================================================================
+
+URL: https://deliverwms.com/legal/terms
+
+KEY POINTS:
+- Binding agreement between user/organization and Deliver WMS LLC.
+- Business use only. Must be 18+ to enter into a binding contract.
+- For organizations: the person accepting represents they have authority.
+- Account responsibilities: accurate info, safeguard credentials, no
+  sharing, notify of unauthorized access at security@deliverwms.com.
+
+PRICING AND BILLING (Section 3):
+- Plans documented at /pricing: Free PAYG, Starter, Growth, Scale.
+- Platform fee billed monthly in advance. Usage charges billed in arrears.
+- Plan upgrades immediate and pro-rated. Downgrades end of cycle.
+- Card on file charged automatically via Stripe.
+- Failed payments: 10-day cure period with notice before suspension.
+- Fees non-refundable except where required by law or expressly stated.
+- Taxes: customer responsible for sales, use, VAT, etc.
+
+ACCEPTABLE USE (Section 4):
+- No illegal use.
+- No unauthorized access attempts.
+- No reverse engineering (except where law permits).
+- No spam, malware, harmful content.
+- No reselling/sublicensing except via permitted B2B portal feature.
+- No building competing products from the Service.
+- No scraping Service data to train competing AI models.
+- No impersonation or rate-limit bypass.
+
+CUSTOMER DATA (Section 5):
+- Customer owns all rights to data they upload.
+- Limited license to Deliver WMS to operate the Service.
+- Customer responsible for accuracy, legality, consents.
+- When uploading personal information, customer is data controller and
+  Deliver WMS is data processor (governed by DPA).
+- Aggregated/anonymized data may be used to improve the Service.
+
+SERVICE AVAILABILITY (Section 6):
+- Best-efforts service; no specific uptime guarantee in default Terms
+  (separate SLA may apply for Scale tier).
+- We may evolve the Service. Major feature deprecation: 60 days notice
+  where practicable.
+
+INTELLECTUAL PROPERTY (Section 7):
+- Service IP belongs to Deliver WMS.
+- Limited revocable license to access/use during subscription.
+- Feedback: perpetual, irrevocable, royalty-free license to use feedback
+  for any purpose.
+- Deliver WMS trademark: factual reference OK, marketing use requires
+  permission.
+
+CONFIDENTIALITY (Section 9): Standard mutual obligation, 3-year survival.
+Trade secrets and Customer Data: indefinite.
+
+DISCLAIMERS (Section 10): Service provided "AS IS" except as expressly
+stated. No warranties of merchantability, fitness, or non-infringement.
+
+LIMITATION OF LIABILITY (Section 11):
+- No indirect/incidental/consequential damages.
+- Aggregate liability capped at the greater of:
+  (i) total fees paid in the 12 months preceding the event, or
+  (ii) $100.
+
+INDEMNIFICATION (Section 12): Customer indemnifies Deliver WMS for claims
+arising from misuse, customer data, breach of Terms.
+
+TERM AND TERMINATION (Section 13):
+- Either party can terminate. Customer terminates by canceling account or
+  emailing support@deliverwms.com.
+- We can terminate for material breach (10-day cure), non-payment (10-day
+  notice), or to protect platform security.
+- On termination: data export window of 30 days from written request.
+  After 30 days, data deleted unless legally required to retain.
+
+GOVERNING LAW (Section 14): New Jersey law, Monmouth County NJ state courts.
+Good-faith 30-day resolution attempt before formal dispute. Jury trial and
+class-action waivers.
+
+GENERAL (Section 15): Entire agreement clause. 30-day notice for material
+Terms changes. Assignment: not permitted without consent (except for
+merger/acquisition). Severability. Force majeure. Notices via
+legal@deliverwms.com.
+
+================================================================
+MASTER SERVICES AGREEMENT (MSA)
+================================================================
+
+URL: https://deliverwms.com/legal/msa
+
+USE CASE: For enterprise and Scale-tier engagements. Used in conjunction
+with executed Order Forms. Customers with signed MSAs take precedence over
+the default Terms of Service.
+
+STRUCTURE:
+- Master Services Agreement establishes baseline terms.
+- Order Forms specify the actual services, fees, included volumes, term,
+  and any custom commercial terms for each engagement.
+- Each Order Form incorporates and forms part of the MSA.
+
+KEY PROVISIONS:
+- License: non-exclusive, non-transferable, non-sublicensable right to use
+  the Service during the Subscription Term for internal business purposes
+  and B2B portal use cases.
+- Service updates: continuous improvement; 60-day notice for major
+  deprecations.
+- Service levels: where Order Form references an SLA, those terms apply.
+  Otherwise commercially reasonable best-efforts basis.
+- Fees: per Order Form. Default invoicing terms: monthly platform fee in
+  advance, usage in arrears, net 30 payment terms unless otherwise stated.
+- Late payment: 1.5% per month interest or max legal rate. Suspension after
+  30 days notice for non-payment.
+- Fee changes: 60 days notice before renewal term.
+- Customer responsibilities: configure Service appropriately, accuracy/
+  quality/legality of Customer Data, account security, personnel
+  compliance with Agreement.
+- Customer Data ownership: Customer retains all rights. DPA governs
+  personal information processing.
+- Aggregated/anonymized data: Deliver WMS may use to improve the Service
+  and publish industry benchmarks.
+- Data return/deletion: 30-day export window post-termination; deletion
+  thereafter unless legally required.
+- IP: Deliver WMS retains Service IP. Customer feedback license is
+  perpetual/royalty-free. Trademark use requires permission.
+- Warranties: mutual authority; Service warranty (material conformance with
+  Documentation). Customer warrants rights/consents to upload Customer Data.
+- Service "AS IS" except as expressly stated.
+
+CONFIDENTIALITY (Section 9): Standard mutual obligation, 3-year survival.
+Trade secrets and Customer Data: indefinite.
+
+INDEMNIFICATION (Section 10):
+- Deliver WMS indemnifies Customer for third-party IP infringement claims
+  against the Service (excluding Customer Data, customer modifications,
+  third-party combinations, or misuse).
+- If Service is/may be subject to infringement claim: procure right to
+  continue, modify Service to be non-infringing, or terminate affected
+  Order Form and refund pre-paid unused fees.
+- Customer indemnifies Deliver WMS for claims arising from Customer Data,
+  use in violation of Agreement, or breach.
+
+LIMITATION OF LIABILITY (Section 11):
+- No indirect/incidental/consequential damages.
+- Aggregate liability capped at total fees paid in 12 months preceding the
+  event.
+- Carve-outs (caps don't apply): indemnification obligations, payment
+  obligations, confidentiality breach, gross negligence/willful misconduct/
+  fraud.
+
+INSURANCE (Section 12): Deliver WMS maintains commercial general liability,
+professional liability (E&O), and cyber liability with limits of at least
+$1,000,000 per occurrence. Certificate available on written request.
+
+TERM AND TERMINATION (Section 13):
+- MSA continues until all Order Forms expire/terminate.
+- Each Order Form has its own Subscription Term. Auto-renews for equal
+  periods unless either party gives 30 days non-renewal notice.
+- Termination for cause: 30-day cure for material breach. Immediate
+  termination for insolvency/bankruptcy.
+
+GOVERNING LAW: New Jersey law, Monmouth County NJ state courts. Good-faith
+30-day resolution attempt. Jury and class-action waivers.
+
+================================================================
+DATA PROCESSING AGREEMENT (DPA)
+================================================================
+
+URL: https://deliverwms.com/legal/dpa
+
+PURPOSE: Governs Deliver WMS's processing of personal information on behalf
+of Customer. Incorporated into MSA and Terms by reference.
+
+ROLES:
+- Customer is Controller (or "Business" under CCPA).
+- Deliver WMS is Processor (or "Service Provider" under CCPA).
+- Where Customer is itself acting as a processor for a third-party
+  controller (e.g., 3PL processing personal info of its warehouse clients'
+  end customers), Deliver WMS acts as a sub-processor.
+
+SCOPE (Section 3):
+- Subject matter: providing/securing/improving the Service per Agreement
+  and Customer's documented instructions.
+- Duration: while Agreement active, plus any post-termination retention.
+- Nature/purpose: warehouse management, last-mile delivery, billing,
+  reporting per Agreement.
+- Categories of Data Subjects: Customer personnel/authorized users,
+  personnel of Customer's warehouse clients and their end customers,
+  drivers and delivery recipients, other individuals Customer uploads.
+- Categories of Personal Information: names, emails, phone, addresses
+  (business and delivery), IP addresses, device IDs, transaction/order
+  details, signatures, proof-of-delivery photographs and metadata.
+- Customer should avoid uploading special-category data (health, biometric,
+  precise geolocation) unless strictly necessary.
+
+CUSTOMER'S INSTRUCTIONS (Section 4): Deliver WMS processes only on
+Customer's documented instructions (including Service use and
+configuration). Will notify if instruction appears to violate law.
+
+SECURITY MEASURES (Section 7):
+- Encryption in transit (TLS 1.2+) and at rest
+- Role-based access controls, least-privilege provisioning, MFA for admin
+  access, periodic access reviews
+- Multi-tenant isolation via database-level row-level security
+- Web application firewall, intrusion detection, DDoS mitigation
+- Vulnerability scanning, dependency monitoring, timely patching
+- Audit logging
+- Encrypted backups with documented restore procedures
+- Personnel: background checks where lawful, confidentiality obligations,
+  security awareness training
+- Incident response process
+- Code review, automated testing, controlled deployment
+
+SUB-PROCESSORS (Section 8):
+Current list:
+- Vercel Inc. — Web hosting, CDN (United States)
+- Supabase (or successor PostgreSQL provider) — Application database
+  (United States)
+- Stripe, Inc. — Payment processing (United States)
+- Postmark (or successor email service) — Transactional email
+  (United States)
+- Tawk.to — Live chat widget on marketing site (United States / Cyprus)
+
+30-day advance notice for new sub-processors. Customer can object on
+reasonable data-protection grounds; if unresolved, may terminate Order
+Form without refund of pre-paid unused fees.
+
+DATA SUBJECT RIGHTS (Section 9): Deliver WMS provides reasonable assistance
+to enable Customer to respond to Data Subject rights requests. If Deliver
+WMS receives a request directly, will forward to Customer (unless prohibited
+by law) and not respond directly except to acknowledge receipt.
+
+PERSONAL DATA BREACH NOTIFICATION (Section 10): Notification without undue
+delay (within 72 hours where feasible), with description of breach,
+likely consequences, and mitigation. Cooperation with Customer's
+investigation.
+
+DATA PROTECTION IMPACT ASSESSMENTS (Section 11): Reasonable assistance to
+Customer for DPIAs and regulatory consultations.
+
+INTERNATIONAL TRANSFERS (Section 12): Service provided from United States.
+Personal information processed in US. DPA does not currently include EU
+GDPR Standard Contractual Clauses or UK SCCs — contact
+privacy@deliverwms.com before uploading personal data from those
+jurisdictions.
+
+CCPA-SPECIFIC PROVISIONS (Section 13):
+- Deliver WMS acts as Service Provider.
+- Will NOT sell or share Customer Personal Information.
+- Will NOT retain/use/disclose outside direct business relationship except
+  as permitted by CCPA.
+- Will NOT combine with personal information from other customers except as
+  permitted.
+
+AUDIT RIGHTS (Section 14):
+- Annual right to summary information (e.g., third-party security
+  assessment report when available) under confidentiality obligations.
+- On-site audit available with 30 days notice and legitimate cause, subject
+  to reasonable scope and confidentiality. Customer bears costs unless
+  material breach found.
+
+RETURN AND DELETION (Section 15): 30-day export window post-termination.
+Deletion or anonymization on Customer's written request, except where
+legally required to retain.
+
+================================================================
+HOW TO USE LEGAL CONTENT IN CHAT
+================================================================
+
+The AI should be able to summarize key provisions in plain English. For any
+specific contractual question, red-line request, or unusual scenario,
+escalate to Michael with the visitor's name, email, and the specific
+question.
+
+EXAMPLES OF QUESTIONS THE AI CAN ANSWER DIRECTLY:
+
+Q: "Do you have a DPA we can sign?"
+A: "Yes. Our DPA is at https://deliverwms.com/legal/dpa and is
+incorporated by reference into the MSA. If your legal team needs to
+red-line specific provisions, the right next step is a direct conversation
+with Michael — I can capture your name and email and have him reach out."
+
+Q: "What sub-processors do you use?"
+A: List the current 5 sub-processors with their purpose.
+
+Q: "How do you handle data deletion?"
+A: "30-day export window post-termination — written request gets your data
+exported in commercially reasonable formats (CSV, JSON). After 30 days,
+data is deleted unless legally required to retain (e.g., billing records
+for tax/accounting compliance retain for 7 years)."
+
+Q: "Are you SOC 2 certified?"
+A: "Working toward SOC 2 readiness. A third-party assessment is on the
+roadmap. If SOC 2 is a hard requirement for your evaluation today, the
+right next step is a direct conversation with Michael — I can capture your
+name and email and have him reach out within one business day."
+
+Q: "What's your data retention policy?"
+A: Summary: Account info while active + 90 days. Customer warehouse data
+through subscription + 30 days post-termination unless contract/law
+requires longer. Billing records 7 years. Communications up to 3 years.
+Logs up to 12 months.
+
+ESCALATE FOR:
+- Specific contractual red-line requests
+- GDPR or UK GDPR Standard Contractual Clauses
+- Custom DPA terms beyond standard
+- HIPAA, ISO 27001, PCI DSS, or other certifications beyond CCPA
+- Specific liability cap or insurance limit negotiations
+- BAA (Business Associate Agreement) requests
+- Unusual data residency requirements

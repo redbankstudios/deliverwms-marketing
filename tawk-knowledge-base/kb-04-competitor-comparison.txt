@@ -1,0 +1,226 @@
+DELIVER WMS — KNOWLEDGE BASE FILE 04: COMPETITOR COMPARISON
+===========================================================
+
+Honest comparison of Deliver WMS against the five WMS platforms most often
+encountered in evaluation: Extensiv, Logiwa, ShipHero, CartonCloud, and
+Fishbowl. Full content at https://deliverwms.com/compare.
+
+================================================================
+FRAMING
+================================================================
+
+Every platform listed below has happy customers. Different choices for
+different operations. We're describing how each product approaches the
+problem — not arguing anyone is bad. Pick the one whose architecture matches
+the way you want to run.
+
+================================================================
+DIMENSION 1: TENANT MODEL
+================================================================
+
+DELIVER WMS: Multi-tenant from day one. Every table, query, and policy is
+tenant-aware. Built specifically for warehouses serving multiple clients.
+
+EXTENSIV: Multi-tenant native. Strong choice for established 3PLs.
+
+LOGIWA: Multi-tenant native. Heavier feature footprint than Deliver WMS today.
+
+SHIPHERO: Historically focused on single-brand merchants. Adding 3PL features.
+
+CARTONCLOUD: Multi-tenant native, with regional strength in APAC.
+
+FISHBOWL: Single-brand QuickBooks-aligned. Not designed for 3PL multi-tenancy.
+
+WHY THIS MATTERS: We started with multi-tenancy because retrofitting it into
+a single-brand WMS is structurally hard. Tables, queries, and policies are
+all tenant-aware from day one — that's why a 3PL serving 20 clients sees
+clean data isolation, not a bolted-on filter.
+
+================================================================
+DIMENSION 2: BILLING & FINANCIAL TRUTH
+================================================================
+
+DELIVER WMS: Built on a transparent ledger. Every billable event captured at
+the moment it occurs — invoices reflect what actually happened, with full
+audit trail.
+
+EXTENSIV: Configurable billing rules; reconciliation typical of legacy WMS.
+
+LOGIWA: Billing module available; depends on third-party export for finance
+ops.
+
+SHIPHERO: Per-action fees with monthly billing summary.
+
+CARTONCLOUD: Built-in invoicing; some manual reconciliation typical.
+
+FISHBOWL: Tightly tied to QuickBooks; billing flows through accounting.
+
+WHY THIS MATTERS: Most legacy WMS bolt billing onto operational data later.
+We chose to capture the billable event at the moment of action because that's
+the only way the invoice can be defended in front of a customer, line by line,
+without reconstructing it from logs at month end.
+
+================================================================
+DIMENSION 3: AUTOMATION
+================================================================
+
+DELIVER WMS: No-code rules engine. Operators wire automations without
+engineering support — event stream feeds rules; rules trigger actions.
+
+EXTENSIV: Workflow configuration available; complex rules typically need
+professional services.
+
+LOGIWA: Workflow rules engine; broader feature set.
+
+SHIPHERO: Automation rules available, mostly merchant-facing.
+
+CARTONCLOUD: Automation features included; varies by plan.
+
+FISHBOWL: Limited automation; workflow rules are basic.
+
+WHY THIS MATTERS: Operators know their workflows better than any
+implementation consultant. We built a plain-English rules engine on top of
+the event stream so the people running the warehouse can wire automations
+themselves — without filing a ticket or waiting on a services engagement.
+
+================================================================
+DIMENSION 4: MIGRATION & ONBOARDING
+================================================================
+
+DELIVER WMS: CSV import with smart field mapping. Most mid-size 3PLs
+operational on Deliver WMS within a week.
+
+EXTENSIV: White-glove implementation included; thorough but slower.
+
+LOGIWA: Implementation services available; multi-week typical.
+
+SHIPHERO: Self-serve onboarding for merchants; 3PL setup is consultative.
+
+CARTONCLOUD: Implementation typically supported by their team.
+
+FISHBOWL: Self-installed; depends heavily on QuickBooks setup.
+
+WHY THIS MATTERS: Long implementations are how WMS deals die. We built CSV
+import with smart field mapping so an operator can bring their existing data
+into Deliver WMS without an SOW or a six-week consulting engagement — the
+trade-off is that white-glove migration is your call to opt into, not the
+default.
+
+================================================================
+DIMENSION 5: MARKETPLACE INTEGRATIONS
+================================================================
+
+DELIVER WMS: On the roadmap. Order-import API and webhook events available
+today for custom connections.
+
+EXTENSIV: Established integrations with major marketplaces.
+
+LOGIWA: Native Shopify, Amazon integrations available.
+
+SHIPHERO: Strongest in this dimension — built integrations-first for DTC
+merchants.
+
+CARTONCLOUD: Marketplace integrations available; varies by region.
+
+FISHBOWL: Marketplace integrations weaker than competitors; QuickBooks-first.
+
+WHY THIS MATTERS: We're honest about this one. Native marketplace connectors
+are on the roadmap, not shipped. The order-import API and typed webhook
+events are usable today for custom integrations, and we'd rather tell you
+that than pretend a connector exists. ShipHero is genuinely strong here if
+marketplace breadth is your top priority.
+
+================================================================
+WHEN TO CHOOSE DELIVER WMS
+================================================================
+
+Deliver WMS is the right choice when:
+
+  - You run a multi-client 3PL (3-10 active client brands) at mid-size
+    volume (200-1,000 monthly outbound orders) and want data isolation
+    enforced at the database level
+  - You want pricing you can see before a sales call
+  - Event-stream billing matters to you (defensible invoices, faster close,
+    fewer disputes)
+  - You want to be operational in a week, not six
+  - You don't want to pay per user
+  - You value an opinionated product over a fully-configurable one
+  - You want a vendor where the founder writes the code and talks to
+    operators directly
+
+Deliver WMS is probably NOT the right choice when:
+
+  - You need native Shopify/Amazon/WooCommerce integrations today (those are
+    on our roadmap; ShipHero is a stronger fit if that's your top priority)
+  - You're running 50,000+ monthly orders and need an enterprise WMS with
+    dedicated implementation managers (we serve that volume but the
+    relationship shape is different from what enterprises typically expect)
+  - You require SOC 2 Type II certification today as a hard requirement
+    (we're working toward it; not certified yet)
+  - You need extensive APAC regional features (CartonCloud has stronger
+    regional fit there)
+
+================================================================
+COMPARISON QUICK-REFERENCE FOR CHAT
+================================================================
+
+If asked "How do you compare to Extensiv?":
+"Extensiv is a strong choice for established 3PLs and has the longest
+operating history. We're newer, smaller, and built specifically for mid-size
+3PLs that want event-stream billing, published pricing, and a one-week
+implementation instead of a six-week consulting engagement. If you're already
+on Extensiv and it's working, switching isn't urgent. If you're evaluating
+both, the savings calculator at https://deliverwms.com/pricing will give you
+a sense of operational time savings on your specific numbers."
+
+If asked "How do you compare to ShipHero?":
+"ShipHero is strong in DTC marketplace integrations — they built
+integrations-first for that customer. We don't have native marketplace
+connectors yet (they're on our roadmap; API/webhook events available today
+for custom connections). On the multi-tenant 3PL architecture, billing
+ledger, and pricing transparency, we're a more focused fit. If marketplace
+integration breadth is your top priority today, ShipHero is the honest
+recommendation."
+
+If asked "How do you compare to Logiwa?":
+"Logiwa has a heavier feature footprint than us today — that's a real
+trade-off. We're more focused, our pricing is transparent, and we ship every
+two weeks. For operators who want a leaner product with clearer pricing and
+faster iteration on operator-driven priorities, we're a fit. For operators
+who need every feature checkbox today, Logiwa is more comprehensive."
+
+If asked "How do you compare to CartonCloud?":
+"CartonCloud has regional strength in APAC. If you're in that market, they
+deserve a serious look. For US-based 3PLs, our pricing is published openly,
+our billing ledger is event-stream rather than reconciled, and our migration
+path is a one-week CSV import rather than a multi-week supported engagement."
+
+If asked "How do you compare to Fishbowl?":
+"Fishbowl is tightly tied to QuickBooks and built around single-brand
+operations. It's a different product shape entirely. If you're running a 3PL
+with multiple client brands, you'll likely outgrow Fishbowl's tenant model.
+If you're a single-brand operation deeply integrated with QuickBooks,
+Fishbowl is closer to your existing workflow than we are."
+
+================================================================
+THE FIVE ARCHITECTURAL REASONS (HEADLINE NARRATIVE)
+================================================================
+
+When asked "what's actually different about Deliver WMS?", these five
+architectural choices summarize the answer:
+
+1. MULTI-TENANT FROM DAY ZERO. Built with tenant isolation enforced at the
+   database, not the application layer. Mathematically prevents one client's
+   data from leaking into another's view.
+
+2. EVENT-STREAM BILLING LEDGER. Every billable event captured at the moment
+   of action. Invoices defensible line-by-line. Faster close, fewer disputes.
+
+3. NO-CODE AUTOMATION RULES ENGINE. Operators wire automations themselves
+   without engineering or consulting support.
+
+4. ONE-WEEK CSV MIGRATION. No SOW. No consulting engagement. Smart field
+   mapping handles non-matching column names automatically.
+
+5. PUBLISHED PRICING. All four tiers and per-event rates on a public page.
+   No "Contact us" gate.

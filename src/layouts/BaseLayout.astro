@@ -2,6 +2,8 @@
 import '@/styles/global.css';
 import Navbar from '@/components/Navbar.astro';
 import Footer from '@/components/Footer.astro';
+import Analytics from '@vercel/analytics/astro';
+import SpeedInsights from '@vercel/speed-insights/astro';
 import { SITE_URL, BRAND, SAME_AS, BRAND_ADDRESS, BRAND_CONTACT_POINTS } from '@/lib/brand';
 
 interface Props {
@@ -148,6 +150,14 @@ const websiteSchema = {
       <slot />
     </main>
     <Footer />
+
+    <!-- Vercel Web Analytics: page views, custom events, privacy-friendly (no cookies, no PII).
+         Activates only in production by default. -->
+    <Analytics />
+
+    <!-- Vercel Speed Insights: Core Web Vitals + RUM data from real users.
+         Same production-only activation as Analytics. -->
+    <SpeedInsights />
 
     <!-- Tawk.to live chat + ticketing widget. Loads async after page render to avoid
          affecting Core Web Vitals; widget self-positions in the bottom corner. -->

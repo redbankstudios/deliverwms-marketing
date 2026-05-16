@@ -73,7 +73,7 @@ We use a small set of vetted third-party service providers ("sub-processors") to
 
 | Sub-processor | Purpose | Data categories |
 | --- | --- | --- |
-| Vercel Inc. | Web hosting, CDN, edge functions | Site/app traffic, request logs, IP addresses |
+| Vercel Inc. | Web hosting, CDN, edge functions, privacy-friendly web analytics, and Core Web Vitals (Speed Insights) | Site/app traffic, request logs, IP addresses, aggregated page-view counts, performance timing metrics. Vercel Analytics and Speed Insights are cookieless and do not collect personally identifiable information. |
 | Supabase (or successor PostgreSQL provider) | Application database, authentication | All Service data including customer warehouse data |
 | Stripe, Inc. | Payment processing | Billing contact info, payment card data (handled directly by Stripe) |
 | Postmark (or successor email service) | Transactional and account email delivery | Recipient email, message content |

@@ -1,0 +1,186 @@
+DELIVER WMS — KNOWLEDGE BASE FILE 06: ROADMAP AND RECENT SHIPPING
+=================================================================
+
+What we just shipped on the platform, what's in flight, and what's planned
+for the future. Full roadmap at https://deliverwms.com/roadmap.
+
+================================================================
+JUST SHIPPED — RECENT OPERATOR-FACING WORK
+================================================================
+
+The most-asked "what's new?" questions answered here. Each item ties back
+to a build-log post if the visitor wants depth.
+
+AUTOMATED INVOICE REMINDERS (May 2026)
+Set the schedule once — say three days before due, on due date, seven days
+past due — and the system sends each reminder automatically from your
+account. Full reminder timeline captured per invoice. Eliminates the manual
+follow-up email step entirely.
+
+AR AGING REPORT (May 2026)
+Customer-grouped buckets (0-30 days, 31-60, 61-90, 90+) with a separate
+column for disputed invoices. Backdate the "as of" date to any past date.
+Invoice-level drilldown. Operator-side.
+
+THROUGHPUT REPORT (May 2026)
+Five charts including p50 and p90 cycle time, shared Day/Week granularity
+toggle, range total stat cards. Operators see real numbers on orders shipped,
+pallets received, picks, packs, and cycle time.
+
+INVOICE INTEGRITY SWEEP (May 2026)
+Due dates, status/timestamp database constraints, cancel and void API
+gating with mandatory reasons. Three-layer defense end-to-end (UI + API +
+DB). Critical billing actions can no longer fail silently.
+
+REVENUE BY CUSTOMER (May 2026)
+Per-tenant revenue slicing with date range, sort, filter, and clean export.
+The report you pull up for board decks and business reviews.
+
+B2B PORTAL REBUILD — INVENTORY + ORDERS + OUTBOUND (May 2026)
+Self-serve client surfaces with strict business-level data isolation
+enforced at the database. Atomic transactional safety on outbound submission.
+Cross-tenant data isolation verified by cross-actor testing pre-launch.
+
+B2B BILLING PAGE — CLIENT PORTAL (May 2026)
+Clients see their own invoices, line items, payment status, reminder
+timeline, and dispute conversation. Operator-internal dispute notes
+excluded at the query layer.
+
+SETTINGS SHELL REPAIR (May 2026)
+Every input maps to a real field on the right table. Save persists what
+you typed. Honest UI: hide tabs that don't do anything yet.
+
+FULL INVOICE LIFECYCLE (May 2026)
+Eight states: Draft, Sent, Paid, Overdue, Disputed, Resolved, Void,
+Cancelled. Every transition gated three ways (UI + API + DB constraints).
+Every change captured with actor, timestamp, and reason.
+
+BILLABLE EVENTS LEDGER + 14 EVENT TYPES (April 2026)
+Every billable event captured at the moment it happens. 4 production
+automation rules wired (outbound shipped, pick completed, inbound received,
+return processed) + daily storage accrual. 14 billable event types
+scaffolded across receiving, storage, fulfillment, dispatch, returns.
+
+MULTI-TENANT RLS HARDENING (April 2026)
+24 RESTRICTIVE business-isolation policies across 23 tables. Database-
+enforced tenant boundaries — not application-layer filters.
+
+SELF-SERVE SIGNUP + ONBOARDING (April-May 2026)
+Two-minute signup with Cloudflare Turnstile bot protection. First-dashboard
+completion checklist (set up billing, add warehouse, add client, invite
+teammate). Role-aware welcome screens for invitees.
+
+SENTRY OBSERVABILITY + SOURCE MAPS (May 2026)
+Full instrumentation across web and edge functions. Single-source release-
+name pattern prevents silent source-map mismatches.
+
+LEDGER INTEGRITY SWEEP (April 2026)
+3-way reconciliation (movement history, per-item quantity, per-bin balance
+all agree). Daily cron. Quarantine for uninvited signups. Demo data
+provenance fixes.
+
+================================================================
+NOW — SHIPPING THIS QUARTER
+================================================================
+
+These items are actively being built. Specific item ordering reflects the
+locked next-arc sequence.
+
+  - Billing depth — invoice line-item drilldown + dispute workflow polish
+  - B2B Reports rewrite — same caliber of analytics for clients as operators
+  - B2B Billing page — clients see their own line items + statements in
+    the portal
+  - B2B storefront — public surface for end customers to track orders
+    without an account
+  - Stripe production switchover — first paying customer go-live
+
+================================================================
+NEXT — PLANNED
+================================================================
+
+These items are committed to the roadmap but not yet in active development.
+
+  - Native Shopify integration (orders, inventory sync, returns)
+  - Multi-currency invoicing for international 3PLs
+  - Driver dispatch + last-mile route optimization v2
+  - Mobile-first picking app v2 with offline tolerance
+  - Returns + disposition workflows with photo capture
+  - Cycle count scheduler + variance reporting
+  - PDF export for Revenue Reports + AR Aging + Throughput
+  - Type Normalization pass — schema-wide column type cleanup
+
+================================================================
+LATER — UNDER CONSIDERATION
+================================================================
+
+Items being evaluated for future investment. Not committed.
+
+  - WooCommerce + Amazon + TikTok Shop native integrations
+  - Wave planning + zone-based picking optimization
+  - Carrier rate-shopping engine with margin protection
+  - Retail compliance suite — receiving exceptions, photo PODs, signature
+    capture, retailer docs
+  - Workforce management — scheduling, time-on-task, labor utilization
+    analytics
+  - Notifications platform — email, SMS, in-app, with per-recipient routing
+  - External REST API for custom integrations
+  - Intelligence layer — demand forecasting + anomaly detection
+
+================================================================
+HOW TO TALK ABOUT THE ROADMAP IN CHAT
+================================================================
+
+DO:
+  - Reference the public roadmap page at https://deliverwms.com/roadmap
+  - Confirm whether a specific item is on the roadmap (now / next / later)
+  - Explain the order honestly (we ship operator-driven priorities)
+  - Mention that the API and webhook events are usable today for custom
+    connections to systems that don't have native integrations yet
+
+DON'T:
+  - Promise dates for any roadmap item
+  - Claim integrations that aren't shipped as if they're available
+  - Imply that an item not currently on the roadmap will never ship
+    (better: "it's not currently on the roadmap; if it matters to your
+    operation, Michael would want to hear about it")
+
+WHEN ASKED "WHEN WILL X SHIP?":
+"It's on the roadmap but we don't put dates on roadmap items. What we ship
+next is driven by what operators on the platform ask for. If this matters
+to your operation, the right next step is a conversation with Michael —
+he'll factor it into the planning."
+
+WHEN ASKED "DO YOU HAVE SHOPIFY INTEGRATION?":
+"Native Shopify integration is on the planned roadmap, not yet shipped.
+The order-import API and webhook events are available today for custom
+connections — if you have a developer (or your Shopify partner does), the
+integration can be wired this week. We'd rather tell you the truth about
+what's shipped than pretend a connector exists."
+
+WHEN ASKED "DO YOU HAVE [SPECIFIC FEATURE]?":
+First check if it's in:
+  - Just Shipped (yes, it's live — describe what it does)
+  - Now (yes, actively being built)
+  - Next (yes, planned)
+  - Later (under consideration)
+  - Not listed (honest answer: "not currently on the roadmap; if this is
+    important for your operation, mention it to Michael and it can be
+    evaluated for inclusion")
+
+================================================================
+ARCHITECTURE COMMITMENTS — WHAT WILL NEVER CHANGE
+================================================================
+
+These are durable commitments, not roadmap items. They describe the shape
+of the product and won't be traded away for short-term wins.
+
+  - Multi-tenant from the database up. Will not retrofit a single-brand
+    schema. Will not move tenant isolation to the application layer.
+  - Event-stream billing. Will not move to month-end reconciliation. Will
+    not edit the ledger in place — append-only forever.
+  - Published pricing. Will not gate pricing behind a sales call.
+  - No per-user pricing. Will not add seat fees as the platform grows.
+  - Operator-voice marketing. Will not adopt the SaaS-buzzword vocabulary
+    most WMS vendors use.
+  - Customer data ownership. Customers own their data. We will not sell it,
+    we will not train AI models on it without explicit written authorization.

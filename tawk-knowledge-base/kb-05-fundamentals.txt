@@ -1,0 +1,320 @@
+DELIVER WMS — KNOWLEDGE BASE FILE 05: FUNDAMENTALS
+==================================================
+
+Plain-English explainers of three concepts most often asked about during
+evaluation: what a 3PL WMS is, what multi-tenant WMS means and why it matters,
+and what a billing ledger does. Full versions live at
+https://deliverwms.com/learn.
+
+================================================================
+WHAT IS A 3PL WMS?
+================================================================
+
+URL: https://deliverwms.com/learn/what-is-a-3pl-wms
+
+DEFINITION: A 3PL warehouse management system (3PL WMS) is software that
+runs the day-to-day operations of a third-party logistics warehouse —
+receiving inbound shipments, storing inventory, picking and packing orders,
+shipping them out, billing the client, and giving each client visibility into
+their own operation. The defining feature is that it does all of this for
+multiple client tenants at the same time, with strict data isolation between
+them.
+
+HOW A 3PL WMS DIFFERS FROM A BRAND-SIDE WMS:
+
+A brand-side WMS optimizes for a single inventory owner. Every product, every
+order, every report belongs to the company running the warehouse. The schema
+can be simple.
+
+A 3PL WMS has to answer a harder question on every query: "which client does
+this belong to?" A picker on the floor might handle inventory for Client A
+and Client B in adjacent bins. Client A should never see Client B's data —
+not in the portal, not in a report, not in an export. That requirement
+reshapes the database schema, the API surface, and the access control model.
+
+The clean way to build a 3PL WMS is with real multi-tenancy: every table has
+a tenant column, every query is tenant-scoped at the database level, and
+row-level security policies enforce the rules so they cannot be bypassed by
+application code. The compromised way is to start with a brand-side WMS and
+bolt a tenant filter on top later.
+
+CORE CAPABILITIES A 3PL WMS MUST HAVE:
+
+1. INBOUND RECEIVING with exception handling. Scan-driven receiving against
+   an ASN or purchase order, with structured handling for overages, shortages,
+   damage, and unknown SKUs. Every receipt should write to an audit trail by
+   user and time.
+
+2. STORAGE AND PUTAWAY MANAGEMENT. Bin-level locations, zone affinity per
+   client, and putaway tasks generated automatically from receiving sessions.
+
+3. INVENTORY TRACKING with per-client isolation. SKU-level on-hand, reserved,
+   and available quantities, with the option to filter by owner. Ledger-
+   backed (append-only) is the strongest pattern.
+
+4. ORDER ALLOCATION AND PICK-PACK-SHIP. Auto-allocation across warehouse
+   locations, pick-list generation, packing workflows, and label generation.
+
+5. LAST-MILE DISPATCH (for operations that deliver themselves). Route
+   construction, driver assignment, mobile driver app, and proof-of-delivery
+   capture.
+
+6. B2B CLIENT PORTAL. Self-serve inventory checks, outbound order submission,
+   shipment tracking, and returns.
+
+7. EVENT-DRIVEN BILLING. Every billable event — stops, labels, storage,
+   picks, returns — captured at the moment it occurs and flowed into an
+   invoice the client can audit line by line.
+
+8. REPORTS AND ANALYTICS. Operational dashboards for throughput and SLA,
+   financial reports for cost-to-serve per client.
+
+WHAT TO EVALUATE BEFORE SIGNING:
+
+  - Show me a query that proves tenant isolation. Not a screenshot — a query.
+  - Show me a billable-event log for a real (anonymized) client over a real
+    month. Can disputes be defended line by line?
+  - What does the client portal look like when an operator manager is
+    impersonating a client? Is the data scope tight?
+  - Show me the migration path off your platform. If switching back is hard,
+    switching in carries hidden cost.
+  - Publish your pricing. If a vendor won't show you a number before a sales
+    call, what is the relationship going to look like at renewal time?
+
+HOW DELIVER WMS FITS:
+Built specifically for mid-size 3PLs (roughly 200-1,000 monthly orders,
+3-20 active client brands). Multi-tenancy enforced at the database level via
+row-level security from day one. The billing ledger captures every billable
+event at the moment it happens. The B2B portal is included on every plan.
+CSV migration with smart field mapping gets most operators live in under a
+week. Pricing is published openly.
+
+FAQ:
+  - Q: What's the difference between 3PL WMS and OMS/TMS?
+    A: An OMS routes orders upstream. A TMS handles freight downstream. A
+    3PL WMS sits in the middle and runs the warehouse itself. Many modern
+    platforms (Deliver WMS included) bundle WMS + last-mile dispatch +
+    lightweight OMS in one application.
+  - Q: How long does implementation usually take?
+    A: Legacy implementations: 6-12 weeks with a paid services engagement.
+    Modern cloud 3PL WMS with CSV-based migration: under a week for a
+    mid-size 3PL.
+  - Q: What pricing models are common?
+    A: Three: per-user/per-seat (penalizes growth — avoid for 3PL), order-
+    volume-based platform tier with optional overage rates, usage-based per-
+    event (stops, labels, storage). Modern platforms often combine #2 and #3.
+
+================================================================
+WHAT IS A MULTI-TENANT WMS?
+================================================================
+
+URL: https://deliverwms.com/learn/what-is-multi-tenant-wms
+
+DEFINITION: A multi-tenant WMS is a warehouse management system architected
+to serve multiple isolated client tenants from a single software instance.
+Each tenant has their own inventory, orders, billing rates, configuration,
+and reports. The platform guarantees — at the database level, not just in
+the UI — that one tenant cannot read, modify, or even see data belonging to
+another.
+
+WHY THIS MATTERS FOR 3PLs:
+
+For a third-party logistics provider, multi-tenancy is not an architectural
+preference. It is the difference between a viable platform and a platform
+that will eventually leak one client's data to another, costing the 3PL a
+major account and possibly a lawsuit.
+
+A single warehouse can serve a dozen client brands. Their inventory sits in
+adjacent bins. Their orders flow through the same picker. Their data must
+never cross. The WMS is the system of record that enforces that boundary.
+
+REAL MULTI-TENANCY LOOKS LIKE:
+
+  - Every table has a tenant_id column (or equivalent) as part of the primary
+    key or a non-nullable indexed column
+  - Database-level row-level security policies enforce tenant scoping on every
+    read, write, update, and delete
+  - Application connections are scoped to a tenant context the moment they
+    are established — code does not have to remember to filter
+  - Reports and exports inherit the same tenant scope automatically
+  - New features ship with tenancy already enforced because there is no
+    application-code filter to forget
+
+RETROFITTED MULTI-TENANCY LOOKS LIKE:
+
+  - Some tables have a tenant column; others do not
+  - Tenant filtering is done in application code (WHERE client_id = ?) and
+    depends on the developer remembering to include it
+  - Reports occasionally aggregate across tenants by accident, requiring
+    a hotfix
+  - Customizations and integrations have to be configured per tenant
+  - Adding a new tenant requires a non-trivial onboarding script
+
+You can sometimes tell from the marketing copy. Vendors who built multi-
+tenant from day one tend to say so explicitly. Vendors who retrofitted tend
+to use softer language: "supports multi-tenant operations," "can be
+configured for 3PL use cases," "compatible with multi-client workflows."
+
+THE ROLE OF ROW-LEVEL SECURITY (RLS):
+
+Row-level security is a database feature that lets the database itself
+enforce row-level access rules. Instead of trusting every developer to write
+"WHERE tenant_id = current_tenant()" on every query, the database applies
+the rule automatically. If a query tries to read a row from another tenant,
+the database returns nothing — silently, regardless of the query.
+
+RLS is the strongest practical defense against cross-tenant data leakage.
+It does not depend on the application being bug-free. It does not require
+code review to catch a missing filter. It does not assume the developer
+remembered the rules. It just enforces them.
+
+COMMON FAILURE MODES OF RETROFITTED MULTI-TENANCY:
+
+  - Cross-tenant report aggregation — a dashboard that quietly includes
+    another client's volume in the totals
+  - Export with extra rows — a CSV download that includes rows from another
+    tenant near the boundary
+  - Search that returns hits from other tenants — an SKU search returning
+    inventory from a different brand
+  - API endpoint that ignores the tenant context — an integration that
+    returns all data when called with the right (or wrong) credentials
+
+MULTI-TENANCY IN DELIVER WMS:
+
+Deliver WMS was built multi-tenant from the first commit. Every table is
+tenant-scoped. Every query runs under a connection bound to a tenant
+context. Row-level security policies enforce the rules at the database —
+the database itself rejects any read that crosses tenants. New features
+inherit this scoping automatically because there is no application-level
+filter to forget.
+
+FAQ:
+  - Q: Is multi-tenancy the same as multi-warehouse?
+    A: No. Multi-warehouse means the system can manage operations across
+    more than one physical location. Multi-tenant means the system can
+    isolate multiple client brands within the same operation. A 3PL needs
+    both: multi-tenant always, multi-warehouse if they run more than one
+    site.
+  - Q: How can I tell if a WMS is "real" multi-tenant or retrofitted?
+    A: Ask the vendor to show a database query that returns inventory for
+    one client. If their answer involves application-level filtering, the
+    tenancy is bolted on and prone to leakage. If their answer involves
+    row-level security policies enforced at the database, the tenancy is
+    real.
+  - Q: Does multi-tenancy hurt performance?
+    A: Done well, multi-tenancy adds a constant-time check per query —
+    negligible at any realistic scale. A well-indexed multi-tenant database
+    can serve thousands of clients on the same instance.
+  - Q: Can a brand-side WMS be made multi-tenant later?
+    A: Technically yes, practically rarely. Retrofitting tenancy means
+    revisiting every table, query, report, export, and integration. Most
+    "multi-tenant" features added to a single-brand WMS years after launch
+    are incomplete — the marketing claims tenancy, the architecture is
+    partial.
+
+================================================================
+WHAT IS A BILLING LEDGER IN A WMS?
+================================================================
+
+URL: https://deliverwms.com/learn/what-is-a-billing-ledger
+
+DEFINITION: A billing ledger in a warehouse management system is an
+append-only record of every billable event the warehouse generates. Each
+entry captures the event's timestamp, tenant, rate, quantity, and a
+reference back to the originating operational record. Invoices are produced
+by summing entries for a billing period — not by reconstructing the data at
+month end.
+
+THE LEGACY ALTERNATIVE: MONTH-END RECONCILIATION
+
+Most 3PLs are familiar with the legacy approach. At the end of every month,
+finance pulls operational data from three to five different sources — the
+WMS, a spreadsheet of storage charges, the dispatcher's notes, the returns
+log, a value-added services log — and reassembles them into an invoice for
+each client.
+
+The process is slow (a full day or more of finance time). It is error-prone
+(line items get missed; storage fees slip a month). And the resulting
+invoices are weak under dispute, because the underlying data is partial and
+the source of truth is whichever spreadsheet finance happens to be looking
+at.
+
+THE EVENT-STREAM ALTERNATIVE:
+
+Event-stream billing flips the timing. Instead of reconstructing the invoice
+at month end, the WMS writes a billable event the moment each operational
+action happens.
+
+  - A pallet is received → ledger gets a receiving fee entry
+  - A label is printed → ledger gets a label rate entry plus any margin
+  - A stop is completed on a delivery route → ledger gets a stop rate entry
+  - Storage accrues overnight → ledger gets a nightly entry per occupied
+    pallet position
+  - A return is dispositioned → ledger gets the disposition fee plus the
+    restock or write-off side effect
+
+At month end, the invoice is already written. Reconciliation is a one-hour
+review for variance, not a multi-day reconstruction project.
+
+WHY APPEND-ONLY MATTERS:
+
+The ledger pattern only works if entries cannot be silently edited or
+deleted. If a billable event can be quietly modified after the fact, an
+invoice can be quietly altered too. The audit trail becomes a fiction.
+
+An append-only ledger means corrections are themselves entries. A
+misclassified picking event isn't edited in place; a reversing entry is
+added with a reason code, and the original event remains in the history.
+
+HOW DISPUTES WORK WITH A LEDGER:
+
+When a client questions a line on an invoice, the answer with a ledger is
+concrete: "This $4.50 charge is for the 38 picks completed for your client
+account between 09:14 and 11:32 on March 14th. Here's the picker, here's
+the bin, here's the order each pick belonged to."
+
+Most disputes evaporate at that level of specificity. The remaining disputes
+are real disagreements about rates — productive conversations.
+
+WHAT EVENT-STREAM BILLING UNLOCKS BEYOND INVOICING:
+
+  - Real-time cost-to-serve per client (see profitability today, not three
+    weeks after month end)
+  - Mid-month invoice estimates (send the client a current accrual so the
+    final invoice is never a surprise)
+  - Predictable cash flow (faster billing close shortens the receivables
+    cycle)
+  - Honest pricing experiments (trial a new rate structure on historical
+    events; see what last quarter would have looked like under different
+    pricing)
+  - Defensible audit trail (a regulatory audit or contract dispute can
+    replay the ledger)
+
+HOW DELIVER WMS IMPLEMENTS THE LEDGER:
+
+Deliver WMS captures fourteen billable event types covering receiving,
+storage, fulfillment, dispatch, and returns. Each event is idempotency-
+protected (cannot be double-counted from retries), each carries a reference
+to the originating operational record, each subject to tiered pricing with
+per-client overrides. The monthly invoice generation runs on a cron and
+produces a PDF invoice with a full event-level breakdown the client can
+audit.
+
+FAQ:
+  - Q: What are typical billable events for a 3PL?
+    A: Most 3PLs bill on some combination of: inbound receiving (per pallet
+    or per line), storage (per pallet position per day or month), picks
+    (per line), packs (per order), labels, outbound stops (for delivery),
+    returns receipt, value-added services (kitting, labeling, assembly),
+    and special handling.
+  - Q: Does a billing ledger replace QuickBooks?
+    A: No. The ledger captures and totals operational events; QuickBooks
+    (or your accounting system of record) is where receivables, payments,
+    and the general ledger live. A well-built WMS exports invoice totals
+    to accounting and lets your finance team retain their normal workflow.
+  - Q: What does the ledger let me do that month-end reconciliation does
+    not?
+    A: Three things. Real-time cost-to-serve per client — see profitability
+    this minute, not three weeks from now. Mid-month invoice estimates so
+    neither side is surprised. Faster billing close — most ledger-backed
+    3PLs cut month-end from a multi-day project to a one-hour review.

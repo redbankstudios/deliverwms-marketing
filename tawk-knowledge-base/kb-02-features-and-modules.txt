@@ -1,0 +1,672 @@
+DELIVER WMS — KNOWLEDGE BASE FILE 02: FEATURES AND MODULES
+==========================================================
+
+The Deliver WMS platform has 35 modules organized across 7 categories.
+Each module is documented at https://deliverwms.com/docs/<slug>.
+
+This file lists every module with what it does, who uses it, why it matters,
+and its full capability list.
+
+================================================================
+CATEGORY 1: WAREHOUSE OPERATIONS (9 modules)
+================================================================
+
+MODULE: Operations Dashboard
+URL: https://deliverwms.com/docs/dashboard
+Tagline: Real-time KPIs, volume trends, and the new-tenant completion checklist.
+Audiences: 3PL, eCom, Dist, L-Mile
+Roles: Platform Owner, Business Owner, Warehouse Manager
+Why it matters: Operations managers can't afford to dig through five screens
+before morning standup. The dashboard gives you the pulse of your entire
+operation — orders behind SLA, inbound arrivals due, and floor utilization
+— so you know where to focus before your first coffee is cold. For new
+tenants, a completion checklist surfaces the four onboarding steps that take
+you from signup to operational.
+Capabilities: Real-time KPI cards. Volume trend charts. Task completion
+tracking. Role-adaptive content. New-tenant completion checklist. Quick-action
+shortcuts.
+
+MODULE: Inbound Receiving
+URL: https://deliverwms.com/docs/inbound
+Tagline: Receive shipments with a 6-state pallet lifecycle, scan items, handle
+exceptions, and trigger putaway.
+Audiences: 3PL, eCom, Dist
+Roles: Platform Owner, Business Owner, Warehouse Manager, Warehouse Employee
+Why it matters: For 3PLs handling multiple clients, accurate receiving is the
+foundation of trust. Every miscount erodes margin and client confidence.
+Scan-driven receiving with a fully-tracked pallet lifecycle catches problems
+at the dock door — not weeks later during a cycle count. Every pallet has a
+place in the lifecycle and a timestamp at every transition.
+How it works: Each pallet moves through a six-state lifecycle — expected,
+arrived, receiving, putaway, emptied, removed. Every transition is timestamped.
+A daily integrity check verifies no pallet has drifted into an inconsistent
+state. Operators can scan barcodes to identify items or use manual SKU entry.
+The system automatically resolves barcodes against the product catalog and
+raises exceptions for unknown items, quantity mismatches, or damaged goods.
+Each scan is recorded as an immutable receiving event. Once receiving is
+complete, the system generates putaway tasks that direct workers to move
+pallets from staging to assigned storage based on zone affinity, client
+preferences, and capacity.
+Capabilities: Shipment scheduling and dock assignment. Barcode scan and manual
+SKU modes. 6-state pallet lifecycle with full timestamping. Exception handling
+(damage, shortage, unknown). Pallet-to-inventory junction for cross-checks.
+Automatic putaway task generation. Receiving session audit trail.
+
+MODULE: Storage Management
+URL: https://deliverwms.com/docs/storage
+Tagline: Monitor zone and rack utilization, manage storage locations, and
+optimize space.
+Audiences: 3PL, Dist
+Roles: Platform Owner, Business Owner, Warehouse Manager
+Why it matters: Storage costs are your biggest fixed expense. Knowing which
+zones are underutilized and which clients are overflowing lets you optimize
+space allocation before you need to lease a second building. For 3PLs, proper
+client-zone affinity prevents cross-contamination and simplifies billing.
+Capabilities: Zone and rack utilization heatmaps. Client-to-zone affinity
+tracking. Fragmentation scoring. Capacity planning views. Location-level
+drill-down.
+
+MODULE: Inventory Management
+URL: https://deliverwms.com/docs/inventory
+Tagline: Track SKU-level stock with a ledger-backed audit trail and daily
+3-way reconciliation.
+Audiences: 3PL, eCom, Dist
+Roles: Platform Owner, Business Owner, Warehouse Manager, B2B Client
+Why it matters: Inventory accuracy is the difference between profitable
+fulfillment and costly chargebacks. The ledger-backed model means every unit
+is accounted for — every receive, every pick, every adjustment — creating an
+immutable record that clients and auditors can trust. A daily 3-way
+reconciliation confirms the movement history, per-item quantities, and per-bin
+balances all agree.
+How it works: All quantity changes flow through an append-only inventory
+ledger. Every night a 3-way reconciliation confirms the immutable movement
+history, the per-item quantity, and the per-bin balance all agree. Any drift
+is surfaced as an exception the next morning, not weeks later. A one-click
+on-demand self-test lets managers run the same reconciliation any time —
+useful before a month-end close or after a large adjustment.
+Capabilities: SKU-level stock tracking. Multi-client filtering. Location-based
+views. Transfer and adjustment workflows. Low-stock alerts. Append-only ledger
+with full audit trail. Daily 3-way reconciliation with exception detection.
+On-demand integrity self-test.
+
+MODULE: Task Center
+URL: https://deliverwms.com/docs/tasks
+Tagline: Centralized task queue for picks, putaways, counts, and custom
+warehouse jobs.
+Audiences: 3PL, eCom, Dist
+Roles: Platform Owner, Business Owner, Warehouse Manager, Warehouse Employee
+Why it matters: Floor productivity directly impacts your cost-per-order. The
+auto-assignment engine eliminates the daily scramble of "who does what" and
+ensures high-priority picks are always worked first. Managers see bottlenecks
+forming in real time instead of discovering them at end-of-shift.
+Capabilities: Unified task queue (picks, putaways, counts, custom). Auto-
+assignment by zone and workload. Mobile-friendly worker view. Real-time
+progress tracking. Manager reassignment and priority controls.
+
+MODULE: Count Variance Review
+URL: https://deliverwms.com/docs/variance-review
+Tagline: Review cycle-count discrepancies, gate adjustments through manager
+approval, and post to the append-only ledger.
+Audiences: 3PL, Dist
+Roles: Platform Owner, Warehouse Manager
+Why it matters: Unresolved variances snowball into shrinkage, mis-ships, and
+client disputes. A structured review queue with a manager approval gate
+ensures every discrepancy gets a decision — approve, reject, or recount —
+with a full audit trail. For 3PLs, this is your defense against inventory
+claims.
+How it works: When a counted quantity differs from the expected system
+quantity, it creates a variance record that requires managerial review before
+any ledger adjustment can post. Managers approve adjustments (which post to
+the inventory ledger as an explicit additional entry, never an overwrite),
+reject them (triggering a recount), or add notes for investigation. Every
+decision is recorded with timestamps, user attribution, and reason codes for
+full audit compliance. The approval gate is the discipline that prevents
+silent inventory corrections.
+Capabilities: Pending variance queue with severity sorting. Per-bin recount
+workflow. Reject / recount / approve gate. Append-only adjustment audit trail.
+Reason code categorization. Per-decision actor and timestamp record.
+
+MODULE: Packaging Management
+URL: https://deliverwms.com/docs/packaging
+Tagline: Smart box catalog with on-hand counts, cost tracking, and packing
+recommendations.
+Audiences: 3PL, eCom
+Roles: Platform Owner, Warehouse Manager, Packer
+Why it matters: Dimensional weight charges from carriers can quietly inflate
+shipping costs by 20-30%. The smart packaging engine picks the smallest box
+that safely fits — every time, on every order — so you stop paying for shipped
+air. Packers don't need to memorize a box chart; the system already knows.
+Capabilities: Box and material catalog. On-hand inventory of packaging.
+Cost-per-pack tracking. Recommended box sizing. Reorder alerts.
+
+MODULE: Warehouse Settings
+URL: https://deliverwms.com/docs/warehouse-settings
+Tagline: Per-warehouse configuration: facility profile, zones, racks, and
+operational preferences.
+Audiences: 3PL, Dist
+Roles: Platform Owner, Business Owner, Warehouse Manager
+Why it matters: The system's intelligence is only as good as your warehouse
+model. Spending an hour up-front to define zones, racks, and client affinity
+rules means putaway tasks route correctly, storage allocation respects client
+preferences, and picks follow efficient paths. Skipping this step turns smart
+automation into chaos.
+How it works: The General tab handles the facility profile — name, contact,
+phone, address — and persists every field to the right record. A read-only
+billing summary surfaces the current tenant plan with a direct link to Account
+Management. The Zones and Racks tabs define the physical structure: zone
+layouts, rack-bay-level hierarchy, dock door assignments, capacity defaults,
+and client affinity rules. Multi-warehouse tenants can configure each location
+independently. Team management lives in its own Employees screen; the Settings
+to Users entry redirects there with context.
+Capabilities: Facility profile (name, contact, phone, address) with full
+persistence. Read-only billing summary with deep link to Account Management.
+Zone, rack, bay, and level layout. Client-to-zone affinity rules. Operational
+hour configuration. Multi-warehouse tenant support.
+
+MODULE: Pallet Lifecycle Health
+URL: https://deliverwms.com/docs/pallet-lifecycle-health
+Tagline: Platform-owner integrity dashboard for the inbound pallet lifecycle
+with daily exception detection.
+Audiences: 3PL
+Roles: Platform Owner
+Why it matters: If pallets drift between lifecycle states without their
+corresponding inventory movements, billing and storage reporting silently
+degrade. The Pallet Lifecycle Health screen runs eleven independent assertions
+every night and surfaces any pallet that's out of step. You see drift the day
+it happens, not weeks later when a client questions a storage charge.
+Capabilities: Eleven independent lifecycle assertions. Daily automatic
+execution. Auto-resolve when underlying data corrects. One-click drill-down
+to underlying records. Mark-removed action with mandatory reason capture.
+
+================================================================
+CATEGORY 2: ORDER & FULFILLMENT (4 modules)
+================================================================
+
+MODULE: Order Management
+URL: https://deliverwms.com/docs/orders
+Tagline: Create, allocate, pick, pack, and ship customer orders with full
+lifecycle tracking.
+Audiences: 3PL, eCom, Dist
+Roles: Platform Owner, Business Owner, Warehouse Manager, B2B Client
+Why it matters: eCommerce brands need sub-24hr fulfillment. The allocation
+engine reserves stock the moment an order lands, preventing overselling. For
+3PLs managing multiple clients, order isolation ensures one client's rush
+orders don't cannibalize another's inventory. Smart routing eliminates the
+daily question of "which orders go on trucks vs. carrier?" — the system
+decides automatically.
+How it works: Order Management handles the complete lifecycle of customer
+orders — from creation through allocation, picking, packing, shipping, and
+delivery. It supports both manual order entry and integration-sourced orders.
+The allocation engine checks available inventory and routes orders to the
+appropriate warehouse and carrier flow automatically. Once allocated, the
+system generates pick tasks and pushes them into the Task Center for floor
+workers. Every status change — created, allocated, picked, packed, shipped,
+delivered — is captured as an event with timestamp and user attribution.
+Capabilities: Order intake (manual, API, CSV). Allocation and reservation.
+Pick / pack / ship workflows. Carrier label generation. Order lifecycle audit
+trail.
+
+MODULE: Returns Dashboard
+URL: https://deliverwms.com/docs/returns
+Tagline: Process returns, inspect items, set disposition, and update inventory
+and billing in one step.
+Audiences: 3PL, eCom
+Roles: Platform Owner, Business Owner, Warehouse Manager
+Why it matters: Returns are expensive — but untracked returns are devastating.
+Disposition-aware processing ensures restockable items get back to available
+inventory fast, while damaged goods are quarantined before they ship again.
+Reason-code analytics help identify root causes like packaging issues or
+wrong-item picks.
+Capabilities: Returns intake with photo capture. Per-item disposition
+(restock, damage, write-off). Automatic ledger updates. Client-visible status
+with timestamps. Billable disposition events.
+
+MODULE: Auto-Allocation Engine
+URL: https://deliverwms.com/docs/auto-allocate
+Tagline: One-click inventory allocation that respects multi-warehouse rules
+and client affinity.
+Audiences: 3PL, eCom, Dist
+Roles: Platform Owner, Business Owner, Warehouse Manager
+Why it matters: Manual allocation is slow, error-prone, and doesn't scale.
+The auto-allocation engine turns a multi-step process into one click — verify
+stock, reserve it, and generate picks — all in a single atomic operation. For
+high-volume warehouses, this eliminates the allocation bottleneck that delays
+fulfillment start times.
+How it works: The allocation process verifies available quantity (on-hand
+minus already-reserved) before committing. If all lines can be fully
+allocated, the order advances to picking. If not, partial-order splitting
+kicks in to peel off the fulfillable lines while backordering the rest.
+Multi-warehouse logic ranks locations by distance and stock depth, splitting
+across sites only when no single warehouse can fill the order.
+Capabilities: Distance-ranked warehouse allocation. Haversine geo math for
+stop assignment. Multi-warehouse split-shipment fallback. Primary-warehouse-
+wins tie-break. Stockout event logging.
+
+MODULE: Partial Order Splitting
+URL: https://deliverwms.com/docs/partial-order-splitting
+Tagline: Automatically splits orders when inventory is spread across multiple
+warehouses.
+Audiences: 3PL, eCom, Dist
+Roles: Platform Owner, Business Owner, Warehouse Manager
+Why it matters: A single out-of-stock SKU shouldn't hold up an entire order.
+Partial splitting means you ship what you can today and backorder the rest —
+maximizing fulfillment velocity and customer satisfaction. The linked badge
+keeps operators aware of the relationship so nothing falls through the cracks.
+Capabilities: Cross-warehouse split detection. Reservation per split shipment.
+Consolidated tracking under parent order. Per-split label generation.
+Customer-friendly tracking page.
+
+================================================================
+CATEGORY 3: DISPATCH & LAST-MILE (5 modules)
+================================================================
+
+MODULE: Fleet Management
+URL: https://deliverwms.com/docs/fleet
+Tagline: Manage vehicles, assign drivers, and track capacity utilization.
+Audiences: 3PL, L-Mile
+Roles: Platform Owner, Business Owner, Shipping Manager
+Why it matters: A single vehicle breakdown can cascade into dozens of missed
+deliveries. Fleet management ensures you know which vehicles are available,
+which need maintenance, and whether you have enough capacity for tomorrow's
+routes before the day starts.
+Capabilities: Vehicle records and capacity. Driver-to-vehicle assignment.
+Maintenance tracking. Utilization metrics. Multi-warehouse fleet support.
+
+MODULE: Dispatcher Console
+URL: https://deliverwms.com/docs/dispatcher
+Tagline: Live route monitoring, exception handling, and real-time driver
+communication.
+Audiences: 3PL, L-Mile
+Roles: Platform Owner, Shipping Manager, Dispatcher
+Why it matters: Last-mile companies live and die by on-time delivery. Real-
+time exception alerts let dispatchers intervene before a missed window becomes
+a failed delivery. The ability to message drivers and reassign stops on the
+fly turns potential failures into recoveries.
+Capabilities: Live map with driver positions. Active route status. Exception
+triage and resolution. In-app driver messaging. ETA monitoring.
+
+MODULE: Route Board
+URL: https://deliverwms.com/docs/routes
+Tagline: Plan and visualize delivery routes, manage stop sequences, and assign
+drivers.
+Audiences: 3PL, L-Mile
+Roles: Platform Owner, Shipping Manager, Dispatcher
+Why it matters: Well-planned routes reduce fuel costs, improve delivery
+density, and keep drivers within their time windows. The route board gives
+planners a visual canvas to build efficient sequences and catch problems —
+like overweight vehicles or impossible time windows — before dispatch.
+Capabilities: Drag-and-drop stop sequencing. Auto-route construction.
+Capacity-aware route planning. Driver assignment. Route templates for
+recurring runs.
+
+MODULE: Dispatch Queue
+URL: https://deliverwms.com/docs/dispatch-queue
+Tagline: Assign packed orders to routes, drivers, and dispatch waves.
+Audiences: 3PL, L-Mile
+Roles: Platform Owner, Business Owner, Shipping Manager, Dispatcher
+Why it matters: The gap between "packed" and "on the truck" is where
+deliveries stall. The dispatch queue closes that gap by giving shipping
+managers a clear view of everything ready to go, with tools to batch-assign
+orders to routes and vehicles efficiently. Carrier orders are filtered out
+automatically so dispatchers focus only on fleet deliveries.
+Capabilities: Packed-order queue. Route + driver assignment. Wave batching.
+Priority and SLA sorting. Auto-dispatch rules.
+
+MODULE: Drivers Management
+URL: https://deliverwms.com/docs/drivers
+Tagline: Add, edit, and manage drivers and delivery personnel.
+Audiences: 3PL, L-Mile
+Roles: Platform Owner, Business Owner, Shipping Manager
+Why it matters: Driver capacity planning starts with knowing who's available
+and what they can handle. Zone assignments ensure local knowledge is used
+effectively, while max stop limits prevent overloading drivers and degrading
+delivery quality.
+Capabilities: Driver records and credentials. Vehicle assignment. Performance
+metrics. Schedule and availability. Mobile driver-app onboarding.
+
+================================================================
+CATEGORY 4: MOBILE APPS (2 modules)
+================================================================
+
+MODULE: Driver App
+URL: https://deliverwms.com/docs/driver-app
+Tagline: Mobile-optimized stop list, delivery confirmation, photo POD, and
+exception capture.
+Audiences: 3PL, L-Mile
+Roles: Platform Owner, Driver
+Why it matters: Drivers shouldn't need training to use your software. The
+mobile app gives them one clear task at a time — go here, deliver this,
+capture proof. Failed deliveries require notes so dispatchers have context,
+and offline mode keeps things moving even in spotty coverage areas.
+Capabilities: Optimized stop list with map view. Photo + signature proof of
+delivery. Exception capture with GPS. Live ETA broadcasts. Offline mode with
+queued sync.
+
+MODULE: Worker App
+URL: https://deliverwms.com/docs/worker-app
+Tagline: Simplified mobile interface for warehouse workers — picks, putaways,
+counts.
+Audiences: 3PL, eCom, Dist
+Roles: Platform Owner, Warehouse Employee, Packer
+Why it matters: Warehouse worker turnover is high, which means training time
+matters. The worker app is designed for zero learning curve — scan, confirm,
+move. Barcode verification prevents mispicks, and the single-task view keeps
+workers focused instead of overwhelmed. Pack tasks with integrated label
+generation mean packers never leave the app to create or print shipping
+labels.
+Capabilities: Personal task queue. Barcode scanning. Step-by-step task
+guidance. Exception reporting. Offline tolerance for slow zones.
+
+================================================================
+CATEGORY 5: MULTI-TENANT & CLIENT (5 modules)
+================================================================
+
+MODULE: Business Dashboard (client portal)
+URL: https://deliverwms.com/docs/b2b-dashboard
+Tagline: Self-service dashboard for B2B clients with real-time inventory,
+order, and shipment KPIs.
+Audiences: 3PL, Dist
+Roles: B2B Client, Platform Owner
+Why it matters: 3PL clients want transparency without phone calls. The
+self-service dashboard eliminates "what's my inventory?" emails and builds
+trust through real-time visibility. KPIs surface the metrics that matter for
+each client — open orders, in-transit shipments, total units on hand,
+last-30-day order count — scoped strictly to their own data.
+Capabilities: Real-data KPI cards (open orders, in-transit, units, last-30-
+day). Inventory at a glance. Recent activity feed. Quick links to portal
+tools. Database-enforced data isolation.
+
+MODULE: Business Outbound (client portal)
+URL: https://deliverwms.com/docs/b2b-outbound
+Tagline: Submit outbound shipment requests atomically, with database-level
+transactional safety.
+Audiences: 3PL, Dist
+Roles: B2B Client, Platform Owner
+Why it matters: Manual order intake via email and phone is slow and error-
+prone. Self-service outbound requests let clients submit orders on their
+schedule. Database-level transactional safety means a partially-created order
+is impossible — either every record commits or none do.
+How it works: The submission is wrapped in a database-level transaction so
+all the writes — the order record, line items, reservations, and shipment
+record — happen atomically. There is no path for a half-finished order to
+land in the dispatcher's queue if any write fails mid-flight. The request
+lands in the operator's dispatch queue with the client and requested items
+already filled in.
+Capabilities: Outbound order submission. Address + service-level selection.
+Atomic multi-table writes (transactional safety). Live shipment status.
+Tracking link sharing. Cancellation requests.
+
+MODULE: Business Products (client portal)
+URL: https://deliverwms.com/docs/b2b-products
+Tagline: Manage product catalog, SKUs, and item details from the client portal.
+Audiences: 3PL, Dist
+Roles: B2B Client, Platform Owner
+Why it matters: Inaccurate product data causes cascading problems — wrong
+storage allocation, incorrect pick weights, and shipping cost overruns.
+Letting clients own their product data ensures accuracy at the source and
+reduces back-and-forth between 3PL ops and client teams.
+Capabilities: Product catalog management. SKU details and barcodes. Per-
+product images and descriptions. Bulk import via CSV. Audit trail of catalog
+changes.
+
+MODULE: Business Billing (client portal)
+URL: https://deliverwms.com/docs/b2b-billing
+Tagline: Clients see their own invoices, line items, payment status, and
+dispute conversations.
+Audiences: 3PL, Dist
+Roles: B2B Client, Platform Owner
+Why it matters: Most of a 3PL's inbound billing email is "what do I owe you?"
+and "what is this charge?" The client billing page makes both questions self-
+service. Clients answer their own questions from the data, your team stops
+being a switchboard, and your account managers go back to strategic work.
+How it works: Stat cards summarize total outstanding, paid year-to-date, and
+disputed invoice count. A filterable invoice table lists every invoice with
+sortable columns for date, due date, status, and amount. Inline drilldown on
+any invoice expands the line items — each one traced back to the underlying
+operational event so the client can see exactly what they are being charged
+for. Payment metadata, the reminder timeline, and any dispute conversation
+are all visible. Operator-internal dispute disposition notes are excluded
+from the client view at the data query layer — there is no path for a future
+bug to leak them.
+Capabilities: Stat cards (total outstanding, paid YTD, disputed count).
+Filterable, sortable invoice table. Inline invoice drilldown with line items.
+Payment metadata visibility. Reminder timeline per invoice. Client-visible
+dispute conversation. Operator-internal notes excluded at query layer.
+
+MODULE: Tracking Portal
+URL: https://deliverwms.com/docs/tracking
+Tagline: End-customer order tracking with real-time status and ETA.
+Audiences: 3PL, eCom, L-Mile
+Roles: Platform Owner, End Customer
+Why it matters: Every "where's my order?" call costs time and money. A
+self-service tracking portal deflects support volume and gives end customers
+the instant answer they expect from modern delivery experiences.
+Capabilities: Public tracking link per order. Live status updates. ETA
+broadcast from driver app. Branded experience per tenant. No login required
+for end customers.
+
+================================================================
+CATEGORY 6: REPORTS & BILLING (8 modules)
+================================================================
+
+MODULE: Operational Reports (hub)
+URL: https://deliverwms.com/docs/reports
+Tagline: Hub for warehouse analytics — throughput, AR aging, revenue by
+customer, and order trends.
+Audiences: 3PL, eCom, Dist, L-Mile
+Roles: Platform Owner, Business Owner, Warehouse Manager
+Why it matters: You can't improve what you don't measure. The reports surface
+gives managers throughput data to justify headcount, AR aging to prioritize
+collections, revenue-by-customer breakdowns for business reviews, and SLA
+dashboards to demonstrate service quality.
+Capabilities: Navigation to all operator-side reports. Day/week granularity
+toggle on time-series reports. Date-range filters shared across reports.
+Exportable PDF and CSV.
+
+MODULE: Throughput Report
+URL: https://deliverwms.com/docs/throughput-reports
+Tagline: Orders shipped, pallets received, picks, packs, and cycle-time charts
+with day/week granularity.
+Audiences: 3PL, eCom, Dist
+Roles: Platform Owner, Business Owner, Warehouse Manager
+Why it matters: Most operators have a hand-wavy sense of "we ship same-day or
+next-day for most orders" and a much vaguer sense of how often that breaks
+down. Real throughput data — with both median and p90 cycle-time lines —
+tells you the truth: how slow the slowest 10% of your orders are, and whether
+that's trending up or down. That's the number that shapes your reputation.
+Capabilities: Orders shipped per period chart. Pallets received per period
+chart. Picks completed per period chart. Packs completed per period chart.
+p50 + p90 cycle-time chart. Range total stat cards. Day / Week granularity
+toggle. Date-range filter.
+
+MODULE: AR Aging Report
+URL: https://deliverwms.com/docs/ar-aging
+Tagline: Operator view of every customer's open invoices bucketed by age,
+with backdating and drilldown.
+Audiences: 3PL
+Roles: Platform Owner, Business Owner
+Why it matters: If you're chasing collections by gut feel today, AR Aging
+tells you exactly which accounts to call first. Backdate it to any past date
+and the report shows what your AR looked like that day — useful when
+reconciling against a client's month-end statement. Disputed invoices get
+their own column because disputed AR is not aged AR.
+How it works: Shows every customer's open AR bucketed into 0-30 days, 31-60,
+61-90, 90+, and a separate column for disputed invoices. Click any row to
+drill into the underlying invoices that make up the balance. The "as of" date
+defaults to today but can be backdated to any past date. The report computes
+correctly for the chosen date: invoices that were sent but not yet paid as of
+that date, in the buckets they would have been in.
+Capabilities: "As of" date picker with backdating. 0-30 / 31-60 / 61-90 / 90+
+aging buckets. Separate disputed-invoice column. Per-customer row totals.
+Invoice-level drilldown. Operator-only (clients see the AR view in
+b2b-reports).
+
+MODULE: Revenue by Customer
+URL: https://deliverwms.com/docs/revenue-reports
+Tagline: Per-customer revenue slicing over any date range, with sort, filter,
+and clean export.
+Audiences: 3PL
+Roles: Platform Owner, Business Owner
+Why it matters: The report you pull up when a client asks for a quarterly
+summary, or when you're deciding which accounts are actually carrying your
+operation. Revenue by Customer tells you the truth about who's profitable
+and who's a logo on the wall.
+Capabilities: Per-customer revenue rollup. Configurable date-range filter.
+Sort by revenue, name, or activity. Active / inactive client filter. PDF +
+CSV export.
+
+MODULE: Order Reports
+URL: https://deliverwms.com/docs/order-reports
+Tagline: Daily order volume trends and vendor-level breakdowns.
+Audiences: 3PL, eCom, Dist
+Roles: Platform Owner, Business Owner, Warehouse Manager
+Why it matters: Understanding demand patterns lets you staff proactively
+instead of reactively. Vendor-level breakdowns reveal which clients are
+growing (and need more space) and which are declining (freeing capacity for
+new business). Per-order shipping costs help identify carrier optimization
+opportunities.
+Capabilities: Order volume by day, week, month. Vendor / client splits. SLA
+performance per channel. Source-of-order analysis. Drill-down to individual
+orders.
+
+MODULE: Business Reports (client portal)
+URL: https://deliverwms.com/docs/b2b-reports
+Tagline: Client-facing AR aging view, scoped strictly to the client's own
+invoices.
+Audiences: 3PL, Dist
+Roles: B2B Client, Platform Owner
+Why it matters: Clients reconciling their own AP want to see their open
+balance with you on their schedule, not on yours. The client-facing AR aging
+surface lets them check their own buckets, drill into invoices, and answer
+their own questions about what they owe. Most operators see a 60-70%
+reduction in "what do I owe" email volume after this lands.
+Capabilities: Client-scoped AR aging. 0-30 / 31-60 / 61-90 / 90+ buckets.
+Disputed-invoice column. Invoice-level drilldown. Operator-mode banner for
+non-client roles. Database-enforced data isolation.
+
+MODULE: Business Billing (operator surface)
+URL: https://deliverwms.com/docs/billing
+Tagline: Full invoice lifecycle, AR aging, automated reminders, dispute
+workflow, and event-level audit trail.
+Audiences: 3PL
+Roles: Platform Owner, Business Owner
+Why it matters: For 3PLs, billing transparency prevents disputes and builds
+long-term client relationships. Every billable event is captured the moment
+it happens — every stop, every label, every storage day — and assembled into
+invoices you can defend line by line. Automated reminders chase overdue
+invoices for you. The full invoice lifecycle (draft to sent to paid to
+disputed to resolved to void/cancelled) is gated by UI, API, and database
+constraints in lockstep.
+How it works: Every invoice has a real due date computed from net terms
+(overridable per client, defaults to 30 days). The lifecycle gates are
+enforced three independent ways: the UI prevents wrong actions from being
+clickable, the API rejects invalid actions, and database constraints reject
+inconsistent states. Cancel and void actions require a non-empty reason,
+captured in the audit trail. The Invoices tab provides a unified surface for
+viewing, filtering, and acting on every invoice. Invoice Reminders automate
+the polite-but-firm follow-up to clients with overdue invoices — set a
+schedule once and the system sends each reminder automatically. Per-client
+rate cards use a versioned-row pattern: rate changes create new rows, the
+previous rate is preserved with its effective-to timestamp, and invoices
+generated from historical events use the rate that was in effect at the
+moment of the event.
+Capabilities: Per-client rate card management with versioned history. Full
+invoice lifecycle (draft to sent to paid to overdue to disputed to resolved
+to void/cancelled). Three-layer defense (UI gating + API guards + DB
+constraints) on every transition. Due-date infrastructure with per-business
+net-terms override. AR aging integration. Automated invoice reminders with
+configurable schedule. Reminder history captured per invoice. Dispute
+workflow with reason capture and resolution disposition. Cancel / void
+actions with mandatory reason. Margin markup on labels. Exportable PDF
+invoices with event-level breakdown.
+
+MODULE: Platform Billing
+URL: https://deliverwms.com/docs/platform-billing
+Tagline: Cross-tenant revenue dashboard showing usage across every tenant.
+Audiences: 3PL
+Roles: Platform Owner
+Why it matters: Running a multi-tenant warehouse platform without an
+aggregate revenue view is like running a restaurant without a register.
+Platform Billing tells you which tenants are growing, which are at risk, and
+what the total business looks like — so commercial conversations are grounded
+in the actual numbers, not gut feel.
+Capabilities: Cross-tenant usage rollup. Per-tenant breakdown and trends.
+Stop and label fee accounting. Margin analysis. Platform-wide revenue
+dashboard.
+
+================================================================
+CATEGORY 7: PLATFORM & CONFIGURATION (2 modules)
+================================================================
+
+MODULE: Tenant Management
+URL: https://deliverwms.com/docs/tenants
+Tagline: Multi-tenant administration: onboard clients, manage access, and
+isolate data.
+Audiences: 3PL
+Roles: Platform Owner
+Why it matters: Multi-tenant operations need a birds-eye view. Tenant
+management lets platform owners see which clients are growing, which are at
+risk, and how resources are distributed — critical for capacity planning and
+revenue forecasting.
+Capabilities: Tenant creation and onboarding. Per-tenant configuration. Row-
+level security policies. Impersonation for support. Tenant lifecycle
+management.
+
+MODULE: Employee Management
+URL: https://deliverwms.com/docs/employees
+Tagline: Invitations, role-aware welcome flow, and team management across the
+platform.
+Audiences: 3PL, eCom, Dist, L-Mile
+Roles: Platform Owner, Business Owner, Warehouse Manager
+Why it matters: Role-based access isn't just about security — it's about
+focus. Warehouse workers see their task queue, not financial reports. Drivers
+see their stops, not inventory ledgers. Proper role assignment reduces errors
+and training time. The invitation system + role-aware welcome page makes
+new-hire onboarding a one-screen experience.
+How it works: Invitations are sent from this screen with rate-limited
+resends, hashed tokens, and lifecycle tracking (pending, accepted, expired,
+revoked). New invitees receive a single-screen welcome page tailored to their
+role. A business owner lands on a workspace orientation, a warehouse employee
+on a worker-app intro, a B2B client on a portal walkthrough. Role-appropriate
+next-step CTAs drive each invitee to the screen they should use first.
+Capabilities: Employee records and roles. RBAC permission assignment.
+Invitation system with hashed tokens + rate-limited resends. Role-aware
+welcome page for new invitees. Per-invitation lifecycle tracking. Mobile-app
+onboarding. Activity tracking. Multi-warehouse assignment.
+
+================================================================
+TEN ROLES SUPPORTED ACROSS THE PLATFORM
+================================================================
+
+PLATFORM OWNER — Full system administrator with access to all tenants and
+configuration. Sees the platform-wide revenue dashboard, can impersonate any
+tenant for support, manages tenant lifecycle.
+
+BUSINESS OWNER — Manages business operations, billing, and high-level
+reporting. The default role for the operator running a 3PL on the platform.
+
+WAREHOUSE MANAGER — Oversees warehouse floor operations, staff, and inventory
+accuracy. Approves variance adjustments, reviews dashboards, manages task
+assignments.
+
+WAREHOUSE EMPLOYEE — Executes picks, putaways, counts, and other floor tasks.
+Primary user of the Worker App.
+
+PACKER — Packs confirmed picks into shipment-ready parcels. Uses the Worker
+App's pack workflow with integrated label generation.
+
+B2B CLIENT — External client of the 3PL with self-service portal access to
+inventory, orders, products, billing, and reports. All data scoped strictly
+to their own business via database-level row-level security.
+
+END CUSTOMER — Tracks order delivery status via the public Tracking Portal.
+No login required.
+
+DRIVER — Delivers orders and confirms proof-of-delivery via the mobile Driver
+App. Sees only their own assigned stops.
+
+DISPATCHER — Assigns drivers to routes and monitors delivery progress in real
+time via the Dispatcher Console.
+
+SHIPPING MANAGER — Manages outbound logistics, fleet, and delivery scheduling.
+Oversees the Dispatch Queue and Fleet screens.

@@ -1,0 +1,195 @@
+DELIVER WMS — KNOWLEDGE BASE FILE 07: ABOUT AND PHILOSOPHY
+==========================================================
+
+The story behind Deliver WMS, the founder, the mission, and the architectural
+philosophy that shapes the product. Full About page at
+https://deliverwms.com/about.
+
+================================================================
+COMPANY POSITIONING
+================================================================
+
+Deliver WMS LLC is a Delaware-formed software company building a warehouse
+management and last-mile delivery platform for mid-size 3PLs, eCommerce
+brands, distributors, and last-mile delivery companies.
+
+The platform replaces the patchwork of spreadsheets, legacy WMS tools, and
+disconnected delivery apps that slow logistics teams down. The product is
+opinionated, transparent about pricing, and ships substantive updates every
+couple of weeks.
+
+NATURAL FIT: Mid-size 3PLs running 200 to 1,000 monthly outbound orders for
+3 to 10 active client brands. Operations outside that band can use the
+platform, but value is sharpest there.
+
+REMOTE-FIRST TEAM serving logistics operations worldwide.
+
+================================================================
+THE FOUNDER
+================================================================
+
+MICHAEL is the founder of Deliver WMS — a working business owner and
+software engineer. Not a sales engineer. He runs the business, writes the
+code, talks to operators on the warehouse floor, and sits with the
+dispatcher when the route board is on fire at 7am.
+
+Why he built it:
+
+Michael kept watching the same thing happen to small and mid-size warehouse
+operators: they grew, the workload grew, and the tools they were sold by
+legacy WMS vendors quietly became the bottleneck instead of the leverage.
+
+The spreadsheets started as a workaround. The email threads with clients
+started as a courtesy. The month-end billing reconciliation started as a
+"we'll fix it later." None of it scaled. And the alternative — six-figure
+enterprise WMS quotes with twelve-week implementations — wasn't an
+alternative at all for the operators he cared about. So he started building.
+
+Three principles that drive product decisions:
+
+1. SIMPLER BEATS FEATURE-RICH. Most WMS platforms read like enterprise
+   checklists. Deliver WMS chooses the smallest interface that lets an
+   operator finish the job — then stops adding things.
+
+2. INTUITIVE ENOUGH FOR THE WAREHOUSE FLOOR. If a Day-One picker can't use
+   it without a training video, it's broken. Every screen is designed for
+   the person actually scanning the carton, not the executive demoing the
+   dashboard.
+
+3. PRICED LIKE SOFTWARE, NOT CONSULTING. Legacy WMS pricing punishes you
+   for growing. Deliver WMS pricing scales with the value you get — not
+   with seats, modules, or implementation hours.
+
+================================================================
+MISSION
+================================================================
+
+Give every logistics operation — from a single warehouse to a multi-site
+network — the tools to execute with speed, accuracy, and full visibility,
+at a price the operators legacy vendors ignore can actually afford.
+
+================================================================
+SIX ARCHITECTURAL DECISIONS YOU'LL FEEL
+================================================================
+
+These six choices separate Deliver WMS from generic warehouse tools.
+
+1. LEDGER-BACKED INVENTORY
+Not just CRUD — every movement is an immutable event. Balances are derived
+from the ledger, giving an audit trail that survives any dispute.
+
+2. MULTI-TENANT ARCHITECTURE
+Tenant isolation isn't bolted on. Every table, every query, every row-level
+security policy is tenant-aware from the ground up — so your clients' data
+never crosses.
+
+3. WAREHOUSE TO DOORSTEP
+No separate WMS, TMS, and delivery app. One platform covers receiving,
+storage, fulfillment, dispatch, and last-mile — with shared data across
+every step.
+
+4. 10 ROLES, NOT ONE-SIZE-FITS-ALL
+From platform owners to floor workers to B2B clients — each role sees
+exactly what they need. Role-based access reduces errors and training time.
+
+5. AUTOMATED CARRIER SHIPPING
+Orders outside your delivery zones are automatically routed to carriers.
+Labels are generated via rate shopping during picking and ready to print
+at packing — no manual carrier management.
+
+6. SCAN-DRIVEN RECEIVING
+Barcode scanning with automatic exception handling for unknown items,
+quantity mismatches, and damage. Unknown barcodes are learned and resolved
+for future scans.
+
+================================================================
+WHO WE SERVE
+================================================================
+
+3PL OPERATORS — Run multi-client warehouses with tenant-isolated inventory,
+billing, and client portals that keep everyone aligned.
+
+eCOMMERCE BRANDS — Manage DTC fulfillment from receiving to delivery with
+real-time inventory and order tracking.
+
+DISTRIBUTORS & WHOLESALERS — Handle high-volume B2B distribution with
+storage optimization, route planning, and detailed operational analytics.
+
+LAST-MILE DELIVERY COMPANIES — Optimize routes, manage driver fleets,
+capture proof of delivery, and handle delivery exceptions — all in real time.
+
+================================================================
+FROM DOCK TO DOORSTEP — THE 5-STEP FLOW
+================================================================
+
+01 RECEIVE & STORE
+Inbound shipments are received with barcode scanning, validated against
+purchase orders, and directed to optimal storage locations.
+
+02 MANAGE INVENTORY
+Track every unit by SKU, location, and client. Ledger-based balances keep
+on-hand, reserved, and available quantities accurate.
+
+03 FULFILL ORDERS
+Orders are allocated, pick tasks are generated and assigned, items are
+packed, carrier labels are auto-generated, and shipments are created with
+tracking numbers.
+
+04 DISPATCH & DELIVER
+Orders ship via your fleet or carrier — automatically routed by delivery
+zone. Plan routes, assign drivers, and track delivery progress in real
+time with proof of delivery.
+
+05 REPORT & BILL
+Operational dashboards show throughput, SLA performance, and cost drivers.
+Billing views give clients full transparency.
+
+================================================================
+TONE & VOICE GUIDANCE FOR REFERENCES TO THE FOUNDER
+================================================================
+
+When referencing Michael in chat, the tone is:
+
+  - Direct, not formal. "Michael" not "Mr. Smith" or "the founder."
+  - Confident about his experience without overclaiming. He's a working
+    business owner and software engineer.
+  - Honest about the relationship. "Michael will reach out within one
+    business day" not "our team."
+
+WHEN ASKED ABOUT THE COMPANY SIZE OR TEAM:
+
+"We're a small, remote-first team. Michael leads the platform — runs the
+business, writes the code, talks to operators on the warehouse floor. For
+specific organizational details or who handles what, I can route you to him
+directly."
+
+WHEN ASKED "IS THIS A REAL COMPANY?":
+
+"Yes — Deliver WMS LLC is a Delaware-formed company, the platform is live
+and shipping every couple of weeks (the build log at
+https://deliverwms.com/blog has detailed posts on what landed when), and
+the founder responds personally to demo requests."
+
+WHEN ASKED ABOUT THE STORY BEHIND THE PRODUCT:
+
+"Michael — the founder — built Deliver WMS because he kept watching small
+and mid-size warehouse operators get stuck between two bad choices:
+spreadsheets and email that didn't scale, or six-figure enterprise WMS
+contracts with twelve-week implementations that nobody could afford. The
+goal was to build the WMS he wanted to use when he was tired of fighting
+the one he had: simpler, more intuitive, and more cost-effective."
+
+================================================================
+TWO COMMITMENTS THAT SHOW UP IN EVERY PRODUCT DECISION
+================================================================
+
+HONEST UI. If a tab is decorative, hide it. If a button doesn't do what it
+looks like it does, take it off the screen. The Settings page is a recent
+example — fields that didn't actually save anywhere were removed, not
+"improved with a tooltip."
+
+OPERATOR VOICE. Marketing copy doesn't use SaaS buzzwords ("industry-
+leading," "best-in-class," "cutting-edge"). The Compare page openly admits
+where competitors are stronger. The blog has a clear operator-to-operator
+voice. This is the moat that vendors who employ a marketing team can't
+easily copy.

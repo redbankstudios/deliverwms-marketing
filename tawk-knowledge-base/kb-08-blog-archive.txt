@@ -1,0 +1,257 @@
+DELIVER WMS — KNOWLEDGE BASE FILE 08: BLOG ARCHIVE
+==================================================
+
+Condensed versions of every published blog post, structured so the AI can
+answer specific questions sourced from blog content. Full posts at
+https://deliverwms.com/blog. Posts listed newest first.
+
+================================================================
+POST 1: AUTOMATED INVOICE REMINDERS + CLIENT BILLING PORTAL (May 13, 2026)
+================================================================
+
+URL: https://deliverwms.com/blog/automated-reminders-and-client-billing-portal-may-13
+
+KEY POINTS:
+- Three operator-facing changes shipped: automated invoice reminders, AR
+  aging in the client portal, full client billing page in the portal.
+- Automated reminders: set schedule once (e.g., 3 days before due, on due
+  date, 7 days past due) and the system sends each reminder automatically
+  from the operator's account. Full reminder history captured per invoice.
+- Most mid-size 3PLs running this kind of automated cadence collect 4-7
+  days faster on overdue invoices.
+- AR aging in the client portal: clients see their own open invoices
+  bucketed by age (0-30, 31-60, 61-90, 90+). Most operators see 60-70%
+  reduction in inbound "what do I owe" emails.
+- B2B Billing page: stat cards (total outstanding, paid YTD, disputed
+  count), filterable invoice table, inline drilldown with line items,
+  payment metadata, reminder timeline, dispute conversation. Operator-
+  internal dispute notes excluded at the query layer.
+- Math: Average mid-size 3PL fields 4-6 routine inquiries per active client
+  per week × ~12 minutes each = nearly 10 hours/week of operations manager
+  time recoverable.
+
+================================================================
+POST 2: FIVE NEW WAYS TO RUN YOUR WAREHOUSE BETTER (May 12, 2026)
+================================================================
+
+URL: https://deliverwms.com/blog/three-days-thirteen-ships-may-2026
+
+KEY POINTS:
+- Five operator-facing shipments landed in one stretch:
+  1. AR Aging report — customer-grouped buckets, backdating, disputed-
+     invoices column, invoice drilldown
+  2. Throughput Report — five charts including p50/p90 cycle time, Day/Week
+     toggle, range total stat cards
+  3. Invoice integrity sweep — due dates added, status/timestamp database
+     constraints, cancel/void API gates with mandatory reasons (three-layer
+     defense: UI + API + DB)
+  4. Settings shell repair — every input maps to a real field, save
+     persists; Users redirects to employees screen; Integrations tab hidden
+  5. Revenue by Customer — per-client revenue slicing with date range,
+     sort, filter, export
+- The principle: build the data underneath each report before building the
+  report itself. Due dates exist before AR aging is calculated. Shipped-at
+  timestamps exist before cycle time is charted. Status-vs-timestamp
+  consistency is enforced before invoices change state.
+- Cycle-time chart: most operators have a hand-wavy sense of "we ship same-
+  day or next-day for most orders." The p90 line (slowest 10%) tells you the
+  truth, and whether it's getting worse.
+- After cleanup of database inconsistencies, two customer accounts' open AR
+  shifted noticeably — one by ~$2,185, one by ~$567 — because underlying
+  data was finally coherent.
+
+================================================================
+POST 3: WELCOME TO THE BLOG (May 12, 2026)
+================================================================
+
+URL: https://deliverwms.com/blog/welcome-to-the-deliver-wms-blog
+
+KEY POINTS:
+- Three kinds of posts on a strict bi-weekly cadence: operational how-tos,
+  original benchmarks, unfiltered commentary on the WMS market.
+- Michael writes every post. When data is cited from another operator,
+  they're named.
+- No filler. No SEO listicles. No reflections on "the future of logistics"
+  by an author who's never set foot on a warehouse floor.
+
+================================================================
+POST 4: SPRINT G — B2B PORTAL REBUILD AND THE LEAK CAUGHT AT THE DB
+        (May 10, 2026)
+================================================================
+
+URL: https://deliverwms.com/blog/sprint-g-b2b-portal-rebuild
+
+KEY POINTS:
+- Major B2B portal work: schema foundation, dashboard with real-data
+  StatCards, B2B Inventory page, B2B Orders page, B2B Outbound with
+  atomic transactional safety.
+- Cross-tenant data leak caught and fixed pre-launch: the B2B analytics
+  surface had queries filtering by tenant but missing the second filter at
+  per-client level. A client logged in would have seen aggregate data
+  across every other client of the same 3PL.
+- The fix was a single chunk. Every b2b-reports query joined through
+  business_users on business_id to scope strictly to the calling user's
+  business. Cross-actor verification ran as a test client against every
+  other business in the seed data — no leaks.
+- Because data isolation on the platform is enforced at the database level
+  (not application code), the leak in application code was caught by the
+  pre-launch verification process and no real client data was ever at risk.
+- Math: Average mid-size 3PL fields 4-6 routine inquiries per active client
+  per week, 10-15 min each. 8 clients × 6 inquiries × 12 min = ~10 hours/
+  week of operations manager time the portal recovers.
+
+================================================================
+POST 5: SPRINT F — FULL INVOICE LIFECYCLE WITH THREE-LAYER DEFENSE
+        (May 4, 2026)
+================================================================
+
+URL: https://deliverwms.com/blog/full-revenue-lifecycle-three-layer-defense
+
+KEY POINTS:
+- Invoices on Deliver WMS live in one of 8 states: Draft, Sent, Paid,
+  Overdue, Disputed, Resolved, Void, Cancelled. Each transition captured
+  with who did it, when, and reason if applicable.
+- Three-layer defense: UI prevents wrong actions from being clickable, API
+  rejects invalid actions, database constraints reject inconsistent states.
+- Sent invoices can't be silently changed. Once a line is on a bill that's
+  gone to a client, it's frozen. Reissue or void — both preserve the
+  original.
+- Disputes don't disappear into ambiguity. Client disputes a line, requires
+  a reason. Disposition (original stands / reissue / void) captured with
+  another reason.
+- Paid means paid. The system rejects any invalid combination — like an
+  invoice marked paid with no payment date.
+- Cancelled is for drafts that never went out. Void is for issued invoices
+  that need retraction with a written reason. Tracked separately.
+- AR Aging benefit: disputed invoices live in their own column, not in
+  90+ bucket. Chase the right accounts.
+- Audit prep doesn't take a project. History table answers compliance and
+  audit questions in queries instead of PDF reconstructions.
+
+================================================================
+POST 6: THE BORING INFRASTRUCTURE THAT DECIDES RELIABILITY (May 4, 2026)
+================================================================
+
+URL: https://deliverwms.com/blog/billing-platform-and-the-go-live-stack
+
+KEY POINTS:
+- The platform now has industry-standard payment processing for subscription
+  billing — monthly invoicing, pro-rated plan changes, failed-payment
+  recovery via standard retry schedule, clean record of every charge.
+- Error monitoring catches issues before customers see them. Distinguishes
+  between "user typed something invalid" (not a bug) and "something the
+  system shouldn't have done" (real bug). Real bugs get triaged.
+- Bot protection on signup and lead forms uses privacy-preserving option —
+  single-click confirmation for real users, no cross-site tracking.
+- These pieces are unsexy infrastructure of a real SaaS — invisible when
+  they work, catastrophic when they don't.
+
+================================================================
+POST 7: THREE THINGS EVERY WMS SHOULD GET RIGHT (April 25, 2026)
+================================================================
+
+URL: https://deliverwms.com/blog/foundation-multi-tenant-onboarding-billable-events
+
+KEY POINTS:
+- Three load-bearing layers most WMS vendors get partially right and
+  Deliver WMS gets all three of:
+  1. Data isolation between tenants at the database level (not application
+     code). Mathematically prevents cross-client data leaks.
+  2. Self-serve onboarding in under 2 minutes. Sign up, hit dashboard, see
+     completion checklist (set up billing, add warehouse, add client,
+     invite teammate).
+  3. Billable events captured at the moment of action. Every stop, every
+     label, every storage day, every pick — assembled into invoices
+     defensible line by line.
+- The cheap way to enforce tenant separation is application-level filtering
+  (developers must remember). The right way is database-level row-level
+  security — the database itself rejects cross-tenant reads.
+- Self-serve signup at midnight = in dashboard at 12:02 AM. No demo call
+  required.
+- Most disputes evaporate when the operator points at the underlying event
+  ("$4.50 for 38 picks completed between 9:14 and 11:32 on March 14th").
+
+================================================================
+POST 8: INVENTORY YOU CAN TRUST (April 26, 2026)
+================================================================
+
+URL: https://deliverwms.com/blog/integrity-sweep-why-we-built-the-audit-first
+
+KEY POINTS:
+- Three causes account for almost every inventory discrepancy:
+  1. Cycle count entries that never make it to the ledger (no who/when/why)
+  2. Status updates that skip the stock movement (status field says one
+     thing, stock ledger says another)
+  3. Silent backfills (developer "fixes" by editing inventory directly,
+     original problem hidden by the fix)
+- Most WMS vendors don't surface these until you trip over them. Deliver
+  WMS surfaces them the day they happen.
+- Daily reconciliation check: compares three independent records (immutable
+  movement history, per-item quantity, per-bin balance). Any drift
+  surfaces as an exception you see the next morning.
+- On-demand integrity self-test: same checks, runnable any time. Useful
+  before month-end close.
+- Protected stock ledger: every movement captured as immutable entry.
+  Adjustments are additional entries, not deletions. Full who/when/why
+  record.
+- Quarantine for stranger signups: anyone reaching signup without valid
+  invitation lands in quarantined state until cleared.
+- Result for operators: when dashboard says 412 units, you have 412 units.
+  If system and reality disagree, the system tells you before a picker
+  finds out the hard way.
+
+================================================================
+POST 9 (FEATURED BENCHMARK): WHY MONTH-END BILLING EATS YOUR WEEK
+        (May 26, 2026)
+================================================================
+
+URL: https://deliverwms.com/blog/manual-billing-reconciliation-cost-benchmark
+
+KEY POINTS:
+- Most 3PL operators underestimate what month-end billing reconciliation
+  costs them — finance person hours are obvious, but operations manager
+  hours pulling data, dispute conversations that drag for weeks, longer
+  receivables cycles, and accounts that quietly leave because invoices
+  aren't trustworthy are all hidden costs.
+- Where the time goes in manual reconciliation: pulling source data
+  (~40%), joining and validating, generating invoices (smallest piece),
+  handling disputes (long tail), adding late-arriving adjustments.
+- Improving the spreadsheet doesn't change the shape of the problem. The
+  invoice is being reconstructed at month-end from data not designed to
+  produce invoices.
+- The structural fix: capture every billable event at the moment it
+  happens. Invoice already assembled by month-end. Reconciliation is a
+  one-hour variance review.
+- Three short-term improvements operators can make this week:
+  1. Settle on rate cards in writing — every active client has a current
+     version-dated rate card
+  2. Track storage daily, not monthly — daily snapshot of pallet positions
+     per client takes minutes
+  3. Add a dispute log — track every disputed line item, the client, the
+     resolution, and how long it took. Most operators discover the same 5
+     line items get disputed every month
+- The longer-term answer: a WMS that captures billable events at the moment
+  of action (which is what Deliver WMS does).
+
+================================================================
+HOW TO USE BLOG CONTENT IN CHAT
+================================================================
+
+When a visitor asks about a specific operator pain point and a blog post
+covers it, drop a link with a one-sentence summary:
+
+"That's exactly the topic of a post Michael wrote — here's the link and
+the short version: [one-sentence summary]. Want me to send you the full
+post via email?"
+
+When a visitor asks "how often do you ship updates?":
+
+"Substantive updates every couple of weeks. The build log at
+https://deliverwms.com/blog has the details — what landed, why, and what's
+next."
+
+When a visitor asks "is this a real working product?":
+
+"Yes. The blog has detailed build-log posts on what landed and when.
+Most recent shipment was [reference the most recent blog post]. Updates
+publish every couple of weeks."

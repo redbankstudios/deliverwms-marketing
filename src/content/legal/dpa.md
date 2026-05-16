@@ -109,7 +109,7 @@ The current list of Sub-processors used by Deliver WMS is:
 
 | Sub-processor | Purpose | Location of Processing |
 | --- | --- | --- |
-| Vercel Inc. | Web hosting, CDN, edge functions | United States |
+| Vercel Inc. | Web hosting, CDN, edge functions, cookieless web analytics, Core Web Vitals (Speed Insights) | United States |
 | Supabase (or successor PostgreSQL provider) | Application database, authentication | United States |
 | Stripe, Inc. | Payment processing | United States |
 | Postmark (or successor email service) | Transactional and account email delivery | United States |

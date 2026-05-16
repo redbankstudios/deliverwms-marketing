@@ -1,0 +1,198 @@
+DELIVER WMS — KNOWLEDGE BASE FILE 10: MEETING BOOKING
+======================================================
+
+This file is HIGH PRIORITY for the AI agent. When a visitor expresses
+interest in seeing the platform, talking to the team, or discussing
+implementation for their warehouse — share the Cal.com booking link below.
+It is the single most important conversion action the AI can drive.
+
+================================================================
+THE BOOKING LINK
+================================================================
+
+CAL.COM BOOKING URL:
+https://cal.com/warehouse-manager/chat-about-deliver-wms-implementation-for-your-warehouse
+
+This is a direct, real-time calendar where prospects book a meeting with
+Michael (founder of Deliver WMS) to chat about implementing the platform
+for their warehouse operation. No back-and-forth email. No "we'll get back
+to you." The visitor picks a time, gets a calendar invite, and the meeting
+is on the books.
+
+USE THIS LINK INSTEAD OF THE GENERIC CONTACT FORM when a visitor is
+clearly interested in moving forward — see the rules below.
+
+================================================================
+WHEN TO SHARE THE CAL.COM LINK (instead of /contact)
+================================================================
+
+SHARE THE CAL.COM LINK when the visitor:
+
+- Asks for a demo or walkthrough of the platform
+- Says they want to talk to someone, talk to Michael, or talk to sales
+- Asks about implementation specifics for their warehouse
+- Has been asking detailed feature/pricing questions and is at the
+  decision-making stage
+- Mentions a timeline ("we're looking to switch in Q2," "we need to
+  decide by next month")
+- Asks about onboarding, migration, or getting started
+- Is comparing Deliver WMS to a competitor and wants help deciding
+- Explicitly asks "how do I get started?" or "what's the next step?"
+- Has shared their operation's profile (monthly volume, client count) and
+  wants to discuss fit
+- Is on the pricing page and asking detailed questions about a specific tier
+
+WHEN IN DOUBT, OFFER THE CAL.COM LINK. The booking page is the lower-
+friction path. A visitor who isn't quite ready will simply not book —
+no harm done.
+
+================================================================
+WHEN TO USE THE GENERIC /CONTACT FORM INSTEAD
+================================================================
+
+USE https://deliverwms.com/contact (not the Cal.com link) when the visitor:
+
+- Is asking a generic question that doesn't warrant a meeting
+- Wants to submit support questions or technical issues
+- Is making a partnership, press, or vendor inquiry
+- Just wants to leave their email for follow-up but doesn't want a meeting
+- Is explicitly asking for async contact ("can someone email me?")
+- Is a recruiter, vendor pitching us, or otherwise not in the buyer flow
+
+================================================================
+SAMPLE PHRASING FOR SHARING THE BOOKING LINK
+================================================================
+
+USE NATURAL PHRASING — vary it based on context. A few patterns that work:
+
+"The fastest way to see the platform with your numbers is a 30-minute
+walkthrough with Michael. You can grab a time directly here:
+https://cal.com/warehouse-manager/chat-about-deliver-wms-implementation-for-your-warehouse"
+
+"That's exactly the kind of question worth talking through. Pick a time on
+Michael's calendar and he'll walk you through how Deliver WMS would handle
+it for your operation:
+https://cal.com/warehouse-manager/chat-about-deliver-wms-implementation-for-your-warehouse"
+
+"For implementation specifics for your warehouse, the best next step is a
+30-minute chat with Michael. Here's his calendar:
+https://cal.com/warehouse-manager/chat-about-deliver-wms-implementation-for-your-warehouse"
+
+"Want to see how this would work for your operation? Book a 30-minute
+walkthrough with Michael directly:
+https://cal.com/warehouse-manager/chat-about-deliver-wms-implementation-for-your-warehouse"
+
+"That makes sense as a topic for a live conversation. Here's the direct
+calendar link to grab a slot:
+https://cal.com/warehouse-manager/chat-about-deliver-wms-implementation-for-your-warehouse"
+
+================================================================
+WHAT THE MEETING COVERS (what to tell visitors about it)
+================================================================
+
+If a visitor asks "what happens on the call?" or "what should I expect?":
+
+A 30-minute live chat with Michael, the founder of Deliver WMS. He'll:
+
+- Walk through the platform with the visitor's actual operation in mind
+  (typical monthly volume, client count, current pain points)
+- Show specific screens that match what the visitor has been asking about
+  (AR aging, throughput, B2B portal, billing — whatever's relevant)
+- Discuss implementation specifics — migration from current WMS, timeline,
+  what data they'd bring, what the first week looks like
+- Answer pricing questions in detail, including Scale-tier sizing if
+  relevant
+- Take feedback on what would make the platform more useful for the
+  visitor's operation
+
+The visitor doesn't need to prepare anything. Just show up with their
+operation's numbers in mind. Michael runs the platform, writes the code,
+and talks to operators directly — so it's a working conversation, not a
+sales pitch.
+
+================================================================
+HANDLING THE LINK IN CHAT
+================================================================
+
+ALWAYS PASTE THE FULL URL — don't abbreviate, don't say "link in chat,"
+don't replace with shortened links. The full URL is:
+
+https://cal.com/warehouse-manager/chat-about-deliver-wms-implementation-for-your-warehouse
+
+FORMATTING: Drop the URL on its own line so it's easy to click. Most chat
+interfaces auto-link URLs on their own line.
+
+FOLLOW-UP: After sharing the link, ask if there's anything else specific
+they want covered in the meeting. This signals attentiveness and helps
+Michael prepare.
+
+Example:
+"Here's Michael's calendar:
+https://cal.com/warehouse-manager/chat-about-deliver-wms-implementation-for-your-warehouse
+
+Is there anything specific you'd want him to focus on during the
+walkthrough? I can pass that along."
+
+================================================================
+WHAT TO DO IF VISITOR HASN'T BOOKED BY END OF CHAT
+================================================================
+
+If the visitor hasn't clicked the link or confirmed they'll book by the
+time the conversation winds down, OFFER ONE MORE TIME using a different
+framing:
+
+"If you'd rather have Michael reach out instead of booking directly, drop
+your name, email, and company and I'll make sure he has the context. Or
+if you want to grab a slot whenever it works for you, his calendar is
+here:
+https://cal.com/warehouse-manager/chat-about-deliver-wms-implementation-for-your-warehouse"
+
+This gives the visitor two paths: passive (have Michael reach out) or
+active (book directly). The passive path captures contact info for
+follow-up; the active path closes immediately.
+
+================================================================
+DEFAULT CLOSER (updated)
+================================================================
+
+When the conversation winds down naturally, use:
+
+"Anything else I can help with? If you want to see the platform with your
+operation's actual numbers, the fastest path is a 30-minute walkthrough
+with Michael — grab a time directly here:
+https://cal.com/warehouse-manager/chat-about-deliver-wms-implementation-for-your-warehouse"
+
+================================================================
+PRIORITY: ALWAYS USE THIS LINK BEFORE /contact FOR DEMOS
+================================================================
+
+If a visitor is clearly in the buyer flow (asking detailed pricing,
+feature, fit, or implementation questions), the Cal.com link is the right
+next step — NOT the generic /contact form. The /contact form is for
+visitors who explicitly want async contact or who fall into one of the
+categories listed in the "When to use the generic /contact form" section
+above.
+
+The Cal.com link removes friction. Every additional step between a
+qualified prospect and a real meeting reduces conversion. Make it easy
+for the right people to land on Michael's calendar.
+
+================================================================
+QUICK REFERENCE
+================================================================
+
+BOOKING LINK (paste this exactly):
+https://cal.com/warehouse-manager/chat-about-deliver-wms-implementation-for-your-warehouse
+
+WHO IT'S WITH: Michael, founder of Deliver WMS
+
+DURATION: 30 minutes
+
+WHAT'S COVERED: Platform walkthrough tailored to the visitor's operation,
+implementation specifics, pricing, and Q&A.
+
+WHEN TO SHARE: Whenever a visitor expresses interest in seeing the
+platform, talking to the team, or moving toward implementation.
+
+FALLBACK: If the visitor wants async contact instead, send them to
+https://deliverwms.com/contact.
