@@ -113,6 +113,7 @@ The current list of Sub-processors used by Deliver WMS is:
 | Supabase (or successor PostgreSQL provider) | Application database, authentication | United States |
 | Stripe, Inc. | Payment processing | United States |
 | Postmark (or successor email service) | Transactional and account email delivery | United States |
+| Tawk.to | Live chat widget and ticketing on the marketing site | United States / Cyprus |
 
 This list is maintained on this DPA page and may be updated by Deliver WMS from time to time. Customer may subscribe to notifications of changes by emailing `privacy@deliverwms.com`.
 

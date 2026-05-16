@@ -77,6 +77,7 @@ We use a small set of vetted third-party service providers ("sub-processors") to
 | Supabase (or successor PostgreSQL provider) | Application database, authentication | All Service data including customer warehouse data |
 | Stripe, Inc. | Payment processing | Billing contact info, payment card data (handled directly by Stripe) |
 | Postmark (or successor email service) | Transactional and account email delivery | Recipient email, message content |
+| Tawk.to | Live chat widget and ticketing on the marketing site | Chat transcripts, IP addresses of chat participants, optional name/email provided by the visitor |
 
 A current sub-processor list is maintained at this page; we will update it when sub-processors change. If we add a new sub-processor that materially expands the scope of processing, we will notify customers in advance via in-app notice or email.
 
